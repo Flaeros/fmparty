@@ -1,0 +1,12 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+/.idea
+.DS_Store
+/build
+/captures
+/FMApi/nbproject
+/vksdk_library
+/facebook
+*.iml
