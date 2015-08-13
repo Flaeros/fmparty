@@ -28,8 +28,12 @@ public class VkontakteApi implements SocialNetworkApi{
 
     private int result;
 
+    private DbApi dbApi;
+    private int userId;
+
     public VkontakteApi(Activity act){
         this.activity = act;
+        dbApi = new DbApi(this);
     }
 
     @Override
@@ -57,11 +61,30 @@ public class VkontakteApi implements SocialNetworkApi{
     private VKCallback<VKAccessToken> vkCallback =  new VKCallback<VKAccessToken>() {
         @Override
         public void onResult(VKAccessToken res) {
+            createOrGetUser();
             setResult(ResultCode.SUCCESS.get());
         }
         @Override
         public void onError(VKError error) {}
     };
+
+    private void createOrGetUser() {
+        VKRequest request = VKApi.users().get();
+        request.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+                Log.v(TAG, response.json.toString());
+
+                VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
+
+                if (user != null) {
+                    Log.d(TAG, "user.getId() = " + user.getId());
+                    dbApi.createOrGetUser(SocNetId.VKONTAKTE.get(), user.getId(), user.first_name);
+                }
+            }
+        });
+    }
 
     @Override
     public void populateUserInfo(final TextView userName, final TextView userDesc, final ImageView userAvatar) {
@@ -93,6 +116,16 @@ public class VkontakteApi implements SocialNetworkApi{
                 }
             }
         });
+    }
+
+    @Override
+    public int getUserId() {
+        return userId;
+    }
+
+    @Override
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override

@@ -1,10 +1,16 @@
 <?php
 include 'Users.php';
+include 'ResultObject.php';
+
+mb_internal_encoding("UTF-8");
 
 $do = $_POST['do'];
 switch ($do) {
-    case 'createUser':
-        createUser();
+    case 'createOrGetUser':
+        createOrGetUser();
+        break;
+    case 'isUserExists':
+        isUserExists();
         break;
     case 'updateUser':
         updateUser();
@@ -12,18 +18,51 @@ switch ($do) {
 }
 
 
-
-function createUser(){
+function createOrGetUser(){
     $userApi = new Users();
     
-    $socnet = intval($_POST['socnet']);
-    $socuserid = intval($_POST['socuserid']);
+    $socNetId = intval($_POST['socnetid']);
+    $socUserId = intval($_POST['socuserid']);
     $name = mysql_real_escape_string($_POST['name']);
+    $jsonResult = new ResultObject();
     
-    $user = new User($socnet, $socuserid, $name);
-    $result = $userApi->createUser($user);
+    $result = isUserExists($socUserId, $socNetId);
+    dlog('createOrGetUser');
+    dlog($result);
+    if($result){
+        dlog('true1');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        $jsonResult->resultObject = $result;
+    }
+    else{
+        dlog('false1');
+        $user = new User($socNetId, $socUserId, $name);
+        $result = $userApi->createUser($user);
     
-    echo $result;
+        if($result){
+            dlog('true2');
+            $result = $userApi->getUserBySocNet($socUserId, $socNetId);
+            
+            $jsonResult->resultCode = Consts::DB_SUCCESS;
+            $jsonResult->resultObject = $result;   
+        }
+        else{
+            dlog('false2');
+            $jsonResult->resultCode = Consts::DB_ERROR;
+            $jsonResult->resultObject = "";
+        }
+    }
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
+}
+
+function isUserExists($socUserId, $socNetId){
+    $userApi = new Users();
+    $result = $userApi->getUserBySocNet($socUserId, $socNetId);
+    if(!$result)
+        return false;
+    else 
+        return $result;
 }
 
 function updateUser(){

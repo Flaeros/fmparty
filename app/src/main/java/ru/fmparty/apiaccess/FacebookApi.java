@@ -32,6 +32,7 @@ public class FacebookApi implements SocialNetworkApi {
     final List<String> permissions = Arrays.asList("public_profile", "user_birthday", "user_hometown");
 
     private int result;
+    private int userId;
 
     public FacebookApi(Activity act){
         this.activity = act;
@@ -118,6 +119,16 @@ public class FacebookApi implements SocialNetworkApi {
         parameters.putString("fields", "id,name,email,birthday,hometown,gender");
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    @Override
+    public int getUserId() {
+        return userId;
+    }
+
+    @Override
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override
