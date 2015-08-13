@@ -29,7 +29,7 @@ public class VkontakteApi implements SocialNetworkApi{
     private int result;
 
     private DbApi dbApi;
-    private int userId;
+    private long userId;
 
     public VkontakteApi(Activity act){
         this.activity = act;
@@ -54,10 +54,12 @@ public class VkontakteApi implements SocialNetworkApi{
     public int getResult() {
         return result;
     }
+
     @Override
     public void setResult(int result) {
         this.result = result;
     }
+
     private VKCallback<VKAccessToken> vkCallback =  new VKCallback<VKAccessToken>() {
         @Override
         public void onResult(VKAccessToken res) {
@@ -68,7 +70,8 @@ public class VkontakteApi implements SocialNetworkApi{
         public void onError(VKError error) {}
     };
 
-    private void createOrGetUser() {
+    @Override
+    public void createOrGetUser() {
         VKRequest request = VKApi.users().get();
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
@@ -119,12 +122,12 @@ public class VkontakteApi implements SocialNetworkApi{
     }
 
     @Override
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
     @Override
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

@@ -64,6 +64,6 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, JSONObject> {
 
     protected void onPostExecute(JSONObject jsonObject){
         if(delegate != null)
-            delegate.onTaskCompleted(jsonObject);
+            delegate.onCompleted(jsonObject);
     }
 }

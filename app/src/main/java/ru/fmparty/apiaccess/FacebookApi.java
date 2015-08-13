@@ -32,7 +32,9 @@ public class FacebookApi implements SocialNetworkApi {
     final List<String> permissions = Arrays.asList("public_profile", "user_birthday", "user_hometown");
 
     private int result;
-    private int userId;
+
+    private DbApi dbApi;
+    private long userId;
 
     public FacebookApi(Activity act){
         this.activity = act;
@@ -41,6 +43,8 @@ public class FacebookApi implements SocialNetworkApi {
         LoginManager.getInstance().registerCallback(callbackManager, fbCallback);
 
         token = AccessToken.getCurrentAccessToken();
+
+        dbApi = new DbApi(this);
     }
 
     @Override
@@ -69,6 +73,7 @@ public class FacebookApi implements SocialNetworkApi {
     FacebookCallback fbCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
+            createOrGetUser();
             setResult(ResultCode.SUCCESS.get());
         }
         @Override
@@ -76,6 +81,39 @@ public class FacebookApi implements SocialNetworkApi {
         @Override
         public void onError(FacebookException exception) {}
     };
+
+    @Override
+    public void createOrGetUser() {
+        Log.v(TAG, "createOrGetUser");
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(
+                            JSONObject object,
+                            GraphResponse response) {
+                        Log.v(TAG, "createOrGetUser JSONObject" + object.toString());
+
+                        try {
+
+                            String name = object.getString("first_name");
+                            long id = object.getLong("id");
+                            Log.d(TAG, "id = " + id);
+                            Log.d(TAG, "name = " + name);
+                            dbApi.createOrGetUser(SocNetId.FACEBOOK.get(), id, name);
+                        }
+                        catch (Exception e){
+                            Log.v(TAG, "JSON error");
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "first_name");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
 
     @Override
     public void populateUserInfo(final TextView userName, final TextView userDesc, final ImageView userAvatar) {
@@ -122,12 +160,12 @@ public class FacebookApi implements SocialNetworkApi {
     }
 
     @Override
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
     @Override
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

@@ -24,7 +24,7 @@ public class DbApi {
         this.socialNetworkApi = socialNetworkApi;
     }
 
-    public void createOrGetUser(int socNetId, int socUserId, String name){
+    public void createOrGetUser(int socNetId, long socUserId, String name){
 
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "createOrGetUser"));
@@ -37,26 +37,14 @@ public class DbApi {
 
 
     AsyncResponse asyncResponse = new AsyncResponse(){
-        @Override
-        public void onTaskCompleted(JSONObject jsonObject) {
+        public void onSuccess(JSONObject jsonObject) {
             try {
-                Log.d(TAG, "onTaskCompleted jsonObject =" + jsonObject);
+                long id = jsonObject.getLong("id");
+                Log.d(TAG, "onSuccess id =" + id);
+                String name = jsonObject.getString("name");
+                Log.d(TAG, "onSuccess name =" + name);
+                socialNetworkApi.setUserId(id);
 
-                int resultCode = jsonObject.getInt("resultCode");
-                Log.d(TAG, "onTaskCompleted resultCode =" + resultCode);
-
-                if(resultCode == ResultCode.SUCCESS.get()){
-                    JSONObject resultObject = jsonObject.getJSONObject("resultObject");
-
-                    int id = resultObject.getInt("id");
-                    Log.d(TAG, "onTaskCompleted id =" + id);
-                    String name = resultObject.getString("name");
-                    Log.d(TAG, "onTaskCompleted name =" + name);
-
-                }
-                else {
-                    Log.d(TAG, "dbApi error");
-                }
             }catch (JSONException e){
                 Log.d(TAG, e.toString());
                 Log.d(TAG, e.getMessage());

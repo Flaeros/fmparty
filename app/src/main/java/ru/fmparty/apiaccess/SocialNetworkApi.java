@@ -11,8 +11,10 @@ public interface SocialNetworkApi {
     int getResult();
     void setResult(int result);
     void populateUserInfo(TextView userName, TextView userDesc, ImageView userAvatar);
-    int getUserId();
-    void setUserId(int userId);
+    long getUserId();
+    void setUserId(long userId);
+
+    void createOrGetUser();
 
     void logout();
 }
