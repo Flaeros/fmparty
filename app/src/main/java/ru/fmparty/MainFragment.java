@@ -14,6 +14,7 @@ public class MainFragment extends Fragment{
     private View.OnClickListener logOutButtonListener;
     private View.OnClickListener myListButtonListener;
     private View.OnClickListener allListButtonListener;
+    private View.OnClickListener createMobButtonListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -24,17 +25,20 @@ public class MainFragment extends Fragment{
         Button logOutButton = (Button) view.findViewById(R.id.logOutButton);
         Button myListButton = (Button) view.findViewById(R.id.myList);
         Button allListButton = (Button) view.findViewById(R.id.allList);
+        Button createMobButton = (Button) view.findViewById(R.id.createMob);
 
         logOutButton.setOnClickListener(logOutButtonListener);
         myListButton.setOnClickListener(myListButtonListener);
         allListButton.setOnClickListener(allListButtonListener);
+        createMobButton.setOnClickListener(createMobButtonListener);
 
         return view;
     }
 
-    public void setListeners(View.OnClickListener logOutButtonListener, View.OnClickListener myListButtonListener, View.OnClickListener allListButtonListener) {
-        this.logOutButtonListener = logOutButtonListener;
-        this.myListButtonListener = myListButtonListener;
-        this.allListButtonListener = allListButtonListener;
+    public void setListeners(View.OnClickListener... listeners)  {
+        this.logOutButtonListener = listeners[0];
+        this.myListButtonListener = listeners[1];
+        this.allListButtonListener = listeners[2];
+        this.createMobButtonListener = listeners[3];
     }
 }

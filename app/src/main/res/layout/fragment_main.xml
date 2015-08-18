@@ -4,8 +4,8 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/myList"
-        android:text="MyList"
+        android:id="@+id/allList"
+        android:text="Find"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -13,13 +13,24 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:id="@+id/allList"
-        android:text="Find Flashmob"
+        android:id="@+id/myList"
+        android:text="MyList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_above="@+id/userInfo"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/allList"
+        android:layout_toEndOf="@+id/allList" />
+
+
+
+    <Button
+        android:id="@+id/createMob"
+        android:text="Create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/myList"
+        android:layout_toEndOf="@+id/myList" />
 
     <Button
         android:id="@+id/logOutButton"
@@ -27,8 +38,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_toRightOf="@+id/createMob"
+        android:layout_toEndOf="@+id/createMob" />
 
     <FrameLayout
         android:id="@+id/mainFragCont"
@@ -38,6 +49,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/myList">
     </FrameLayout>
+
 
 
 

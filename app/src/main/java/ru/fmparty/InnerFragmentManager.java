@@ -12,6 +12,7 @@ public class InnerFragmentManager {
     private AuthFragment authFragment;
     private MyListFragment myListFragment;
     private AllListFragment allListFragment;
+    private CreateMobFragment createMobFragment;
 
     private Activity activity;
     private SocialNetworkApi socialNetworkApi;
@@ -33,20 +34,20 @@ public class InnerFragmentManager {
 
     public void initializeMainFragment() {
         myListFragment.setSocialNetworkApi(socialNetworkApi);
-        mainFragment.setListeners(logOutButtonListener, myListButtonListener, allListButtonListener);
+        mainFragment.setListeners(logOutButtonListener, myListButtonListener,allListButtonListener, createMobButtonListener);
 
         activity.getFragmentManager().beginTransaction()
-        .replace(R.id.frgmCont, mainFragment)
-        .add(R.id.mainFragCont, myListFragment)
-        .commit();
+                .replace(R.id.frgmCont, mainFragment)
+                .add(R.id.mainFragCont, myListFragment)
+                .commit();
     }
 
     public void startFragmentForAuth() {
         authFragment = new AuthFragment();
         Log.d(TAG, "startFragmentForAuth");
         activity.getFragmentManager().beginTransaction()
-        .add(R.id.frgmCont, authFragment)
-        .commit();
+                .add(R.id.frgmCont, authFragment)
+                .commit();
     }
 
     public SocialNetworkApi getAuthorizedApi(){
@@ -57,9 +58,9 @@ public class InnerFragmentManager {
         socialNetworkApi.logout();
 
         activity.getFragmentManager().beginTransaction()
-        .remove(myListFragment)
-        .remove(mainFragment)
-        .commit();
+                .remove(myListFragment)
+                .remove(mainFragment)
+                .commit();
 
         activity.recreate();
     }
@@ -68,14 +69,24 @@ public class InnerFragmentManager {
         if(allListFragment == null)
             allListFragment = new AllListFragment();
         activity.getFragmentManager().beginTransaction()
-        .replace(R.id.mainFragCont, allListFragment)
-        .commit();
+                .replace(R.id.mainFragCont, allListFragment)
+                .commit();
     }
 
     private void showMyList(){
         activity.getFragmentManager().beginTransaction()
-        .replace(R.id.mainFragCont, myListFragment)
-        .commit();
+                .replace(R.id.mainFragCont, myListFragment)
+                .commit();
+    }
+
+    private void showCreateMob() {
+        if(createMobFragment == null)
+            createMobFragment = new CreateMobFragment();
+        createMobFragment.setSocialNetworkApi(socialNetworkApi);
+
+        activity.getFragmentManager().beginTransaction()
+                .replace(R.id.mainFragCont, createMobFragment)
+                .commit();
     }
 
     View.OnClickListener logOutButtonListener = new View.OnClickListener() {
@@ -99,6 +110,14 @@ public class InnerFragmentManager {
         public void onClick(View v) {
             Log.d(TAG, "Click My List");
             showMyList();
+        }
+    };
+
+    View.OnClickListener createMobButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "Click Create Mob");
+            showCreateMob();
         }
     };
 }

@@ -65,7 +65,7 @@ public class MyListFragment extends Fragment {
 
                 VKList<VKApiUser> users = (VKList<VKApiUser>) response.parsedModel;
 
-                if (users != null) {
+                if (users != null && MyListFragment.this.isVisible()) {
                     ArrayAdapter<VKApiUser> userArrayAdapter = new MyListArrayAdapter(users);
                     usersList.setAdapter(userArrayAdapter);
                 } else {

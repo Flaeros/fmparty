@@ -2,12 +2,9 @@ package ru.fmparty.apiaccess;
 
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +15,8 @@ import ru.fmparty.utils.PostCallTask;
 public class DbApi {
     private static String TAG = "Flashmob DbApi";
     private SocialNetworkApi socialNetworkApi;
+
+    public DbApi() {}
 
     public DbApi(SocialNetworkApi socialNetworkApi) {
 
