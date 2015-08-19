@@ -24,6 +24,21 @@ class Users{
         return false;
     }
     
+    public function getUserIdBySocNet($socUserId, $socNetId){
+        $query = str_replace('{1}', $socUserId, self::$SELECT_BY_SOC_NET_ID);
+        $query = str_replace('{2}', $socNetId, $query);
+        $result = mysql_query($query, $this->link);
+        $row = mysql_fetch_row($result);
+        
+        if($row != false) {
+            dlog("getUserIdBySocNet");
+            dlog($row);
+            
+            return $row[0];
+        }
+        return false;
+    }
+    
     public function getUserBySocNet($socUserId, $socNetId){
         $query = str_replace('{1}', $socUserId, self::$SELECT_BY_SOC_NET_ID);
         $query = str_replace('{2}', $socNetId, $query);
@@ -31,7 +46,7 @@ class Users{
         $row = mysql_fetch_row($result);
         
         if($row != false) {
-            dlog("getUserBySocNetId users");
+            dlog("getUserBySocNet users");
             dlog($row);
             $user = new User($row[0], $row[1], $row[2], $row[3]);
             

@@ -22,9 +22,6 @@ public class InnerFragmentManager {
 
     InnerFragmentManager(Activity activity){
         this.activity = activity;
-
-        mainFragment = new MainFragment();
-        myListFragment = new MyListFragment();
     }
 
 
@@ -33,6 +30,8 @@ public class InnerFragmentManager {
     }
 
     public void initializeMainFragment() {
+        mainFragment = new MainFragment();
+        myListFragment = new MyListFragment();
         myListFragment.setSocialNetworkApi(socialNetworkApi);
         mainFragment.setListeners(logOutButtonListener, myListButtonListener,allListButtonListener, createMobButtonListener);
 

@@ -13,15 +13,50 @@ switch ($do) {
     case 'createChat':
         createChat();
         break;
+    case 'getChats':
+        getChats();
+        break;
     case 'updateUser':
         updateUser();
         break;
 }
 
+function getChats(){
+    $chatApi = new ChatApi();
+    $socUserId = intval($_POST['socUserId']);
+    $socNetId = intval($_POST['socNetId']);
+    
+    $jsonResult = new ResultObject();
+    dlog('getChats');
+    
+    $result = $chatApi->getChats($socUserId, $socNetId);
+    dlog($result);
+    
+    $jsonResult = new ResultObject();
+    if(!$result){
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";  
+    }
+    else{
+        dlog('true');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        $jsonResult->resultObject = $result; 
+    }
+
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
+}
+
 function createChat(){
     $chatApi = new ChatApi();
-    $userId = intval($_POST['userId']);
+    $socUserId = intval($_POST['socUserId']);
+    $socNetId = intval($_POST['socNetId']);
     $chatName = mysql_real_escape_string($_POST['chatName']);
+    
+    
+    $userApi = new Users();
+    $userId = $userApi->getUserIdBySocNet($socUserId, $socNetId);
     
     $jsonResult = new ResultObject();
     dlog('createChat');

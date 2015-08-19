@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.fmparty.apiaccess.ResultObject;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.HttpObjectPair;
@@ -60,13 +61,15 @@ public class CreateMobFragment extends Fragment {
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "createChat"));
         argsList.add(new HttpObjectPair("chatName", String.valueOf(chatName)));
-        argsList.add(new HttpObjectPair("userId", String.valueOf(socialNetworkApi.getUserId())));
+        argsList.add(new HttpObjectPair("socUserId", String.valueOf(socialNetworkApi.getUserId())));
+        argsList.add(new HttpObjectPair("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId())));
         new PostCallTask(asyncResponse).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
     AsyncResponse asyncResponse = new AsyncResponse(){
-        public void onSuccess(JSONObject jsonObject) {
+        public void onSuccess(ResultObject resultObject) {
             try {
+                JSONObject jsonObject = resultObject.getJsonObject();
                 long id = jsonObject.getLong("id");
                 Log.d(TAG, "onSuccess chat id =" + id);
                 String name = jsonObject.getString("name");

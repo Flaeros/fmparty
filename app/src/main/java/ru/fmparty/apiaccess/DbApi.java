@@ -14,19 +14,11 @@ import ru.fmparty.utils.PostCallTask;
 
 public class DbApi {
     private static String TAG = "Flashmob DbApi";
-    private SocialNetworkApi socialNetworkApi;
 
-    public DbApi() {}
-
-    public DbApi(SocialNetworkApi socialNetworkApi) {
-
-        this.socialNetworkApi = socialNetworkApi;
-    }
-
-    public void createOrGetUser(int socNetId, long socUserId, String name){
+    public static void createUser(int socNetId, long socUserId, String name){
 
         List<HttpObjectPair> argsList = new ArrayList<>();
-        argsList.add(new HttpObjectPair("do", "createOrGetUser"));
+        argsList.add(new HttpObjectPair("do", "createUser"));
         argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
         argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
         argsList.add(new HttpObjectPair("name", name));
@@ -35,14 +27,14 @@ public class DbApi {
     }
 
 
-    AsyncResponse asyncResponse = new AsyncResponse(){
-        public void onSuccess(JSONObject jsonObject) {
+    private static AsyncResponse asyncResponse = new AsyncResponse(){
+        public void onSuccess(ResultObject resultObject) {
             try {
-                long id = jsonObject.getLong("id");
+                JSONObject users = resultObject.getJsonObject();
+                long id = users.getLong("id");
                 Log.d(TAG, "onSuccess id =" + id);
-                String name = jsonObject.getString("name");
+                String name = users.getString("name");
                 Log.d(TAG, "onSuccess name =" + name);
-                socialNetworkApi.setUserId(id);
 
             }catch (JSONException e){
                 Log.d(TAG, e.toString());

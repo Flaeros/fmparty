@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import ru.fmparty.utils.AsyncResponse;
+
 public interface SocialNetworkApi {
     boolean isLoggedIn();
     void login();
@@ -12,9 +14,10 @@ public interface SocialNetworkApi {
     void setResult(int result);
     void populateUserInfo(TextView userName, TextView userDesc, ImageView userAvatar);
     long getUserId();
-    void setUserId(long userId);
+    void setUserId();
 
-    void createOrGetUser();
+    void createUser();
+    int getSocialCodeId();
 
     void logout();
 }

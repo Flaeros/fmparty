@@ -13,6 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,7 +21,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostCallTask extends AsyncTask<HttpObjectPair, Void, JSONObject> {
+import ru.fmparty.apiaccess.ResultCode;
+import ru.fmparty.apiaccess.ResultObject;
+
+public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> {
 
     private static String TAG = "Flashmob PostCallTask";
     private static String apiUrl = "http://dtigran.ru/fmapi/api.php";
@@ -32,8 +36,8 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, JSONObject> {
     }
 
     @Override
-    protected JSONObject doInBackground(HttpObjectPair... params) {
-        JSONObject result = null;
+    protected ResultObject doInBackground(HttpObjectPair... params) {
+        ResultObject result = null;
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(apiUrl);
@@ -46,7 +50,27 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, JSONObject> {
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8));
             HttpResponse response = httpclient.execute(httppost);
             String answer = EntityUtils.toString(response.getEntity());
-            result = new JSONObject(answer);
+            JSONObject jsonObject = new JSONObject(answer);
+
+            int resultCode = jsonObject.getInt("resultCode");
+            Log.d(TAG, "onTaskCompleted resultCode =" + resultCode);
+
+            Object resultObject = jsonObject.get("resultObject");
+            Log.d(TAG, "resultObject = " + resultObject);
+
+            if(resultObject instanceof JSONArray) {
+                JSONArray resultObjectJsonArray = (JSONArray) resultObject;
+                result = new ResultObject(resultCode, resultObjectJsonArray);
+            }
+            else if(resultObject instanceof JSONObject) {
+                JSONObject resultObjectJsonObject = (JSONObject) resultObject;
+                result = new ResultObject(resultCode, resultObjectJsonObject);
+            }
+            else{
+                result = new ResultObject(resultCode);
+            }
+
+            return result;
 
         } catch (ClientProtocolException e) {
             Log.d(TAG, e.toString());
@@ -54,6 +78,7 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, JSONObject> {
         } catch (IOException e) {
             Log.d(TAG, e.toString());
             e.printStackTrace();
+            result = new ResultObject(0);
         } catch (JSONException e){
             Log.d(TAG, e.toString());
             e.printStackTrace();
@@ -62,8 +87,8 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, JSONObject> {
         return result;
     }
 
-    protected void onPostExecute(JSONObject jsonObject){
+    protected void onPostExecute(ResultObject resultObject){
         if(delegate != null)
-            delegate.onCompleted(jsonObject);
+            delegate.onCompleted(resultObject);
     }
 }

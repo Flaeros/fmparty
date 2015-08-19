@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
     }
 
     private void initializeMainFragment() {
-        socialNetworkApi.createOrGetUser();
+        socialNetworkApi.setUserId();
         manager.setSocialNetworkApi(socialNetworkApi);
         manager.initializeMainFragment();
     }

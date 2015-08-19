@@ -28,12 +28,10 @@ public class VkontakteApi implements SocialNetworkApi{
 
     private int result;
 
-    private DbApi dbApi;
     private long userId;
 
     public VkontakteApi(Activity act){
         this.activity = act;
-        dbApi = new DbApi(this);
     }
 
     @Override
@@ -63,7 +61,8 @@ public class VkontakteApi implements SocialNetworkApi{
     private VKCallback<VKAccessToken> vkCallback =  new VKCallback<VKAccessToken>() {
         @Override
         public void onResult(VKAccessToken res) {
-            createOrGetUser();
+            VkontakteApi.this.userId = Integer.valueOf(res.userId);
+            createUser();
             setResult(ResultCode.SUCCESS.get());
         }
         @Override
@@ -71,22 +70,25 @@ public class VkontakteApi implements SocialNetworkApi{
     };
 
     @Override
-    public void createOrGetUser() {
+    public void createUser() {
+
         VKRequest request = VKApi.users().get();
-        request.executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-                super.onComplete(response);
-                Log.v(TAG, response.json.toString());
+        request.executeWithListener(
+                new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        super.onComplete(response);
+                        Log.v(TAG, response.json.toString());
 
-                VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
+                        VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
+                        DbApi.createUser(SocNetId.FACEBOOK.get(), user.getId(), user.first_name);
+                    }
+                });
+    }
 
-                if (user != null) {
-                    Log.d(TAG, "user.getId() = " + user.getId());
-                    dbApi.createOrGetUser(SocNetId.VKONTAKTE.get(), user.getId(), user.first_name);
-                }
-            }
-        });
+    @Override
+    public int getSocialCodeId() {
+        return SocNetId.VKONTAKTE.get();
     }
 
     @Override
@@ -127,8 +129,10 @@ public class VkontakteApi implements SocialNetworkApi{
     }
 
     @Override
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUserId() {
+        String userId = VKAccessToken.currentToken().userId;
+        Log.d(TAG, "[setUserId] = " + userId);
+        this.userId = Integer.valueOf(userId);
     }
 
     @Override

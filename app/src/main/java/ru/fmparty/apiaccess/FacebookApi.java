@@ -33,7 +33,6 @@ public class FacebookApi implements SocialNetworkApi {
 
     private int result;
 
-    private DbApi dbApi;
     private long userId;
 
     public FacebookApi(Activity act){
@@ -43,8 +42,6 @@ public class FacebookApi implements SocialNetworkApi {
         LoginManager.getInstance().registerCallback(callbackManager, fbCallback);
 
         token = AccessToken.getCurrentAccessToken();
-
-        dbApi = new DbApi(this);
     }
 
     @Override
@@ -73,7 +70,8 @@ public class FacebookApi implements SocialNetworkApi {
     FacebookCallback fbCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            createOrGetUser();
+            FacebookApi.this.userId = Integer.valueOf(loginResult.getAccessToken().getUserId());
+            createUser();
             setResult(ResultCode.SUCCESS.get());
         }
         @Override
@@ -83,8 +81,8 @@ public class FacebookApi implements SocialNetworkApi {
     };
 
     @Override
-    public void createOrGetUser() {
-        Log.v(TAG, "createOrGetUser");
+    public void createUser() {
+        Log.v(TAG, "createUser");
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -92,7 +90,7 @@ public class FacebookApi implements SocialNetworkApi {
                     public void onCompleted(
                             JSONObject object,
                             GraphResponse response) {
-                        Log.v(TAG, "createOrGetUser JSONObject" + object.toString());
+                        Log.v(TAG, "createUser JSONObject" + object.toString());
 
                         try {
 
@@ -100,7 +98,8 @@ public class FacebookApi implements SocialNetworkApi {
                             long id = object.getLong("id");
                             Log.d(TAG, "id = " + id);
                             Log.d(TAG, "name = " + name);
-                            dbApi.createOrGetUser(SocNetId.FACEBOOK.get(), id, name);
+
+                            DbApi.createUser(SocNetId.FACEBOOK.get(), id, name);
                         }
                         catch (Exception e){
                             Log.v(TAG, "JSON error");
@@ -114,6 +113,12 @@ public class FacebookApi implements SocialNetworkApi {
         request.setParameters(parameters);
         request.executeAsync();
     }
+
+    @Override
+    public int getSocialCodeId() {
+        return SocNetId.FACEBOOK.get();
+    }
+
 
     @Override
     public void populateUserInfo(final TextView userName, final TextView userDesc, final ImageView userAvatar) {
@@ -165,8 +170,10 @@ public class FacebookApi implements SocialNetworkApi {
     }
 
     @Override
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUserId() {
+        String userId = AccessToken.getCurrentAccessToken().getUserId();
+        Log.d(TAG, "[setUserId] = " + userId);
+        this.userId = Integer.valueOf(userId);
     }
 
     @Override
