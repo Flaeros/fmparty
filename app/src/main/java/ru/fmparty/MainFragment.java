@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 public class MainFragment extends Fragment{
-    private final String TAG = "Flashmob MainFragment";
+    private final String TAG = "FlashMob MainFragment";
 
     private View.OnClickListener logOutButtonListener;
     private View.OnClickListener myListButtonListener;

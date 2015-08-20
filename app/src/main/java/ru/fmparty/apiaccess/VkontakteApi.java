@@ -24,7 +24,7 @@ import ru.fmparty.utils.DownloadImageTask;
 
 public class VkontakteApi implements SocialNetworkApi{
     Activity activity;
-    final String TAG = "Flashmob: VkontakteApi";
+    final String TAG = "FlashMob: VkontakteApi";
 
     private int result;
 

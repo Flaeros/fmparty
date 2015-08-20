@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class AllListFragment extends Fragment{
-    private final String TAG = "Flashmob AuthFragment";
+    private final String TAG = "FlashMob AuthFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

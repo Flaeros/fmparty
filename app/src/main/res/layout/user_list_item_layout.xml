@@ -21,12 +21,18 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="User Name"
-        android:layout_alignBottom="@+id/imageView2"
-        android:layout_toRightOf="@+id/imageView2"
-        android:layout_toEndOf="@+id/imageView2"
+        android:layout_alignBottom="@+id/item_userAvatar"
+        android:layout_toRightOf="@+id/item_userAvatar"
+        android:layout_toEndOf="@+id/item_userAvatar"
         android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
         android:layout_marginBottom="31dp" />
+
+    <TextView
+        android:id="@+id/chatId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

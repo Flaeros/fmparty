@@ -23,7 +23,7 @@ import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.PostCallTask;
 
 public class CreateMobFragment extends Fragment {
-    private final String TAG = "Flashmob CreateMob";
+    private final String TAG = "FlashMob CreateMob";
 
     EditText editText;
     private SocialNetworkApi socialNetworkApi;

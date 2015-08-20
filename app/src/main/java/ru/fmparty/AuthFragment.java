@@ -19,7 +19,7 @@ public class AuthFragment extends Fragment {
 
     private SocialNetworkApi socialNetworkApi;
 
-    private final String TAG = "Flashmob AuthFragment";
+    private final String TAG = "FlashMob AuthFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

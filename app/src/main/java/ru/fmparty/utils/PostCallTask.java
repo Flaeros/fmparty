@@ -26,7 +26,7 @@ import ru.fmparty.apiaccess.ResultObject;
 
 public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> {
 
-    private static String TAG = "Flashmob PostCallTask";
+    private static String TAG = "FlashMob PostCallTask";
     private static String apiUrl = "http://dtigran.ru/fmapi/api.php";
 
     public AsyncResponse delegate = null;

@@ -6,6 +6,7 @@
     <Button
         android:id="@+id/allList"
         android:text="Find"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -15,6 +16,7 @@
     <Button
         android:id="@+id/myList"
         android:text="MyList"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -26,6 +28,7 @@
     <Button
         android:id="@+id/createMob"
         android:text="Create"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -35,6 +38,7 @@
     <Button
         android:id="@+id/logOutButton"
         android:text="LogOut"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -49,8 +53,5 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/myList">
     </FrameLayout>
-
-
-
 
 </RelativeLayout>

@@ -10,7 +10,7 @@ import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.ResultObject;
 
 public abstract class AsyncResponse {
-    private static String TAG = "Flashmob AsyncResponse";
+    private static String TAG = "FlashMob AsyncResponse";
 
     void onCompleted(ResultObject resultObject) {
         Log.d(TAG, "onTaskCompleted jsonObject =" + resultObject);

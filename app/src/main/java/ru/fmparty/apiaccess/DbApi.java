@@ -13,7 +13,7 @@ import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.PostCallTask;
 
 public class DbApi {
-    private static String TAG = "Flashmob DbApi";
+    private static String TAG = "FlashMob DbApi";
 
     public static void createUser(int socNetId, long socUserId, String name){
 

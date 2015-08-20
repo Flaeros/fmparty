@@ -28,7 +28,7 @@ public class FacebookApi implements SocialNetworkApi {
     Activity activity;
     CallbackManager callbackManager;
     AccessToken token;
-    final String TAG = "Flashmob: FacebookApi";
+    final String TAG = "FlashMob: FacebookApi";
     final List<String> permissions = Arrays.asList("public_profile", "user_birthday", "user_hometown");
 
     private int result;

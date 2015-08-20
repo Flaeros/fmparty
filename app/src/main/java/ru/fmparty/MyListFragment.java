@@ -1,6 +1,7 @@
 package ru.fmparty;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +28,7 @@ import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.PostCallTask;
 
 public class MyListFragment extends Fragment {
-    private final String TAG = "Flashmob MyListFragment";
+    private final String TAG = "FlashMob MyListFragment";
 
     private SocialNetworkApi socialNetworkApi;
 
@@ -59,10 +60,23 @@ public class MyListFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             TextView textView = (TextView) view.findViewById(R.id.item_userName);
+            TextView chatIdView = (TextView) view.findViewById(R.id.chatId);
             String text = textView.getText().toString();
-            Toast.makeText(getActivity(), "Item "+ text, Toast.LENGTH_SHORT).show();
+            int chatId = Integer.valueOf(chatIdView.getText().toString());
+            Toast.makeText(getActivity(), chatId + ". Item "+ text, Toast.LENGTH_SHORT).show();
+            showChat(chatId);
         }
     };
+
+    private void showChat(int chatId) {
+        Intent chatIntent = new Intent(getActivity(),
+                ChatActivity.class);
+        chatIntent.putExtra("chatId", String.valueOf(chatId));
+        chatIntent.putExtra("socUserId", String.valueOf(socialNetworkApi.getUserId()));
+        chatIntent.putExtra("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId()));
+
+        startActivity(chatIntent);
+    }
 
     public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi){
         this.socialNetworkApi = socialNetworkApi;
@@ -130,6 +144,10 @@ public class MyListFragment extends Fragment {
 
             TextView textViewName = (TextView) itemView.findViewById(R.id.item_userName);
             textViewName.setText(chat.getId() + ". " + chat.getName());
+
+            TextView chatIdView = (TextView) itemView.findViewById(R.id.chatId);
+            chatIdView.setText(String.valueOf(chat.getId()));
+
 
 /*
             ImageView imageView = (ImageView) itemView.findViewById(R.id.item_userAvatar);
