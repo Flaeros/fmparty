@@ -2,6 +2,7 @@
 include 'Users.php';
 include 'ChatApi.php';
 include 'ResultObject.php';
+include 'MsgApi.php';
 
 mb_internal_encoding("UTF-8");
 
@@ -16,9 +17,64 @@ switch ($do) {
     case 'getChats':
         getChats();
         break;
+    case 'sendMsg':
+        sendMsg();
+        break;
+    case 'getMessages':
+        getMessages();
+        break;
     case 'updateUser':
         updateUser();
         break;
+}
+
+function getMessages(){
+    $chatId = intval($_POST['chatid']);
+    $socUserId = intval($_POST['socuserid']);
+    $socNetId = intval($_POST['socnetid']);
+    
+    $msgApi = new MsgApi();
+    $result = $msgApi->getMessages($chatId);
+    dlog('getMessages');
+    dlog($result);
+}
+
+function sendMsg(){
+    $chatId = intval($_POST['chatid']);
+    $socUserId = intval($_POST['socuserid']);
+    $socNetId = intval($_POST['socnetid']);
+    
+    $userApi = new Users();
+    $userId = $userApi->getUserIdBySocNet($socUserId, $socNetId);
+    
+    $text = mysql_real_escape_string($_POST['textMsg']);
+    
+    $message = new Message($chatId, $userId, $text);
+    
+    $msgApi = new MsgApi();
+    $result = $msgApi->createMsg($message);
+    dlog("sendMsg");
+    dlog($result);
+    
+    $jsonResult = new ResultObject();
+    if(!$result){
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";  
+    }
+    else{
+        dlog('true');
+        
+        $obj = new stdClass;
+        $obj->id = $result;
+        $result = $obj;
+        
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        $jsonResult->resultObject = $result; 
+    }
+
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
 }
 
 function getChats(){
@@ -30,18 +86,17 @@ function getChats(){
     dlog('getChats');
     
     $result = $chatApi->getChats($socUserId, $socNetId);
-    dlog($result);
     
     $jsonResult = new ResultObject();
-    if(!$result){
-        dlog('false');
-        $jsonResult->resultCode = Consts::DB_ERROR;
-        $jsonResult->resultObject = "";  
-    }
-    else{
+    if($result > 0){
         dlog('true');
         $jsonResult->resultCode = Consts::DB_SUCCESS;
-        $jsonResult->resultObject = $result; 
+        $jsonResult->resultObject = $result;   
+    }
+    else{
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";
     }
 
     dlog($jsonResult);

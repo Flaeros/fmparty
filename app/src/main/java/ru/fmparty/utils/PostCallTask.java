@@ -31,9 +31,8 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> 
 
     public AsyncResponse delegate = null;
 
-    public PostCallTask(AsyncResponse asyncResponse){
-        delegate = asyncResponse;
-    }
+    public PostCallTask(){}
+    public PostCallTask(AsyncResponse asyncResponse){ delegate = asyncResponse; }
 
     @Override
     protected ResultObject doInBackground(HttpObjectPair... params) {
@@ -50,6 +49,7 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> 
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8));
             HttpResponse response = httpclient.execute(httppost);
             String answer = EntityUtils.toString(response.getEntity());
+            Log.d(TAG, "answer = " + answer);
             JSONObject jsonObject = new JSONObject(answer);
 
             int resultCode = jsonObject.getInt("resultCode");
@@ -82,6 +82,7 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> 
         } catch (JSONException e){
             Log.d(TAG, e.toString());
             e.printStackTrace();
+            result = new ResultObject(0);
         }
 
         return result;

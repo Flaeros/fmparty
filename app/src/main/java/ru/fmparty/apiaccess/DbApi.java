@@ -1,6 +1,8 @@
 package ru.fmparty.apiaccess;
 
+import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,12 +10,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.fmparty.ChatActivity;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.PostCallTask;
 
 public class DbApi {
-    private static String TAG = "FlashMob DbApi";
+    private final static String TAG = "FlashMob DbApi";
 
     public static void createUser(int socNetId, long socUserId, String name){
 
@@ -23,24 +26,30 @@ public class DbApi {
         argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
         argsList.add(new HttpObjectPair("name", name));
 
-        new PostCallTask(asyncResponse).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+        new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
+    public static void sendMsg(String message, int chatId, int socNetId, int socUserId) {
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "sendMsg"));
+        argsList.add(new HttpObjectPair("textMsg", message));
+        argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
+        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
+        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
+        new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
 
-    private static AsyncResponse asyncResponse = new AsyncResponse(){
-        public void onSuccess(ResultObject resultObject) {
-            try {
-                JSONObject users = resultObject.getJsonObject();
-                long id = users.getLong("id");
-                Log.d(TAG, "onSuccess id =" + id);
-                String name = users.getString("name");
-                Log.d(TAG, "onSuccess name =" + name);
+    public static void getMessages(Activity context, int chatId, int socUserId, int socNetId) {
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "getMessages"));
+        argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
+        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
+        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
 
-            }catch (JSONException e){
-                Log.d(TAG, e.toString());
-                Log.d(TAG, e.getMessage());
-                e.printStackTrace();
+        new PostCallTask(new AsyncResponse() {
+            void onSuccess(ResultObject resultObject) {
+                Log.d(TAG, "resultObject = " + resultObject);
             }
-        }
-    };
+        }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
 }

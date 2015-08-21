@@ -44,7 +44,6 @@ class ChatApi {
             $chat = new Chat($row['id'], $row['admin_id'], $row['name']);
             $chatArray[] = $chat;
         }
-        dlog($chatArray);
         
         return $chatArray;
     }
