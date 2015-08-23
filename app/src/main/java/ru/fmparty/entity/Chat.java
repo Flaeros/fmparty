@@ -22,4 +22,9 @@ public class Chat {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString(){
+        return "Chat: id: " + id + "; admin_id: " + admin_id + "; name: " + name;
+    }
 }

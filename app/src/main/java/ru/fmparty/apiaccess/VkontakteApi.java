@@ -81,7 +81,7 @@ public class VkontakteApi implements SocialNetworkApi{
                         Log.v(TAG, response.json.toString());
 
                         VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
-                        DbApi.createUser(SocNetId.FACEBOOK.get(), user.getId(), user.first_name);
+                        DbApi.createUser(SocNetId.VKONTAKTE.get(), user.getId(), user.first_name);
                     }
                 });
     }

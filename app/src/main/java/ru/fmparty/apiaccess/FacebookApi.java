@@ -70,7 +70,7 @@ public class FacebookApi implements SocialNetworkApi {
     FacebookCallback fbCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            FacebookApi.this.userId = Integer.valueOf(loginResult.getAccessToken().getUserId());
+            FacebookApi.this.userId = Long.valueOf(loginResult.getAccessToken().getUserId());
             createUser();
             setResult(ResultCode.SUCCESS.get());
         }
@@ -173,7 +173,7 @@ public class FacebookApi implements SocialNetworkApi {
     public void setUserId() {
         String userId = AccessToken.getCurrentAccessToken().getUserId();
         Log.d(TAG, "[setUserId] = " + userId);
-        this.userId = Integer.valueOf(userId);
+        this.userId = Long.valueOf(userId);
     }
 
     @Override

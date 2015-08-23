@@ -31,8 +31,21 @@ class MsgApi {
     }
     
     public function getMessages($chatId){
+        $query = str_replace('{1}', $chatId, self::$SELECT_MSGS);
+        $result = mysql_query($query, $this->link);
         
+        if(!$result)
+            return false;
+        
+        $msgsArray;
+        while($row = mysql_fetch_array($result)){
+            $msg = new Message($row['id'], $row['chat_id'], $row['user_id'], $row['text']);
+            $msgsArray[] = $msg;
+        }
+        
+        return $msgsArray;
     }
     
     private static $INSERT_MSG = "INSERT INTO fm_msgs(chat_id, user_id, text) values ({1}, {2}, '{3}')";
+    private static $SELECT_MSGS = "SELECT * from fm_msgs where chat_id = {1}";
 }

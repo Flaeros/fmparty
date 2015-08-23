@@ -14,8 +14,9 @@ class ChatApi {
     public function createChat($userId, $chatName){
         $query = str_replace('{1}', $userId, self::$INSERT_CHAT);
         $query = str_replace('{2}', $chatName, $query);
+        dlog($query);
         $result = mysql_query($query, $this->link);
-        
+        dlog($result);
         if(!$result)
             return false;
         else {

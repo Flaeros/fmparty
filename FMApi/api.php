@@ -8,8 +8,8 @@ mb_internal_encoding("UTF-8");
 
 $do = $_POST['do'];
 switch ($do) {
-    case 'createOrGetUser':
-        createOrGetUser();
+    case 'createUser':
+        createUser();
         break;
     case 'createChat':
         createChat();
@@ -37,6 +37,31 @@ function getMessages(){
     $result = $msgApi->getMessages($chatId);
     dlog('getMessages');
     dlog($result);
+    
+    $userApi = new Users();
+    $userId = $userApi->getUserIdBySocNet($socUserId, $socNetId);
+    
+    $jsonResult = new ResultObject();
+    if($result > 0){
+        dlog('true');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        
+        $obj = new stdClass;
+        $obj->msgs = $result;
+        $obj->id = $userId;
+        
+        $result = $obj;
+        
+        $jsonResult->resultObject = $result;   
+    }
+    else{
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";
+    }
+
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
 }
 
 function sendMsg(){
@@ -109,9 +134,10 @@ function createChat(){
     $socNetId = intval($_POST['socNetId']);
     $chatName = mysql_real_escape_string($_POST['chatName']);
     
-    
+    dlog($socUserId);
     $userApi = new Users();
     $userId = $userApi->getUserIdBySocNet($socUserId, $socNetId);
+    dlog($userId);
     
     $jsonResult = new ResultObject();
     dlog('createChat');
@@ -134,7 +160,7 @@ function createChat(){
     echo json_encode($jsonResult);
 }
 
-function createOrGetUser(){
+function createUser(){
     $userApi = new Users();
     
     $socNetId = intval($_POST['socnetid']);
@@ -143,7 +169,7 @@ function createOrGetUser(){
     $jsonResult = new ResultObject();
     
     $result = isUserExists($socUserId, $socNetId);
-    dlog('createOrGetUser');
+    dlog('createUser');
     dlog($result);
     if($result){
         dlog('true1');

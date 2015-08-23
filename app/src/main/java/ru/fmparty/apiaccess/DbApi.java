@@ -1,9 +1,8 @@
 package ru.fmparty.apiaccess;
 
-import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.fmparty.ChatActivity;
+import ru.fmparty.entity.Message;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.PostCallTask;
@@ -29,7 +29,7 @@ public class DbApi {
         new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void sendMsg(String message, int chatId, int socNetId, int socUserId) {
+    public static void sendMsg(String message, int chatId, int socNetId, long socUserId) {
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "sendMsg"));
         argsList.add(new HttpObjectPair("textMsg", message));
@@ -39,7 +39,7 @@ public class DbApi {
         new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void getMessages(Activity context, int chatId, int socUserId, int socNetId) {
+    public static void getMessages(final ChatActivity activity, int chatId, long socUserId, int socNetId) {
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "getMessages"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
@@ -49,6 +49,28 @@ public class DbApi {
         new PostCallTask(new AsyncResponse() {
             void onSuccess(ResultObject resultObject) {
                 Log.d(TAG, "resultObject = " + resultObject);
+                List<Message> messages = new ArrayList<>();
+                long user_id = 0;
+                try {
+
+                    user_id = resultObject.getJsonObject().getLong("id");
+                    JSONArray jsonMsgs = resultObject.getJsonObject().getJSONArray("msgs");
+
+                    for(int i =0; i < jsonMsgs.length(); i++){
+                        JSONObject jObj = jsonMsgs.getJSONObject(i);
+                        Message msg = new Message(jObj.getLong("id")
+                                                 ,jObj.getInt("chat_id")
+                                                 ,jObj.getLong("user_id")
+                                                 ,jObj.getString("text"));
+                        messages.add(msg);
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
+                }
+
+                Log.d(TAG, "messages = " + messages);
+                activity.showMessages(messages, user_id);
             }
         }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }

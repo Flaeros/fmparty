@@ -14,6 +14,7 @@
 
 
     <ListView
+        android:id="@+id/msgList"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +23,10 @@
         android:layout_above="@+id/chatMsg"
         android:layout_alignRight="@+id/sendButton"
         android:layout_alignEnd="@+id/sendButton"
-        android:layout_below="@+id/chatTitle"></ListView>
+        android:layout_below="@+id/chatTitle"
+        android:transcriptMode="alwaysScroll"
+        android:stackFromBottom="true"
+        ></ListView>
 
     <EditText
         android:id="@+id/chatMsg"

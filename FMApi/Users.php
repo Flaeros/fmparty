@@ -27,11 +27,14 @@ class Users{
     public function getUserIdBySocNet($socUserId, $socNetId){
         $query = str_replace('{1}', $socUserId, self::$SELECT_BY_SOC_NET_ID);
         $query = str_replace('{2}', $socNetId, $query);
+        dlog($query);
         $result = mysql_query($query, $this->link);
         $row = mysql_fetch_row($result);
+        dlog("getUserIdBySocNet");
+        dlog($result);
         
         if($row != false) {
-            dlog("getUserIdBySocNet");
+            
             dlog($row);
             
             return $row[0];

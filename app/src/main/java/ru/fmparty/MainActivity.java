@@ -30,8 +30,6 @@ public class MainActivity extends Activity {
         VKSdk.initialize(this);
         FacebookSdk.sdkInitialize(this);
 
-        Log.v(TAG, "manager = " + manager);
-
         manager = new InnerFragmentManager(this);
 
         if(isLogged()) {
