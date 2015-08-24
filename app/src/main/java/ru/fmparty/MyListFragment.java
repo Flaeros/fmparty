@@ -1,5 +1,6 @@
 package ru.fmparty;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,24 +14,19 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.fmparty.apiaccess.ResultObject;
+import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
-import ru.fmparty.utils.AsyncResponse;
-import ru.fmparty.utils.HttpObjectPair;
-import ru.fmparty.utils.PostCallTask;
 
 public class MyListFragment extends Fragment {
+
     private final String TAG = "FlashMob MyListFragment";
-
     private SocialNetworkApi socialNetworkApi;
-
+    private ChatListArrayAdapter chatArrayAdapter;
+    private ListView chatListView;
     private ProgressBar progressBar;
 
     @Override
@@ -41,10 +37,11 @@ public class MyListFragment extends Fragment {
                 container, false);
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        chatListView = (ListView) view.findViewById(R.id.chatList);
 
-        ListView chatList = (ListView) view.findViewById(R.id.usersList);
-        populateListView(chatList);
-        chatList.setOnItemClickListener(onChatItemClickListener);
+        chatListView.setOnItemClickListener(onChatItemClickListener);
+
+        loadChats();
 
         return view;
     }
@@ -75,74 +72,38 @@ public class MyListFragment extends Fragment {
         this.socialNetworkApi = socialNetworkApi;
     }
 
-    private void populateListView(final ListView usersList) {
-
-        List<HttpObjectPair> argsList = new ArrayList<>();
-        argsList.add(new HttpObjectPair("do", "getChats"));
-        argsList.add(new HttpObjectPair("socUserId", String.valueOf(socialNetworkApi.getUserId())));
-        argsList.add(new HttpObjectPair("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId())));
-
-        progressBar.setVisibility(ProgressBar.VISIBLE);
-
-        new PostCallTask(new AsyncResponse(){
-            public void onSuccess(ResultObject resultObject) {
-                try {
-                    Log.d(TAG, "onSuccess users=" + resultObject);
-                    JSONArray users = resultObject.getJsonArray();
-                    Log.d(TAG, "onSuccess users=" + users);
-
-                    if (users != null && MyListFragment.this.isVisible()) {
-
-                        List<Chat> chatList = new ArrayList<Chat>();
-                        for(int i = 0; i < users.length(); i++){
-                            JSONObject row = users.getJSONObject(i);
-                            Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"));
-                            chatList.add(chat);
-                        }
-
-                        ArrayAdapter<Chat> userArrayAdapter = new MyListArrayAdapter(chatList);
-                        usersList.setAdapter(userArrayAdapter);
-                    } else {
-                        Log.v(TAG, "no users loaded");
-                    }
-
-                }catch (Exception e){
-                    Log.d(TAG, e.toString());
-                    Log.d(TAG, e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            public void onError(){
-                Log.d(TAG, "onError populate error");
-            }
-        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
-
+    private void loadChats() {
+        DbApi.getChats(this, socialNetworkApi.getSocialCodeId(), socialNetworkApi.getUserId(), progressBar);
     }
 
-    private class MyListArrayAdapter extends ArrayAdapter<Chat> {
+    public void showChats(List<Chat> chats){
+        chatArrayAdapter = new ChatListArrayAdapter(chats);
+        chatListView.setAdapter(chatArrayAdapter);
+    }
 
-        List<Chat> chatList;
+    private class ChatListArrayAdapter extends ArrayAdapter<Chat> {
 
-        public MyListArrayAdapter(List<Chat> chatList) {
-            super(getActivity(), R.layout.user_list_item_layout, chatList);
-            this.chatList = chatList;
+        private List<Chat> chats;
+
+        public ChatListArrayAdapter(List<Chat> chatList) {
+            super(getActivity(), R.layout.chat_list_item_layout, chatList);
+            this.chats = new ArrayList<>(chatList);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View itemView = convertView;
             if (itemView == null) {
-                itemView = getActivity().getLayoutInflater().inflate(R.layout.user_list_item_layout, parent, false);
+                itemView = getActivity().getLayoutInflater().inflate(R.layout.chat_list_item_layout, parent, false);
             }
 
-            Chat chat = chatList.get(position);
+            Chat chat = chats.get(position);
 
             TextView textViewName = (TextView) itemView.findViewById(R.id.item_chatName);
             textViewName.setText(chat.getName());
 
             TextView chatIdView = (TextView) itemView.findViewById(R.id.chatId);
             chatIdView.setText(String.valueOf(chat.getId()));
-
 
 /*
             ImageView imageView = (ImageView) itemView.findViewById(R.id.item_userAvatar);
@@ -151,8 +112,9 @@ public class MyListFragment extends Fragment {
                     .execute(user.photo_100);
 */
 
-
             return itemView;
         }
+
+
     }
 }

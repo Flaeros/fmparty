@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -111,7 +112,7 @@ public class ChatActivity extends Activity{
 
         public MyListArrayAdapter(List<Message> messageList, long userId) {
             super(ChatActivity.this, R.layout.msg_layout, messageList);
-            this.messageList = messageList;
+            this.messageList = new ArrayList<>(messageList);
             this.userId = userId;
         }
 
@@ -119,7 +120,7 @@ public class ChatActivity extends Activity{
             this.userId = userId;
         }
 
-        public List getData(){
+        public List<Message> getData(){
             return messageList;
         }
 

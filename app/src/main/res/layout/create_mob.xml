@@ -9,29 +9,30 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Enter Mob name:"
+        android:layout_marginTop="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-
-
     <EditText
         android:id="@+id/mobName"
+        android:layout_below="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/createMobButton"
+        android:layout_marginTop="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/createMobButton"
-        android:layout_alignEnd="@+id/createMobButton" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/createMobButton"
+        android:text="Create Mob"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Mob"
-        android:layout_alignTop="@+id/testText"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/mobName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

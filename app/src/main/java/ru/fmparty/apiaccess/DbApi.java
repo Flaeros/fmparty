@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.fmparty.ChatActivity;
+import ru.fmparty.MyListFragment;
+import ru.fmparty.entity.Chat;
 import ru.fmparty.entity.Message;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.HttpObjectPair;
@@ -73,6 +75,41 @@ public class DbApi {
 
                 Log.d(TAG, "messages = " + messages);
                 activity.showMessages(messages, user_id);
+            }
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void getChats(final MyListFragment myListFragment, int socNetId, long socUserId, ProgressBar progressBar){
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "getChats"));
+        argsList.add(new HttpObjectPair("socUserId", String.valueOf(socUserId)));
+        argsList.add(new HttpObjectPair("socNetId", String.valueOf(socNetId)));
+
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
+        new PostCallTask(new AsyncResponse(){
+            public void onSuccess(ResultObject resultObject) {
+                List<Chat> chatList = new ArrayList<>();
+                try {
+                    Log.d(TAG, "onSuccess chats=" + resultObject);
+                    JSONArray chats = resultObject.getJsonArray();
+                    Log.d(TAG, "onSuccess chats=" + chats);
+
+
+
+                    for(int i = 0; i < chats.length(); i++){
+                        JSONObject row = chats.getJSONObject(i);
+                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"));
+                        chatList.add(chat);
+                    }
+                }catch (Exception e){
+                    Log.d(TAG, e.toString());
+                    Log.d(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "chatList = " + chatList);
+                myListFragment.showChats(chatList);
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }

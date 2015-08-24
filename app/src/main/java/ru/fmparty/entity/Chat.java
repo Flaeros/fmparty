@@ -27,4 +27,30 @@ public class Chat {
     public String toString(){
         return "Chat: id: " + id + "; admin_id: " + admin_id + "; name: " + name;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Long.valueOf(id).hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Chat other = (Chat) obj;
+        if (id != other.getId())
+            return false;
+        if (admin_id != other.getAdmin_id())
+            return false;
+        if (name != other.getName())
+            return false;
+        return true;
+    }
 }
