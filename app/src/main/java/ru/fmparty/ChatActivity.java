@@ -112,7 +112,7 @@ public class ChatActivity extends Activity{
 
         public MyListArrayAdapter(List<Message> messageList, long userId) {
             super(ChatActivity.this, R.layout.msg_layout, messageList);
-            this.messageList = new ArrayList<>(messageList);
+            this.messageList = messageList;
             this.userId = userId;
         }
 
