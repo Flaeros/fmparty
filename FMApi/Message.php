@@ -2,8 +2,9 @@
 
 class Message {
     public $id;
-    public $chat_id;
-    public $user_id;
+    public $chatId;
+    public $userId;
+    public $userName;
     public $text;
     
     function __construct(){
@@ -14,27 +15,31 @@ class Message {
         } 
     }
 
-    function __construct3($chat_id, $user_id, $text){
-        $this->setChatId($chat_id);
-        $this->setUserId($user_id);
+    function __construct3($chatId, $userId, $text){
+        $this->setChatId($chatId);
+        $this->setUserId($userId);
         $this->setText($text);
     }
     
-    function __construct4($id, $chat_id, $user_id, $text){
+    function __construct5($id, $chatId, $userId, $userName, $text){
         $this->setId($id);
-        $this->setChatId($chat_id);
-        $this->setUserId($user_id);
+        $this->setChatId($chatId);
+        $this->setUserId($userId);
+        $this->setUserName($userName);
         $this->setText($text);
     }
     
     public function getId(){ return $this->id;}
     public function setId($id){ $this->id = $id;}
     
-    public function getChatId(){ return $this->chat_id;}
-    public function setChatId($chat_id){ $this->chat_id = $chat_id;}
+    public function getChatId(){ return $this->chatId;}
+    public function setChatId($chatId){ $this->chatId = $chatId;}
     
-    public function getUserId(){ return $this->user_id;}
-    public function setUserId($user_id){ $this->user_id = $user_id;}
+    public function getUserId(){ return $this->userId;}
+    public function setUserId($userId){ $this->userId = $userId;}
+    
+    public function getUserName(){ return $this->userName;}
+    public function setUserName($userName){ $this->userName = $userName;}
     
     public function getText(){ return $this->text;}
     public function setText($text){ $this->text = $text;}

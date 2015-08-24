@@ -39,7 +39,7 @@ class MsgApi {
         
         $msgsArray;
         while($row = mysql_fetch_array($result)){
-            $msg = new Message($row['id'], $row['chat_id'], $row['user_id'], $row['text']);
+            $msg = new Message($row['id'], $row['chat_id'], $row['user_id'], $row['name'], $row['text']);
             $msgsArray[] = $msg;
         }
         
@@ -47,5 +47,5 @@ class MsgApi {
     }
     
     private static $INSERT_MSG = "INSERT INTO fm_msgs(chat_id, user_id, text) values ({1}, {2}, '{3}')";
-    private static $SELECT_MSGS = "SELECT * from fm_msgs where chat_id = {1}";
+    private static $SELECT_MSGS = "SELECT u.name, m.* from fm_msgs m, fm_users u where m.chat_id = {1} and u.id = m.user_id";
 }

@@ -14,5 +14,6 @@ class Consts {
 
 function dlog($str){
     $log = file_get_contents(Consts::LOG_FILE);
-    file_put_contents(Consts::LOG_FILE, $log."\n".var_export($str, true));
+    file_put_contents(Consts::LOG_FILE
+                     ,$log."\n".date('d.m.y H:i:s')." ".var_export($str, true));
 }

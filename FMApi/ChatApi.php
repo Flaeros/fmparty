@@ -36,7 +36,9 @@ class ChatApi {
         
         $query = str_replace('{1}', $userId, self::$SELECT_CHAT);
         $result = mysql_query($query, $this->link);
-        
+        dlog('ChatApi getChats');
+        dlog($result);
+        dlog($query);
         if(!$result)
             return false;
         

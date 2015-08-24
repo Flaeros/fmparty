@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,23 +26,16 @@ public class ChatActivity extends Activity{
     private static final String TAG = "FlashMob ChatActivity";
 
     private EditText msgField;
-    private ListView msgList;
     private int chatId;
     private long socUserId;
     private int socNetId;
     private AtomicBoolean isRunning;
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        isRunning.set(false);
-    }
+    private ListView msgList;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isRunning.set(true);
-    }
+    private MyListArrayAdapter msgsArrayAdapter;
+
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +45,19 @@ public class ChatActivity extends Activity{
         chatId = Integer.valueOf(getIntent().getExtras().getString("chatId"));
         socUserId = Long.valueOf(getIntent().getExtras().getString("socUserId"));
         socNetId = Integer.valueOf(getIntent().getExtras().getString("socNetId"));
-
-        String log = chatId + " . " + socUserId + " . " + socNetId;
-        Log.d(TAG, log);
-
+        String chatName = getIntent().getExtras().getString("chatName");
 
         TextView text = (TextView) findViewById(R.id.chatTitle);
-        text.setText(log);
+        text.setText(chatName);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(sendButtonListener);
 
         msgField = (EditText) findViewById(R.id.chatMsg);
         msgList = (ListView) findViewById(R.id.msgList);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
 
         loadMessages();
 
@@ -77,16 +71,17 @@ public class ChatActivity extends Activity{
     }
 
     public void loadMessages() {
-        DbApi.getMessages(this, chatId, socUserId, socNetId);
+        DbApi.getMessages(this, chatId, socUserId, socNetId, progressBar);
     }
 
     View.OnClickListener sendButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             String message = msgField.getText().toString();
-            if(message != null && !message.isEmpty()) {
+            if(!message.isEmpty()) {
                 DbApi.sendMsg(message, chatId, socNetId, socUserId);
                 msgField.setText("");
+                loadMessages();
             }
             else
                 Toast.makeText(ChatActivity.this, "Message is empty", Toast.LENGTH_SHORT).show();
@@ -94,19 +89,38 @@ public class ChatActivity extends Activity{
     };
 
     public void showMessages(List<Message> messages, long userId){
-        ArrayAdapter<Message> userArrayAdapter = new MyListArrayAdapter(messages, userId);
-        msgList.setAdapter(userArrayAdapter);
+        if(msgsArrayAdapter == null){
+            msgsArrayAdapter = new MyListArrayAdapter(messages, userId);
+            msgList.setAdapter(msgsArrayAdapter);
+        }
+
+        if(msgsArrayAdapter.getData().equals(messages)){
+            return;
+        }
+
+        msgsArrayAdapter.getData().clear();
+        msgsArrayAdapter.getData().addAll(messages);
+        msgsArrayAdapter.setUserId(userId);
+        msgsArrayAdapter.notifyDataSetChanged();
     }
 
     private class MyListArrayAdapter extends ArrayAdapter<Message> {
 
-        List<Message> messageList;
+        private List<Message> messageList;
         long userId;
 
         public MyListArrayAdapter(List<Message> messageList, long userId) {
             super(ChatActivity.this, R.layout.msg_layout, messageList);
             this.messageList = messageList;
             this.userId = userId;
+        }
+
+        public void setUserId(long userId){
+            this.userId = userId;
+        }
+
+        public List getData(){
+            return messageList;
         }
 
         @Override
@@ -118,18 +132,30 @@ public class ChatActivity extends Activity{
 
             Message message = messageList.get(position);
 
-            TextView textMsgUser = (TextView) itemView.findViewById(R.id.msgUser);
-            textMsgUser.setText(String.valueOf(message.getUser_id()));
-
-            if(message.getUser_id() == userId) {
-                textMsgUser.setGravity(Gravity.RIGHT);
-                textMsgUser.setTextColor(Color.RED);
-            }
-
             TextView textMsgText = (TextView) itemView.findViewById(R.id.msgText);
             textMsgText.setText(message.getText());
 
+            if(message.getUserId() == userId) {
+                textMsgText.setGravity(Gravity.RIGHT);
+            }
+            else{
+                TextView textMsgUser = (TextView) itemView.findViewById(R.id.msgUser);
+                textMsgUser.setText(message.getUserName()+":");
+            }
+
             return itemView;
         }
+
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isRunning.set(false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isRunning.set(true);
     }
 }

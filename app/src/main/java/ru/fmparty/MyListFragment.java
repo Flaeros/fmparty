@@ -9,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,9 +31,7 @@ public class MyListFragment extends Fragment {
 
     private SocialNetworkApi socialNetworkApi;
 
-    ImageView userAvatar;
-    TextView userName;
-    TextView userDesc;
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,11 +40,7 @@ public class MyListFragment extends Fragment {
         View view = inflater.inflate(R.layout.my_list_fragment,
                 container, false);
 
-        userAvatar = (ImageView) view.findViewById(R.id.userAvatar);
-        userName = (TextView) view.findViewById(R.id.userName);
-        userDesc = (TextView) view.findViewById(R.id.userDesc);
-
-        socialNetworkApi.populateUserInfo(userName, userDesc, userAvatar);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         ListView chatList = (ListView) view.findViewById(R.id.usersList);
         populateListView(chatList);
@@ -59,19 +52,19 @@ public class MyListFragment extends Fragment {
     AdapterView.OnItemClickListener onChatItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            TextView textView = (TextView) view.findViewById(R.id.item_userName);
+            TextView chatNameView = (TextView) view.findViewById(R.id.item_chatName);
             TextView chatIdView = (TextView) view.findViewById(R.id.chatId);
-            String text = textView.getText().toString();
+            String chatName = chatNameView.getText().toString();
             int chatId = Integer.valueOf(chatIdView.getText().toString());
-            Toast.makeText(getActivity(), chatId + ". Item "+ text, Toast.LENGTH_SHORT).show();
-            showChat(chatId);
+            showChat(chatId, chatName);
         }
     };
 
-    private void showChat(int chatId) {
+    private void showChat(int chatId, String chatName) {
         Intent chatIntent = new Intent(getActivity(),
                 ChatActivity.class);
         chatIntent.putExtra("chatId", String.valueOf(chatId));
+        chatIntent.putExtra("chatName", chatName);
         chatIntent.putExtra("socUserId", String.valueOf(socialNetworkApi.getUserId()));
         chatIntent.putExtra("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId()));
 
@@ -88,6 +81,8 @@ public class MyListFragment extends Fragment {
         argsList.add(new HttpObjectPair("do", "getChats"));
         argsList.add(new HttpObjectPair("socUserId", String.valueOf(socialNetworkApi.getUserId())));
         argsList.add(new HttpObjectPair("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId())));
+
+        progressBar.setVisibility(ProgressBar.VISIBLE);
 
         new PostCallTask(new AsyncResponse(){
             public void onSuccess(ResultObject resultObject) {
@@ -120,7 +115,7 @@ public class MyListFragment extends Fragment {
             public void onError(){
                 Log.d(TAG, "onError populate error");
             }
-        }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
 
     }
 
@@ -142,8 +137,8 @@ public class MyListFragment extends Fragment {
 
             Chat chat = chatList.get(position);
 
-            TextView textViewName = (TextView) itemView.findViewById(R.id.item_userName);
-            textViewName.setText(chat.getId() + ". " + chat.getName());
+            TextView textViewName = (TextView) itemView.findViewById(R.id.item_chatName);
+            textViewName.setText(chat.getName());
 
             TextView chatIdView = (TextView) itemView.findViewById(R.id.chatId);
             chatIdView.setText(String.valueOf(chat.getId()));

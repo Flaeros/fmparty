@@ -1,6 +1,7 @@
 package ru.fmparty.apiaccess;
 
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +40,7 @@ public class DbApi {
         new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void getMessages(final ChatActivity activity, int chatId, long socUserId, int socNetId) {
+    public static void getMessages(final ChatActivity activity, int chatId, long socUserId, int socNetId, ProgressBar progressBar) {
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "getMessages"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
@@ -59,8 +60,9 @@ public class DbApi {
                     for(int i =0; i < jsonMsgs.length(); i++){
                         JSONObject jObj = jsonMsgs.getJSONObject(i);
                         Message msg = new Message(jObj.getLong("id")
-                                                 ,jObj.getInt("chat_id")
-                                                 ,jObj.getLong("user_id")
+                                                 ,jObj.getInt("chatId")
+                                                 ,jObj.getLong("userId")
+                                                 ,jObj.getString("userName")
                                                  ,jObj.getString("text"));
                         messages.add(msg);
                     }
@@ -72,6 +74,6 @@ public class DbApi {
                 Log.d(TAG, "messages = " + messages);
                 activity.showMessages(messages, user_id);
             }
-        }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 }

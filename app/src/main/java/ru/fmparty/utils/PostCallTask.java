@@ -2,6 +2,7 @@ package ru.fmparty.utils;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -24,15 +25,28 @@ import java.util.List;
 import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.ResultObject;
 
-public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> {
+public class PostCallTask extends AsyncTask<HttpObjectPair, Integer, ResultObject> {
 
     private static String TAG = "FlashMob PostCallTask";
     private static String apiUrl = "http://dtigran.ru/fmapi/api.php";
 
-    public AsyncResponse delegate = null;
+    private AsyncResponse delegate;
+    private ProgressBar progressBar;
 
     public PostCallTask(){}
     public PostCallTask(AsyncResponse asyncResponse){ delegate = asyncResponse; }
+
+    public PostCallTask(AsyncResponse asyncResponse, ProgressBar progressBar){
+        delegate = asyncResponse;
+        this.progressBar = progressBar;
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        if(progressBar != null)
+            progressBar.setProgress(values[0]);
+    }
 
     @Override
     protected ResultObject doInBackground(HttpObjectPair... params) {
@@ -40,7 +54,6 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> 
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(apiUrl);
-
 
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             for(HttpObjectPair httpObjectPair : params) {
@@ -75,11 +88,7 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> 
         } catch (ClientProtocolException e) {
             Log.d(TAG, e.toString());
             e.printStackTrace();
-        } catch (IOException e) {
-            Log.d(TAG, e.toString());
-            e.printStackTrace();
-            result = new ResultObject(0);
-        } catch (JSONException e){
+        } catch (IOException | JSONException e) {
             Log.d(TAG, e.toString());
             e.printStackTrace();
             result = new ResultObject(0);
@@ -91,5 +100,8 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Void, ResultObject> 
     protected void onPostExecute(ResultObject resultObject){
         if(delegate != null)
             delegate.onCompleted(resultObject);
+
+        if(progressBar != null)
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 }

@@ -1,54 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
-    <RelativeLayout
-        android:id="@+id/userInfo"
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+    <ListView
+        android:id="@+id/usersList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/myList"
-        android:layout_alignRight="@+id/logOutButton"
-        android:layout_alignEnd="@+id/logOutButton">
+        android:layout_height="match_parent" />
 
-
-        <ImageView
-            android:id="@+id/userAvatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:adjustViewBounds="true"
-            android:layout_marginTop="39dp"
-            android:maxHeight="100dp"
-            android:maxWidth="100dp"
-            android:src="@drawable/bug"
-            />
-
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="User Name"
-            android:layout_alignTop="@+id/userAvatar"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            />
-
-        <TextView
-            android:id="@+id/userDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/userName"
-            android:layout_alignRight="@+id/userName"
-            android:layout_alignEnd="@+id/userName" />
-        <ListView
-            android:id="@+id/usersList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/userAvatar" />
-    </RelativeLayout>
 
 </RelativeLayout>
