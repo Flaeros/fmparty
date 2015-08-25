@@ -23,9 +23,67 @@ switch ($do) {
     case 'getMessages':
         getMessages();
         break;
+    case 'findMobs':
+        findMobs();
+        break;
+    case 'joinMob':
+        joinMob();
+        break;
     case 'updateUser':
         updateUser();
         break;
+}
+
+function joinMob(){
+    dlog('joinMob');
+    $chatId = intval($_POST['chatid']);
+    $socUserId = intval($_POST['socuserid']);
+    $socNetId = intval($_POST['socnetid']);
+    
+    $userApi = new Users();
+    $userId = $userApi->getUserIdBySocNet($socUserId, $socNetId);
+    
+    $chatApi = new ChatApi();
+    $result = $chatApi->insertRef($userId, $chatId);
+    dlog($result);
+    
+    if($result) {
+        dlog('true');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        $jsonResult->resultObject = "";
+    }
+    else{
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";
+    }
+    
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
+}
+
+function findMobs(){
+    $chatApi = new ChatApi();
+    $text = mysql_real_escape_string($_POST['text']);
+ 
+    $result = $chatApi->findChats($text);
+    dlog('findMobs');
+    dlog($result);
+    
+    $jsonResult = new ResultObject();
+    if($result > 0){
+        dlog('true');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        $jsonResult->resultObject = $result;   
+    }
+    else{
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";
+    }
+
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
 }
 
 function getMessages(){

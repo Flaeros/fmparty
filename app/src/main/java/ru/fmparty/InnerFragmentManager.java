@@ -11,7 +11,7 @@ public class InnerFragmentManager {
     private MainFragment mainFragment;
     private AuthFragment authFragment;
     private MyListFragment myListFragment;
-    private AllListFragment allListFragment;
+    private FindMobFragment findMobFragment;
     private CreateMobFragment createMobFragment;
 
     private Activity activity;
@@ -65,10 +65,12 @@ public class InnerFragmentManager {
     }
 
     private void showAllList(){
-        if(allListFragment == null)
-            allListFragment = new AllListFragment();
+        if(findMobFragment == null)
+            findMobFragment = new FindMobFragment();
+        findMobFragment.setSocialNetworkApi(socialNetworkApi);
+
         activity.getFragmentManager().beginTransaction()
-                .replace(R.id.mainFragCont, allListFragment)
+                .replace(R.id.mainFragCont, findMobFragment)
                 .commit();
     }
 

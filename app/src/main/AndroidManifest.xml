@@ -24,6 +24,11 @@
             android:name=".ChatActivity"
             android:label="@string/chat_title">
         </activity>
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".MobDetailActivity"
+            android:label="@string/mob_detail_title">
+        </activity>
 		<activity android:name="com.vk.sdk.VKOpenAuthActivity" />
 
         <activity android:name="com.vk.sdk.VKServiceActivity" android:label="ServiceActivity" android:theme="@style/VK.Transparent" />

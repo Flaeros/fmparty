@@ -77,8 +77,10 @@ public class MyListFragment extends Fragment {
     }
 
     public void showChats(List<Chat> chats){
-        chatArrayAdapter = new ChatListArrayAdapter(chats);
-        chatListView.setAdapter(chatArrayAdapter);
+        if(this.isVisible()) {
+            chatArrayAdapter = new ChatListArrayAdapter(chats);
+            chatListView.setAdapter(chatArrayAdapter);
+        }
     }
 
     private class ChatListArrayAdapter extends ArrayAdapter<Chat> {

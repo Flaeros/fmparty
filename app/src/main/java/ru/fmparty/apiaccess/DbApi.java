@@ -2,6 +2,7 @@ package ru.fmparty.apiaccess;
 
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.fmparty.ChatActivity;
+import ru.fmparty.FindMobFragment;
+import ru.fmparty.MobDetailActivity;
 import ru.fmparty.MyListFragment;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.entity.Message;
@@ -110,6 +113,54 @@ public class DbApi {
 
                 Log.d(TAG, "chatList = " + chatList);
                 myListFragment.showChats(chatList);
+            }
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void findMobs(final FindMobFragment findMobFragment, String search, ProgressBar progressBar) {
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "findMobs"));
+        argsList.add(new HttpObjectPair("text", search));
+
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
+        new PostCallTask(new AsyncResponse(){
+            public void onSuccess(ResultObject resultObject) {
+                List<Chat> chatList = new ArrayList<>();
+                try {
+                    Log.d(TAG, "onSuccess mobs =" + resultObject);
+                    JSONArray mobs = resultObject.getJsonArray();
+                    Log.d(TAG, "onSuccess chats=" + mobs);
+
+                    for(int i = 0; i < mobs.length(); i++){
+                        JSONObject row = mobs.getJSONObject(i);
+                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"));
+                        chatList.add(chat);
+                    }
+                }catch (Exception e){
+                    Log.d(TAG, e.toString());
+                    Log.d(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "chatList = " + chatList);
+                findMobFragment.showMobs(chatList);
+            }
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void joinMob(final MobDetailActivity mobDetailActivity, int chatId, int socNetId, long socUserId, ProgressBar progressBar) {
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "joinMob"));
+        argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
+        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
+        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
+
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
+        new PostCallTask(new AsyncResponse(){
+            public void onSuccess(ResultObject resultObject) {
+                Toast.makeText(mobDetailActivity, "Successfully joined! Look at your mob's list!", Toast.LENGTH_LONG).show();
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
