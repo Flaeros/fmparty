@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
         manager.initializeMainFragment();
     }
 
+    public InnerFragmentManager getManager() { return manager; }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

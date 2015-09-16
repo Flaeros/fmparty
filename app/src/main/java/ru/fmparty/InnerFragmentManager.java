@@ -33,7 +33,7 @@ public class InnerFragmentManager {
         mainFragment = new MainFragment();
         myListFragment = new MyListFragment();
         myListFragment.setSocialNetworkApi(socialNetworkApi);
-        mainFragment.setListeners(logOutButtonListener, myListButtonListener,allListButtonListener, createMobButtonListener);
+        mainFragment.setListeners( myListButtonListener,allListButtonListener, createMobButtonListener, menuButtonListener);
 
         activity.getFragmentManager().beginTransaction()
                 .replace(R.id.frgmCont, mainFragment)
@@ -53,7 +53,9 @@ public class InnerFragmentManager {
         return authFragment.getSocialNetworkApi();
     }
 
-    private void recreateAfterLogOut(){
+    public void recreateAfterLogOut(){
+        if(socialNetworkApi == null)
+            return;
         socialNetworkApi.logout();
 
         activity.getFragmentManager().beginTransaction()
@@ -90,18 +92,9 @@ public class InnerFragmentManager {
                 .commit();
     }
 
-    View.OnClickListener logOutButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d(TAG, "Click logout");
-            recreateAfterLogOut();
-        }
-    };
-
     View.OnClickListener allListButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "Click All List");
             showAllList();
         }
     };
@@ -109,7 +102,6 @@ public class InnerFragmentManager {
     View.OnClickListener myListButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "Click My List");
             showMyList();
         }
     };
@@ -117,8 +109,14 @@ public class InnerFragmentManager {
     View.OnClickListener createMobButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "Click Create Mob");
             showCreateMob();
+        }
+    };
+
+    View.OnClickListener menuButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            activity.openOptionsMenu();
         }
     };
 }

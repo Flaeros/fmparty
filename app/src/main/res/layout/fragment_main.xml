@@ -34,14 +34,13 @@
         android:layout_toEndOf="@+id/allList" />
 
     <Button
-        android:id="@+id/logOutButton"
-        android:text="LogOut"
+        android:id="@+id/menuButton"
+        android:text="Menu"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/createMob"
-        android:layout_toEndOf="@+id/createMob" />
+        android:layout_alignParentRight="true"  />
 
     <FrameLayout
         android:id="@+id/mainFragCont"
