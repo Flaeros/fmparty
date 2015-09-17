@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,12 +111,9 @@ public class MyListFragment extends Fragment {
             TextView chatIdView = (TextView) itemView.findViewById(R.id.chatId);
             chatIdView.setText(String.valueOf(chat.getId()));
 
-            Log.v(TAG, "image = " + chat.getImage());
-
             ImageView imageView = (ImageView) itemView.findViewById(R.id.item_chatImage);
-            if(chat.getImage() != null) {
-                new DownloadImageTask(imageView)
-                        .execute(Consts.ApiPHP.get() + "uploads/" +chat.getImage());
+            if(chat.getImage() != null && MyListFragment.this.isVisible()) {
+                Glide.with(getActivity()).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).into(imageView);
             }
             else{
                 imageView.setImageResource(R.drawable.default_chat);
