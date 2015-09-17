@@ -29,9 +29,37 @@ switch ($do) {
     case 'joinMob':
         joinMob();
         break;
+    case 'updateChatImage':
+        updateChatImage();
+        break;
     case 'updateUser':
         updateUser();
         break;
+}
+
+function updateChatImage(){
+    dlog('updateChatImage');
+    $chatApi = new ChatApi();
+    $chatId = intval($_POST['chatid']);
+    $filename = mysql_real_escape_string($_POST['filename']);
+    
+    $result = $chatApi->updateChatImage($chatId, $filename);
+    dlog('updateChatImage');
+    dlog($result);
+    
+    if($result) {
+        dlog('true');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        $jsonResult->resultObject = "";
+    }
+    else{
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";
+    }
+    
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
 }
 
 function joinMob(){
@@ -204,7 +232,7 @@ function createChat(){
     dlog($result);
     if($result > 0){
         dlog('true');
-        $result = new Chat($result, $userId, $chatName);
+        $result = new Chat($result, $userId, $chatName, $image);
         $jsonResult->resultCode = Consts::DB_SUCCESS;
         $jsonResult->resultObject = $result;   
     }

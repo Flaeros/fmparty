@@ -4,24 +4,19 @@ public class Chat {
     private int id;
     private int admin_id;
     private String name;
+    private String image;
 
-    public Chat(int id, int admin_id, String name) {
+    public Chat(int id, int admin_id, String name, String image) {
         this.id = id;
         this.admin_id = admin_id;
         this.name = name;
+        this.image = image;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public int getAdmin_id() {
-        return admin_id;
-    }
-
-    public String getName() {
-        return name;
-    }
+    public int getId() { return id; }
+    public int getAdmin_id() { return admin_id; }
+    public String getName() { return name; }
+    public String getImage() { return image; }
 
     @Override
     public String toString(){

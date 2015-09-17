@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/item_userAvatar"
+        android:id="@+id/item_chatImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -13,6 +13,8 @@
         android:src="@drawable/default_chat"
         android:maxWidth="70dp"
         android:maxHeight="70dp"
+        android:minWidth="70dp"
+        android:minHeight="70dp"
         android:padding="7dp"
         android:longClickable="false" />
 
@@ -22,9 +24,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="User Name"
-        android:layout_alignTop="@+id/item_userAvatar"
-        android:layout_toRightOf="@+id/item_userAvatar"
-        android:layout_toEndOf="@+id/item_userAvatar"
+        android:layout_alignTop="@+id/item_chatImage"
+        android:layout_toRightOf="@+id/item_chatImage"
+        android:layout_toEndOf="@+id/item_chatImage"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
          />

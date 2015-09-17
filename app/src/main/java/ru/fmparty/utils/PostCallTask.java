@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.fmparty.apiaccess.ResultCode;
+import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.ResultObject;
 
 public class PostCallTask extends AsyncTask<HttpObjectPair, Integer, ResultObject> {
 
     private static String TAG = "FlashMob PostCallTask";
-    private static String apiUrl = "http://dtigran.ru/fmapi/api.php";
 
     private AsyncResponse delegate;
     private ProgressBar progressBar;
@@ -53,7 +52,7 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Integer, ResultObjec
         ResultObject result = null;
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(apiUrl);
+            HttpPost httppost = new HttpPost(Consts.ApiPHP.get() + "api.php");
 
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             for(HttpObjectPair httpObjectPair : params) {

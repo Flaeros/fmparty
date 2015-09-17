@@ -4,6 +4,7 @@ class Chat {
     public $id;
     public $admin;
     public $name;
+    public $image;
 
     
     function __construct(){
@@ -19,10 +20,11 @@ class Chat {
         $this->setAdmin($admin);
     }
     
-    function __construct3($id, $admin, $name){
+    function __construct4($id, $admin, $name, $image){
         $this->setId($id);
         $this->setAdmin($admin);
         $this->setName($name);
+        $this->setImage($image);
     }
        
     public function getId(){ return $this->id;}
@@ -33,4 +35,7 @@ class Chat {
     
     public function getName(){ return $this->name;}
     public function setName($name){ $this->name = $name;}
+    
+    public function getImage(){ return $this->image;}
+    public function setImage($image){ $this->image = $image;}
 }

@@ -1,13 +1,19 @@
 package ru.fmparty;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -21,12 +27,16 @@ import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.PostCallTask;
+import ru.fmparty.utils.UploadImageTask;
 
 public class CreateMobFragment extends Fragment {
     private final String TAG = "FlashMob CreateMob";
 
     EditText editText;
     private SocialNetworkApi socialNetworkApi;
+    private String filePath;
+
+    ImageView imagePreview;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,11 +45,65 @@ public class CreateMobFragment extends Fragment {
                 container, false);
 
         Button createMobButton = (Button) view.findViewById(R.id.createMobButton);
+        Button selectImageButton = (Button) view.findViewById(R.id.selectImageButton);
         createMobButton.setOnClickListener(createMobButtonListener);
+        selectImageButton.setOnClickListener(selectImageButtonListener);
 
+        imagePreview = (ImageView) view.findViewById(R.id.imagePreview);
         editText = (EditText) view.findViewById(R.id.mobName);
 
         return view;
+    }
+
+    private void selectImageFromGallery(){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, 1);
+    }
+
+    private View.OnClickListener selectImageButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            selectImageFromGallery();
+        }
+    };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1)
+            if (resultCode == Activity.RESULT_OK) {
+                Uri selectedImage = data.getData();
+
+                this.filePath = getPath(selectedImage);
+                Log.d(TAG, "filePath = " + filePath);
+                String file_extn = filePath.substring(filePath.lastIndexOf(".")+1);
+                imagePreview.setImageURI(selectedImage);
+
+                try {
+                    if (file_extn.equals("img") || file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("gif") || file_extn.equals("png")) {
+                        //FINE
+                    }
+                    else{
+                        //NOT IN REQUIRED FORMAT
+                        filePath = null;
+                    }
+                } catch (Exception e) { //FileNotFoundException
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.MediaColumns.DATA };
+        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+        String imagePath = cursor.getString(column_index);
+
+        return imagePath;
     }
 
     private View.OnClickListener createMobButtonListener = new View.OnClickListener() {
@@ -64,6 +128,7 @@ public class CreateMobFragment extends Fragment {
         argsList.add(new HttpObjectPair("socUserId", String.valueOf(socialNetworkApi.getUserId())));
         argsList.add(new HttpObjectPair("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId())));
         new PostCallTask(asyncResponse).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+
     }
 
     AsyncResponse asyncResponse = new AsyncResponse(){
@@ -75,6 +140,8 @@ public class CreateMobFragment extends Fragment {
                 String name = jsonObject.getString("name");
                 Log.d(TAG, "onSuccess chat name =" + name);
                 Toast.makeText(getActivity(), "Чат " + name +" создан!", Toast.LENGTH_SHORT).show();
+                if(filePath != null)
+                    new UploadImageTask().execute(filePath, String.valueOf(id));
             }catch (JSONException e){
                 Log.d(TAG, e.toString());
                 Log.d(TAG, e.getMessage());

@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Enter Mob name:"
-        android:layout_marginTop="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -30,7 +29,27 @@
         android:text="Create Mob"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_below="@+id/selectImageButton"
+        android:layout_alignLeft="@+id/selectImageButton"
+        android:layout_alignStart="@+id/selectImageButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Chat Image"
+        android:id="@+id/selectImageButton"
+        android:layout_below="@+id/imagePreview"
+        android:layout_alignLeft="@+id/imagePreview"
+        android:layout_alignStart="@+id/imagePreview" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imagePreview"
+        android:src="@drawable/default_chat"
+        android:adjustViewBounds="true"
+        android:maxWidth="150dp"
+        android:maxHeight="150dp"
         android:layout_below="@+id/mobName"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

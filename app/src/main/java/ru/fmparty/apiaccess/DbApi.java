@@ -102,7 +102,7 @@ public class DbApi {
 
                     for(int i = 0; i < chats.length(); i++){
                         JSONObject row = chats.getJSONObject(i);
-                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"));
+                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"), row.getString("image"));
                         chatList.add(chat);
                     }
                 }catch (Exception e){
@@ -134,7 +134,7 @@ public class DbApi {
 
                     for(int i = 0; i < mobs.length(); i++){
                         JSONObject row = mobs.getJSONObject(i);
-                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"));
+                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"), row.getString("image"));
                         chatList.add(chat);
                     }
                 }catch (Exception e){
@@ -163,5 +163,15 @@ public class DbApi {
                 Toast.makeText(mobDetailActivity, "Successfully joined! Look at your mob's list!", Toast.LENGTH_LONG).show();
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void updateChatImage(String chatId, String filename) {
+        Log.d(TAG, "chatId = " + chatId);
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "updateChatImage"));
+        argsList.add(new HttpObjectPair("chatid", chatId));
+        argsList.add(new HttpObjectPair("filename", filename));
+
+        new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 }

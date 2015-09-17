@@ -1,6 +1,5 @@
 package ru.fmparty;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,9 +17,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
+import ru.fmparty.utils.DownloadImageTask;
 
 public class MyListFragment extends Fragment {
 
@@ -107,12 +109,16 @@ public class MyListFragment extends Fragment {
             TextView chatIdView = (TextView) itemView.findViewById(R.id.chatId);
             chatIdView.setText(String.valueOf(chat.getId()));
 
-/*
-            ImageView imageView = (ImageView) itemView.findViewById(R.id.item_userAvatar);
-            Log.v(TAG, user.photo_100);
-            new DownloadImageTask(imageView)
-                    .execute(user.photo_100);
-*/
+            Log.v(TAG, "image = " + chat.getImage());
+
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.item_chatImage);
+            if(chat.getImage() != null) {
+                new DownloadImageTask(imageView)
+                        .execute(Consts.ApiPHP.get() + "uploads/" +chat.getImage());
+            }
+            else{
+                imageView.setImageResource(R.drawable.default_chat);
+            }
 
             return itemView;
         }

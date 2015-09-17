@@ -22,10 +22,19 @@ class ChatApi {
         else {
             $chatId = mysql_insert_id($this->link);
             
-            insertRef($userId, $chatId);
+            $this->insertRef($userId, $chatId);
              
             return $chatId;
         }
+    }
+    
+    public function updateChatImage($chatId, $filename){
+        $query = str_replace('{1}', $filename, self::$UPDATE_CHAT_IMAGE);
+        $query = str_replace('{2}', $chatId, $query);
+        dlog($query);
+        $result = mysql_query($query, $this->link);
+        dlog($result);
+        return $result;
     }
     
     public function insertRef($userId, $chatId){
@@ -50,7 +59,7 @@ class ChatApi {
         
         $chatArray;
         while($row = mysql_fetch_array($result)){
-            $chat = new Chat($row['id'], $row['admin_id'], $row['name']);
+            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image']);
             $chatArray[] = $chat;
         }
         
@@ -68,7 +77,7 @@ class ChatApi {
         
         $chatArray;
         while($row = mysql_fetch_array($result)){
-            $chat = new Chat($row['id'], $row['admin_id'], $row['name']);
+            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image']);
             $chatArray[] = $chat;
         }
         
@@ -79,4 +88,5 @@ class ChatApi {
    private static $INSERT_REF = "INSERT INTO fm_refs values ({1}, '{2}')";
    private static $SELECT_CHAT = "SELECT c.* FROM fm_chats c, fm_refs r WHERE r.user_id = {1} AND c.id = r.chat_id";
    private static $SELECT_CHATS = "SELECT * FROM fm_chats WHERE name like '%{1}%'";
+   private static $UPDATE_CHAT_IMAGE = "UPDATE fm_chats set image = '{1}' WHERE id = {2}";
 }
