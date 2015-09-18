@@ -33,6 +33,8 @@ public class MyListFragment extends Fragment {
     private ListView chatListView;
     private ProgressBar progressBar;
 
+    private List<Chat> chats;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,7 +47,10 @@ public class MyListFragment extends Fragment {
 
         chatListView.setOnItemClickListener(onChatItemClickListener);
 
-        loadChats();
+        if(chats == null)
+            loadChats();
+        else
+            showChats(chats);
 
         return view;
     }
@@ -81,19 +86,19 @@ public class MyListFragment extends Fragment {
     }
 
     public void showChats(List<Chat> chats){
-        if(this.isVisible()) {
-            chatArrayAdapter = new ChatListArrayAdapter(chats);
+
+        if(this.isAdded()) {
+            if(this.chats == null)
+                this.chats = new ArrayList<>(chats);
+            chatArrayAdapter = new ChatListArrayAdapter(this.chats);
             chatListView.setAdapter(chatArrayAdapter);
         }
     }
 
     private class ChatListArrayAdapter extends ArrayAdapter<Chat> {
 
-        private List<Chat> chats;
-
         public ChatListArrayAdapter(List<Chat> chatList) {
             super(getActivity(), R.layout.chat_list_item_layout, chatList);
-            this.chats = new ArrayList<>(chatList);
         }
 
         @Override

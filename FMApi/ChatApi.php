@@ -11,9 +11,13 @@ class ChatApi {
         mysql_set_charset('utf8',$this->link);
     }
     
-    public function createChat($userId, $chatName){
+    public function createChat($userId, $chatName, $chatDescr, $chatDate, $chatCity){
         $query = str_replace('{1}', $userId, self::$INSERT_CHAT);
         $query = str_replace('{2}', $chatName, $query);
+        $query = str_replace('{3}', $chatDescr, $query);
+        $query = str_replace('{4}', $chatDate, $query);
+        $query = str_replace('{5}', $chatCity, $query);
+        dlog('createChat');
         dlog($query);
         $result = mysql_query($query, $this->link);
         dlog($result);
@@ -59,7 +63,7 @@ class ChatApi {
         
         $chatArray;
         while($row = mysql_fetch_array($result)){
-            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image']);
+            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image'], $row['descr'], $row['fdate'], $row['city']);
             $chatArray[] = $chat;
         }
         
@@ -77,14 +81,14 @@ class ChatApi {
         
         $chatArray;
         while($row = mysql_fetch_array($result)){
-            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image']);
+            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image'], $row['descr'], $row['fdate'], $row['city']);
             $chatArray[] = $chat;
         }
         
         return $chatArray;
     }
     
-   private static $INSERT_CHAT = "INSERT INTO fm_chats(admin_id, name) values ({1}, '{2}')";
+   private static $INSERT_CHAT = "INSERT INTO fm_chats(admin_id, name, descr, fdate, city) values ({1}, '{2}', '{3}', '{4}', '{5}')";
    private static $INSERT_REF = "INSERT INTO fm_refs values ({1}, '{2}')";
    private static $SELECT_CHAT = "SELECT c.* FROM fm_chats c, fm_refs r WHERE r.user_id = {1} AND c.id = r.chat_id";
    private static $SELECT_CHATS = "SELECT * FROM fm_chats WHERE name like '%{1}%'";

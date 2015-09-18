@@ -219,6 +219,9 @@ function createChat(){
     $socUserId = intval($_POST['socUserId']);
     $socNetId = intval($_POST['socNetId']);
     $chatName = mysql_real_escape_string($_POST['chatName']);
+    $chatDescr = mysql_real_escape_string($_POST['chatDescr']);
+    $chatDate = mysql_real_escape_string($_POST['chatDate']);
+    $chatCity = mysql_real_escape_string($_POST['chatCity']);
     
     dlog($socUserId);
     $userApi = new Users();
@@ -228,11 +231,11 @@ function createChat(){
     $jsonResult = new ResultObject();
     dlog('createChat');
     
-    $result = $chatApi->createChat($userId, $chatName);
+    $result = $chatApi->createChat($userId, $chatName, $chatDescr, $chatDate, $chatCity);
     dlog($result);
     if($result > 0){
         dlog('true');
-        $result = new Chat($result, $userId, $chatName, $image);
+        $result = new Chat($result, $userId, $chatName, $image, $chatDescr, $chatDate, $chatCity);
         $jsonResult->resultCode = Consts::DB_SUCCESS;
         $jsonResult->resultObject = $result;   
     }

@@ -1,57 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Enter Mob name:"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
-    <EditText
-        android:id="@+id/mobName"
-        android:layout_below="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/createMobButton"
-        android:text="Create Mob"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/selectImageButton"
-        android:layout_alignLeft="@+id/selectImageButton"
-        android:layout_alignStart="@+id/selectImageButton" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Chat Image"
-        android:id="@+id/selectImageButton"
-        android:layout_below="@+id/imagePreview"
-        android:layout_alignLeft="@+id/imagePreview"
-        android:layout_alignStart="@+id/imagePreview" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Enter Mob name:"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imagePreview"
-        android:src="@drawable/default_chat"
-        android:adjustViewBounds="true"
-        android:maxWidth="150dp"
-        android:maxHeight="150dp"
-        android:layout_below="@+id/mobName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        <EditText
+            android:id="@+id/mobName"
+            android:layout_below="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-</RelativeLayout>
+
+
+        <ImageView
+            android:id="@+id/imagePreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/default_chat"
+            android:adjustViewBounds="true"
+            android:maxWidth="90dp"
+            android:maxHeight="90dp"
+            android:layout_below="@+id/mobName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/selectImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Chat Image"
+            android:layout_below="@+id/imagePreview" />
+
+        <TextView
+            android:id="@+id/labelDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_below="@+id/selectImageButton"
+             />
+
+        <EditText
+            android:id="@+id/chatDescr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:layout_below="@+id/labelDesc"
+            android:layout_alignLeft="@+id/labelDesc"
+            android:layout_alignStart="@+id/labelDesc" />
+
+
+
+        <TextView
+            android:id="@+id/labelDate"
+            android:text="Date:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_below="@+id/chatDescr"
+            android:layout_alignLeft="@+id/chatDescr"
+            android:layout_alignStart="@+id/chatDescr" />
+
+        <DatePicker
+            android:id="@+id/chatDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/labelDate"
+            android:calendarViewShown="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/labelCity"
+            android:text="City:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_below="@+id/chatDate" />
+
+        <EditText
+            android:id="@+id/chatCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="20"
+            android:layout_below="@+id/labelCity"
+            android:layout_alignLeft="@+id/labelCity"
+            android:layout_alignStart="@+id/labelCity" />
+
+        <Button
+            android:id="@+id/createMobButton"
+            android:text="Create Mob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_below="@+id/chatCity" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+</LinearLayout>

@@ -3,6 +3,7 @@ package ru.fmparty.utils;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -18,26 +19,34 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.ResultObject;
 
 public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
 
     private static String TAG = "FlashMob UploadImageTask";
-    private static String apiUrl = "http://dtigran.ru/fmapi/upload.php";
+    private ProgressBar progressBar;
+
+    public UploadImageTask(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        if(progressBar != null)
+            progressBar.setProgress(values[0]);
+    }
 
     @Override
     protected ResultObject doInBackground(String... params) {
         ResultObject result = null;
 
         String filePath = params[0];
-        Log.d(TAG, "filePath" + filePath);
-
-
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
         DataInputStream inStream = null;
-        //String existingFileName = Environment.getExternalStorageDirectory().getAbsolutePath() + filePath;
         String existingFileName = filePath;
         Log.d(TAG, "existingFileName" + existingFileName);
         String lineEnd = "\r\n";
@@ -54,7 +63,7 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
             //------------------ CLIENT REQUEST
             FileInputStream fileInputStream = new FileInputStream(new File(existingFileName));
             // open a URL connection to the Servlet
-            URL url = new URL(apiUrl);
+            URL url = new URL(Consts.ApiPHP.get() + "upload.php");
             // Open a HTTP connection to the URL
             conn = (HttpURLConnection) url.openConnection();
             // Allow Inputs
@@ -67,7 +76,6 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-            Log.d(TAG, "conn1 = " + conn);
             dos = new DataOutputStream(conn.getOutputStream());
             dos.writeBytes(twoHyphens + boundary + lineEnd);
             dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + existingFileName + "\"" + lineEnd);
@@ -80,12 +88,10 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
             bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
             while (bytesRead > 0) {
-
                 dos.write(buffer, 0, bufferSize);
                 bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
             }
 
             // send multipart form data necesssary after file data...
@@ -102,8 +108,6 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
         } catch (IOException ioe) {
             Log.e(TAG, "error: " + ioe.getMessage(), ioe);
         }
-
-        Log.d(TAG, "conn2 = " + conn);
 
         //------------------ read the SERVER RESPONSE
         try {
@@ -130,6 +134,7 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
     protected void onPostExecute(ResultObject resultObject) {
         Log.d(TAG, "resultObject " + resultObject);
 
-
+        if(progressBar != null)
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 }

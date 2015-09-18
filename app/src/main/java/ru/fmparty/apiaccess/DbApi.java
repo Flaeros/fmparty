@@ -102,7 +102,14 @@ public class DbApi {
 
                     for(int i = 0; i < chats.length(); i++){
                         JSONObject row = chats.getJSONObject(i);
-                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"), row.getString("image"));
+
+                        Chat chat = (new Chat.Builder(row.getInt("id"),row.getInt("admin"), row.getString("name")))
+                                .image(row.getString("image"))
+                                .descr(row.getString("descr"))
+                                .date(row.getString("date"))
+                                .city(row.getString("city"))
+                                .build();
+
                         chatList.add(chat);
                     }
                 }catch (Exception e){
@@ -134,7 +141,13 @@ public class DbApi {
 
                     for(int i = 0; i < mobs.length(); i++){
                         JSONObject row = mobs.getJSONObject(i);
-                        Chat chat = new Chat(row.getInt("id"), row.getInt("admin"), row.getString("name"), row.getString("image"));
+                        Chat chat = (new Chat.Builder(row.getInt("id"),row.getInt("admin"), row.getString("name")))
+                                    .image(row.getString("image"))
+                                    .descr(row.getString("descr"))
+                                    .date(row.getString("date"))
+                                    .city(row.getString("city"))
+                                    .build();
+
                         chatList.add(chat);
                     }
                 }catch (Exception e){

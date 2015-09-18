@@ -5,6 +5,9 @@ class Chat {
     public $admin;
     public $name;
     public $image;
+    public $descr;
+    public $date;
+    public $city;
 
     
     function __construct(){
@@ -20,11 +23,14 @@ class Chat {
         $this->setAdmin($admin);
     }
     
-    function __construct4($id, $admin, $name, $image){
+    function __construct7($id, $admin, $name, $image, $descr, $date, $city){
         $this->setId($id);
         $this->setAdmin($admin);
         $this->setName($name);
         $this->setImage($image);
+        $this->setDescr($descr);
+        $this->setDate($date);
+        $this->setCity($city);
     }
        
     public function getId(){ return $this->id;}
@@ -38,4 +44,13 @@ class Chat {
     
     public function getImage(){ return $this->image;}
     public function setImage($image){ $this->image = $image;}
+    
+    public function getDescr(){ return $this->descr;}
+    public function setDescr($descr){ $this->descr = $descr;}
+    
+    public function getDate(){ return $this->date;}
+    public function setDate($date){ $this->date = $date;}
+    
+    public function getCity(){ return $this->city;}
+    public function setCity($city){ $this->city = $city;}
 }

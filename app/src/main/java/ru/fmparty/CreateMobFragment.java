@@ -12,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -32,11 +34,16 @@ import ru.fmparty.utils.UploadImageTask;
 public class CreateMobFragment extends Fragment {
     private final String TAG = "FlashMob CreateMob";
 
-    EditText editText;
+    private EditText chatName;
+    private EditText chatDescr;
+    private EditText chatCity;
+    private DatePicker chatDate;
+    private ImageView imagePreview;
+    private ProgressBar progressBar;
+
+
     private SocialNetworkApi socialNetworkApi;
     private String filePath;
-
-    ImageView imagePreview;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +57,11 @@ public class CreateMobFragment extends Fragment {
         selectImageButton.setOnClickListener(selectImageButtonListener);
 
         imagePreview = (ImageView) view.findViewById(R.id.imagePreview);
-        editText = (EditText) view.findViewById(R.id.mobName);
+        chatName = (EditText) view.findViewById(R.id.mobName);
+        chatDescr = (EditText) view.findViewById(R.id.chatDescr);
+        chatCity = (EditText) view.findViewById(R.id.chatCity);
+        chatDate = (DatePicker) view.findViewById(R.id.chatDate);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         return view;
     }
@@ -115,7 +126,10 @@ public class CreateMobFragment extends Fragment {
     };
 
     private void createChat() {
-        String chatName = editText.getText().toString();
+        String chatName = this.chatName.getText().toString();
+        String chatDescr = this.chatDescr.getText().toString();
+        String chatDate = String.valueOf(this.chatDate.getDayOfMonth()) +"."+ String.valueOf(this.chatDate.getMonth()) +"."+ String.valueOf(this.chatDate.getYear());
+        String chatCity = this.chatCity.getText().toString();
         Log.d(TAG, chatName);
         if(chatName.isEmpty()) {
             Toast.makeText(getActivity(), "Пора покормить кота!", Toast.LENGTH_SHORT).show();
@@ -125,10 +139,14 @@ public class CreateMobFragment extends Fragment {
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "createChat"));
         argsList.add(new HttpObjectPair("chatName", String.valueOf(chatName)));
+        argsList.add(new HttpObjectPair("chatDescr", String.valueOf(chatDescr)));
+        argsList.add(new HttpObjectPair("chatDate", String.valueOf(chatDate)));
+        argsList.add(new HttpObjectPair("chatCity", String.valueOf(chatCity)));
         argsList.add(new HttpObjectPair("socUserId", String.valueOf(socialNetworkApi.getUserId())));
         argsList.add(new HttpObjectPair("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId())));
-        new PostCallTask(asyncResponse).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
 
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+        new PostCallTask(asyncResponse, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
     AsyncResponse asyncResponse = new AsyncResponse(){
@@ -140,8 +158,10 @@ public class CreateMobFragment extends Fragment {
                 String name = jsonObject.getString("name");
                 Log.d(TAG, "onSuccess chat name =" + name);
                 Toast.makeText(getActivity(), "Чат " + name +" создан!", Toast.LENGTH_SHORT).show();
+
+                progressBar.setVisibility(ProgressBar.VISIBLE);
                 if(filePath != null)
-                    new UploadImageTask().execute(filePath, String.valueOf(id));
+                    new UploadImageTask(progressBar).execute(filePath, String.valueOf(id));
             }catch (JSONException e){
                 Log.d(TAG, e.toString());
                 Log.d(TAG, e.getMessage());
