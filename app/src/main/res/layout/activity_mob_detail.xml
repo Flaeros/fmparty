@@ -16,31 +16,49 @@
         android:layout_marginTop="47dp" />
 
     <TextView
-        android:text="Admin"
-        android:id="@+id/admin"
+        android:id="@+id/descr"
+        android:text="Descr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/chatImage"
         android:layout_alignLeft="@+id/title"
-        android:layout_alignStart="@+id/title"
-        android:layout_marginTop="70dp" />
+        android:layout_alignStart="@+id/title" />
+
+    <TextView
+        android:id="@+id/mobDate"
+        android:text="Date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/descr"
+        android:layout_alignLeft="@+id/descr"
+        android:layout_alignStart="@+id/descr" />
+
+    <TextView
+        android:id="@+id/mobCity"
+        android:text="City"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/mobDate"
+        android:layout_alignLeft="@+id/mobDate"
+        android:layout_alignStart="@+id/mobDate" />
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/chatImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:src="@drawable/default_chat"
         android:maxWidth="70dp"
         android:maxHeight="70dp"
-        android:padding="7dp"
         android:longClickable="false"
         android:layout_alignTop="@+id/title"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="36dp"
-        android:layout_marginEnd="36dp" />
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:text="Join FlashMob!"
@@ -48,8 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="86dp" />
+        android:layout_centerHorizontal="true" />
 
     <ProgressBar
         android:id="@+id/progressBar"

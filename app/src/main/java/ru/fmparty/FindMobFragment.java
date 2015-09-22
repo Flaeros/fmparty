@@ -3,21 +3,29 @@ package ru.fmparty;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
@@ -29,8 +37,13 @@ public class FindMobFragment extends Fragment{
 
 
     private EditText mobName;
+    private EditText mobDescr;
+    private DatePicker mobDate;
+    private EditText mobCity;
+    private CheckBox useDate;
     private ProgressBar progressBar;
     private ListView mobsListView;
+    private ScrollView scrollView;
     private MobListArrayAdapter mobListArrayAdapter;
 
     @Override
@@ -43,13 +56,31 @@ public class FindMobFragment extends Fragment{
         findMobsButton.setOnClickListener(findMobsButtonListener);
 
         mobName = (EditText) view.findViewById(R.id.mobName);
+        mobDescr = (EditText) view.findViewById(R.id.mobDescr);
+        mobDate = (DatePicker) view.findViewById(R.id.mobDate);
+        mobCity = (EditText) view.findViewById(R.id.mobCity);
+        useDate = (CheckBox) view.findViewById(R.id.useDate);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
+        scrollView = (ScrollView) view.findViewById(R.id.scrollView);
         mobsListView = (ListView) view.findViewById(R.id.mobList);
         mobsListView.setOnItemClickListener(onMobItemClickListener);
 
         return view;
     }
+
+    private View.OnClickListener findMobsButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String mobNameStr = mobName.getText().toString();
+            String mobDescrStr = mobDescr.getText().toString();
+            String mobDateStr = String.valueOf(mobDate.getDayOfMonth()) +"."+ String.valueOf(mobDate.getMonth()+1) +"."+ String.valueOf(mobDate.getYear());
+            String mobCityStr = mobCity.getText().toString();
+            boolean isUseDate = useDate.isChecked();
+
+            findMobs(mobNameStr, mobDescrStr, mobDateStr, mobCityStr, isUseDate);
+        }
+    };
 
     AdapterView.OnItemClickListener onMobItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -58,10 +89,27 @@ public class FindMobFragment extends Fragment{
             TextView chatIdView = (TextView) view.findViewById(R.id.chatId);
             String chatName = chatNameView.getText().toString();
             int chatId = Integer.valueOf(chatIdView.getText().toString());
-            Toast.makeText(getActivity(), "Пора покормить кота! " + chatId + " " + chatName, Toast.LENGTH_SHORT).show();
+
             showMobDetail(chatId, chatName);
         }
     };
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) { return; }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
 
     private void showMobDetail(int chatId, String chatName) {
 
@@ -75,26 +123,27 @@ public class FindMobFragment extends Fragment{
         startActivity(mobIntent);
     }
 
-    private View.OnClickListener findMobsButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String mobNameStr = mobName.getText().toString();
-            if(!mobNameStr.isEmpty())
-                findMobs(mobNameStr);
-            else
-                Toast.makeText(getActivity(), "Пора покормить кота!", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private void findMobs(String search) {
-        DbApi.findMobs(this, search, progressBar);
+    private void findMobs(String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, boolean useDate) {
+        DbApi.findMobs(this, mobNameStr, mobDescrStr, mobDateStr, mobCityStr, useDate, progressBar);
     }
 
     public void showMobs(List<Chat> chats){
         if(this.isVisible()) {
             mobListArrayAdapter = new MobListArrayAdapter(chats);
             mobsListView.setAdapter(mobListArrayAdapter);
+            setListViewHeightBasedOnChildren(mobsListView);
+
+            focusOnResultsView();
         }
+    }
+
+    private final void focusOnResultsView(){
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.smoothScrollTo(0, mobsListView.getTop());
+            }
+        });
     }
 
     public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi) {
@@ -124,13 +173,15 @@ public class FindMobFragment extends Fragment{
 
             TextView chatIdView = (TextView) itemView.findViewById(R.id.chatId);
             chatIdView.setText(String.valueOf(chat.getId()));
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.item_chatImage);
 
-/*
-            ImageView imageView = (ImageView) itemView.findViewById(R.id.item_userAvatar);
-            Log.v(TAG, user.photo_100);
-            new DownloadImageTask(imageView)
-                    .execute(user.photo_100);
-*/
+
+            if(chat.getImage() != null && FindMobFragment.this.isVisible()) {
+                Glide.with(getActivity()).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).into(imageView);
+            }
+            else{
+                imageView.setImageResource(R.drawable.default_chat);
+            }
 
             return itemView;
         }

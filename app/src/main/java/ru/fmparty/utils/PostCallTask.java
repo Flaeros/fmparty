@@ -101,6 +101,6 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Integer, ResultObjec
             delegate.onCompleted(resultObject);
 
         if(progressBar != null)
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
+            progressBar.setVisibility(ProgressBar.GONE);
     }
 }

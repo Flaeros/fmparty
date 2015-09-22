@@ -135,6 +135,6 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
         Log.d(TAG, "resultObject " + resultObject);
 
         if(progressBar != null)
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
+            progressBar.setVisibility(ProgressBar.GONE);
     }
 }

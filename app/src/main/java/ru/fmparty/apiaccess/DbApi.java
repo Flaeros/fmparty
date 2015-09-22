@@ -124,10 +124,14 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void findMobs(final FindMobFragment findMobFragment, String search, ProgressBar progressBar) {
+    public static void findMobs(final FindMobFragment findMobFragment, String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, Boolean useDate, ProgressBar progressBar) {
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "findMobs"));
-        argsList.add(new HttpObjectPair("text", search));
+        argsList.add(new HttpObjectPair("mobName", mobNameStr));
+        argsList.add(new HttpObjectPair("mobDescr", mobDescrStr));
+        argsList.add(new HttpObjectPair("mobDate", mobDateStr));
+        argsList.add(new HttpObjectPair("mobCity", mobCityStr));
+        argsList.add(new HttpObjectPair("useDate", useDate.toString()));
 
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
@@ -186,5 +190,37 @@ public class DbApi {
         argsList.add(new HttpObjectPair("filename", filename));
 
         new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void getChat(final MobDetailActivity mobDetailActivity, int chatId, ProgressBar progressBar) {
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "getChat"));
+        argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
+
+        new PostCallTask(new AsyncResponse(){
+            public void onSuccess(ResultObject resultObject) {
+                Chat chat = null;
+                try {
+                    Log.d(TAG, "onSuccess mobs =" + resultObject);
+                    JSONObject mob = resultObject.getJsonObject();
+                    Log.d(TAG, "onSuccess chats=" + mob);
+
+
+                    chat = (new Chat.Builder(mob.getInt("id"),mob.getInt("admin"), mob.getString("name")))
+                            .image(mob.getString("image")).descr(mob.getString("descr"))
+                            .date(mob.getString("date")).city(mob.getString("city"))
+                            .build();
+                }catch (Exception e){
+                    Log.d(TAG, e.toString());
+                    Log.d(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "chat = " + chat);
+                mobDetailActivity.fillChat(chat);
+            }
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 }

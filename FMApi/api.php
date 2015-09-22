@@ -32,9 +32,37 @@ switch ($do) {
     case 'updateChatImage':
         updateChatImage();
         break;
+    case 'getChat':
+        getChat();
+        break;
     case 'updateUser':
         updateUser();
         break;
+}
+
+function getChat(){
+    $chatApi = new ChatApi();
+    $chatId = intval($_POST['chatid']);
+    
+    $jsonResult = new ResultObject();
+    dlog('getChat');
+    
+    $result = $chatApi->getChat($chatId);
+    
+    $jsonResult = new ResultObject();
+    if($result > 0){
+        dlog('true');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;
+        $jsonResult->resultObject = $result;   
+    }
+    else{
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";
+    }
+
+    dlog($jsonResult);
+    echo json_encode($jsonResult);
 }
 
 function updateChatImage(){
@@ -92,9 +120,13 @@ function joinMob(){
 
 function findMobs(){
     $chatApi = new ChatApi();
-    $text = mysql_real_escape_string($_POST['text']);
+    $mobName = mysql_real_escape_string($_POST['mobName']);
+    $mobDescr = mysql_real_escape_string($_POST['mobDescr']);
+    $mobDate = mysql_real_escape_string($_POST['mobDate']);
+    $mobCity = mysql_real_escape_string($_POST['mobCity']);
+    $useDate = mysql_real_escape_string($_POST['useDate']);
  
-    $result = $chatApi->findChats($text);
+    $result = $chatApi->findChats($mobName, $mobDescr, $mobDate, $mobCity, $useDate);
     dlog('findMobs');
     dlog($result);
     

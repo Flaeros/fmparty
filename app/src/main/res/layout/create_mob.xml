@@ -72,7 +72,7 @@
              />
 
         <EditText
-            android:id="@+id/chatDescr"
+            android:id="@+id/mobDescr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
@@ -89,12 +89,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_below="@+id/chatDescr"
-            android:layout_alignLeft="@+id/chatDescr"
-            android:layout_alignStart="@+id/chatDescr" />
+            android:layout_below="@+id/mobDescr"
+            android:layout_alignLeft="@+id/mobDescr"
+            android:layout_alignStart="@+id/mobDescr" />
 
         <DatePicker
-            android:id="@+id/chatDate"
+            android:id="@+id/mobDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/labelDate"
@@ -108,10 +108,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_below="@+id/chatDate" />
+            android:layout_below="@+id/mobDate" />
 
         <EditText
-            android:id="@+id/chatCity"
+            android:id="@+id/mobCity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
@@ -126,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_below="@+id/chatCity" />
+            android:layout_below="@+id/mobCity" />
 
         </RelativeLayout>
     </ScrollView>

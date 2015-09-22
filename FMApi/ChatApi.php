@@ -49,11 +49,28 @@ class ChatApi {
         return $result;
     }
    
+    public function getChat($chatId){
+        $query = str_replace('{1}', $chatId, self::$SELECT_CHAT);
+        $result = mysql_query($query, $this->link);
+        $row = mysql_fetch_row($result);
+        
+        dlog('ChatApi getChat');
+        dlog($query);
+        dlog($row);
+        
+        if($row != false) {
+            $chat = new Chat($row[0], $row[1], $row[2], $row[3], $row[4], $row[5], $row[6]);
+            return $chat;
+        }
+        
+        return false;
+    }
+    
     public function getChats($socUserId, $socNetId){
         $userApi = new Users();
         $userId = $userApi->getUserIdBySocNet($socUserId, $socNetId);
         
-        $query = str_replace('{1}', $userId, self::$SELECT_CHAT);
+        $query = str_replace('{1}', $userId, self::$SELECT_USER_CHAT);
         $result = mysql_query($query, $this->link);
         dlog('ChatApi getChats');
         dlog($result);
@@ -70,8 +87,26 @@ class ChatApi {
         return $chatArray;
     }
     
-    public function findChats($text){
-        $query = str_replace('{1}', $text, self::$SELECT_CHATS);
+    public function findChats($mobName, $mobDescrStr, $mobDateStr, $mobCityStr, $useDate){
+        dlog($mobName);
+        dlog($mobDescrStr);
+        dlog($mobDateStr);
+        dlog($mobCityStr);
+        dlog($useDate);
+        
+        $query = self::$SELECT_CHATS;
+        
+        if($mobName != "")
+            $query .= "AND name like '{$mobName}' ";
+        if($mobDescrStr != "")
+            $query .= "AND descr like '{$mobDescrStr}' ";
+        if($mobCityStr != "")
+            $query .= "AND city like '{$mobCityStr}' ";            
+        if($useDate == "true")
+            $query .= "AND fdate like '{$mobDateStr}' ";
+            
+        $query .= 'LIMIT 100';
+            
         $result = mysql_query($query, $this->link);
         dlog('ChatApi findChats');
         dlog($result);
@@ -90,7 +125,8 @@ class ChatApi {
     
    private static $INSERT_CHAT = "INSERT INTO fm_chats(admin_id, name, descr, fdate, city) values ({1}, '{2}', '{3}', '{4}', '{5}')";
    private static $INSERT_REF = "INSERT INTO fm_refs values ({1}, '{2}')";
-   private static $SELECT_CHAT = "SELECT c.* FROM fm_chats c, fm_refs r WHERE r.user_id = {1} AND c.id = r.chat_id";
-   private static $SELECT_CHATS = "SELECT * FROM fm_chats WHERE name like '%{1}%'";
+   private static $SELECT_CHAT = "SELECT * FROM fm_chats WHERE id = {1}";
+   private static $SELECT_USER_CHAT = "SELECT c.* FROM fm_chats c, fm_refs r WHERE r.user_id = {1} AND c.id = r.chat_id";
+   private static $SELECT_CHATS = "SELECT * FROM fm_chats WHERE 1=1 ";
    private static $UPDATE_CHAT_IMAGE = "UPDATE fm_chats set image = '{1}' WHERE id = {2}";
 }

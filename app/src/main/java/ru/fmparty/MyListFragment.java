@@ -62,6 +62,7 @@ public class MyListFragment extends Fragment {
         mDatabaseHelper = new DatabaseHelper(this.getActivity(), Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
         mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
 
+        //Update chats algorithm
         if(chats == null)
             loadChatsFromSQLite();
 
@@ -79,7 +80,6 @@ public class MyListFragment extends Fragment {
             mSwipeRefreshLayout.setRefreshing(false);
             loadChatsFromServer();
         }
-
     };
 
     AdapterView.OnItemClickListener onChatItemClickListener = new AdapterView.OnItemClickListener() {
@@ -129,7 +129,6 @@ public class MyListFragment extends Fragment {
             Chat chat = (new Chat.Builder(chatId, chatAdminId, chatName))
                     .image(chatImage).descr(chatDescr).date(chatDate).city(chatCity)
                     .build();
-            Log.d(TAG, "chat = " + chat);
 
             chats.add(chat);
         }
@@ -176,7 +175,6 @@ public class MyListFragment extends Fragment {
             newValues.put(DatabaseHelper.CHAT_CITY_COLUMN, chat.getCity());
 
             long result = mSqLiteDatabase.insert("chats", null, newValues);
-            Log.d(TAG, "result = " + result);
         }
 
     }
@@ -212,7 +210,5 @@ public class MyListFragment extends Fragment {
 
             return itemView;
         }
-
-
     }
 }

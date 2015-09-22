@@ -58,9 +58,9 @@ public class CreateMobFragment extends Fragment {
 
         imagePreview = (ImageView) view.findViewById(R.id.imagePreview);
         chatName = (EditText) view.findViewById(R.id.mobName);
-        chatDescr = (EditText) view.findViewById(R.id.chatDescr);
-        chatCity = (EditText) view.findViewById(R.id.chatCity);
-        chatDate = (DatePicker) view.findViewById(R.id.chatDate);
+        chatDescr = (EditText) view.findViewById(R.id.mobDescr);
+        chatCity = (EditText) view.findViewById(R.id.mobCity);
+        chatDate = (DatePicker) view.findViewById(R.id.mobDate);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         return view;
@@ -128,7 +128,7 @@ public class CreateMobFragment extends Fragment {
     private void createChat() {
         String chatName = this.chatName.getText().toString();
         String chatDescr = this.chatDescr.getText().toString();
-        String chatDate = String.valueOf(this.chatDate.getDayOfMonth()) +"."+ String.valueOf(this.chatDate.getMonth()) +"."+ String.valueOf(this.chatDate.getYear());
+        String chatDate = String.valueOf(this.chatDate.getDayOfMonth()) +"."+ String.valueOf(this.chatDate.getMonth()+1) +"."+ String.valueOf(this.chatDate.getYear());
         String chatCity = this.chatCity.getText().toString();
         Log.d(TAG, chatName);
         if(chatName.isEmpty()) {
