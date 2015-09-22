@@ -1,8 +1,12 @@
 package ru.fmparty;
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +27,7 @@ import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
-import ru.fmparty.utils.DownloadImageTask;
+import ru.fmparty.utils.DatabaseHelper;
 
 public class MyListFragment extends Fragment {
 
@@ -32,8 +36,13 @@ public class MyListFragment extends Fragment {
     private ChatListArrayAdapter chatArrayAdapter;
     private ListView chatListView;
     private ProgressBar progressBar;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private List<Chat> chats;
+
+    private DatabaseHelper mDatabaseHelper;
+    private SQLiteDatabase mSqLiteDatabase;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,13 +56,31 @@ public class MyListFragment extends Fragment {
 
         chatListView.setOnItemClickListener(onChatItemClickListener);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.mSwipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(listRefreshListener);
+
+        mDatabaseHelper = new DatabaseHelper(this.getActivity(), Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
+        mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+
         if(chats == null)
-            loadChats();
+            loadChatsFromSQLite();
+
+        if(chats == null)
+            loadChatsFromServer();
         else
-            showChats(chats);
+            showChats();
 
         return view;
     }
+
+    private SwipeRefreshLayout.OnRefreshListener listRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            mSwipeRefreshLayout.setRefreshing(false);
+            loadChatsFromServer();
+        }
+
+    };
 
     AdapterView.OnItemClickListener onChatItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -81,18 +108,77 @@ public class MyListFragment extends Fragment {
         this.socialNetworkApi = socialNetworkApi;
     }
 
-    private void loadChats() {
+    private void loadChatsFromSQLite(){
+        Cursor cursor = mSqLiteDatabase.query("chats", new String[]{DatabaseHelper.CHAT_ID_COLUMN,
+                        DatabaseHelper.CHAT_ADMIN_ID_COLUMN, DatabaseHelper.CHAT_NAME_COLUMN,
+                        DatabaseHelper.CHAT_IMAGE_COLUMN, DatabaseHelper.CHAT_DESCR_COLUMN,
+                        DatabaseHelper.CHAT_FDATE_COLUMN, DatabaseHelper.CHAT_CITY_COLUMN
+                },
+                null, null,null, null, null) ;
+        List<Chat> chats = new ArrayList<>();
+
+        while(cursor.moveToNext()){
+            int chatId       = cursor.getInt    (cursor.getColumnIndex(DatabaseHelper.CHAT_ID_COLUMN));
+            int chatAdminId  = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CHAT_ADMIN_ID_COLUMN));
+            String chatName  = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_NAME_COLUMN));
+            String chatImage = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_IMAGE_COLUMN));
+            String chatDescr = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_DESCR_COLUMN));
+            String chatDate  = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_FDATE_COLUMN));
+            String chatCity  = cursor.getString(cursor.getColumnIndex(DatabaseHelper.CHAT_CITY_COLUMN));
+
+            Chat chat = (new Chat.Builder(chatId, chatAdminId, chatName))
+                    .image(chatImage).descr(chatDescr).date(chatDate).city(chatCity)
+                    .build();
+            Log.d(TAG, "chat = " + chat);
+
+            chats.add(chat);
+        }
+        if(!chats.isEmpty())
+            this.chats = new ArrayList<>(chats);
+
+        cursor.close();
+    }
+
+    private void loadChatsFromServer() {
         DbApi.getChats(this, socialNetworkApi.getSocialCodeId(), socialNetworkApi.getUserId(), progressBar);
     }
 
-    public void showChats(List<Chat> chats){
+    public void updateChatsCallback(List<Chat> chats){
 
         if(this.isAdded()) {
-            if(this.chats == null)
-                this.chats = new ArrayList<>(chats);
-            chatArrayAdapter = new ChatListArrayAdapter(this.chats);
-            chatListView.setAdapter(chatArrayAdapter);
+            this.chats = new ArrayList<>(chats);
+            updateChatsSQLite();
+
+            showChats();
         }
+    }
+
+    private void showChats(){
+        chatArrayAdapter = new ChatListArrayAdapter(this.chats);
+        chatListView.setAdapter(chatArrayAdapter);
+    }
+
+    private void updateChatsSQLite() {
+
+        String deleteQuery = "DELETE FROM " +
+                DatabaseHelper.DATABASE_TABLE ;
+        mSqLiteDatabase.execSQL(deleteQuery);
+
+        for(Chat chat : chats){
+            ContentValues newValues = new ContentValues();
+
+            newValues.put(DatabaseHelper.CHAT_ID_COLUMN, chat.getId());
+            newValues.put(DatabaseHelper.CHAT_ADMIN_ID_COLUMN, chat.getAdmin_id());
+            newValues.put(DatabaseHelper.CHAT_NAME_COLUMN, chat.getName());
+            newValues.put(DatabaseHelper.CHAT_IMAGE_COLUMN, chat.getImage());
+            newValues.put(DatabaseHelper.CHAT_DESCR_COLUMN, chat.getDescr());
+            newValues.put(DatabaseHelper.CHAT_FDATE_COLUMN, chat.getDate());
+            newValues.put(DatabaseHelper.CHAT_CITY_COLUMN, chat.getCity());
+
+            long result = mSqLiteDatabase.insert("chats", null, newValues);
+            Log.d(TAG, "result = " + result);
+        }
+
     }
 
     private class ChatListArrayAdapter extends ArrayAdapter<Chat> {

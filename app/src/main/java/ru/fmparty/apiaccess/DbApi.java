@@ -119,7 +119,7 @@ public class DbApi {
                 }
 
                 Log.d(TAG, "chatList = " + chatList);
-                myListFragment.showChats(chatList);
+                myListFragment.updateChatsCallback(chatList);
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
