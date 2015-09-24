@@ -45,7 +45,7 @@ public class AuthFragment extends Fragment {
     View.OnClickListener vkButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            socialNetworkApi = new VkontakteApi(getActivity());
+            socialNetworkApi = new VkontakteApi((MainActivity)getActivity());
             socialNetworkApi.login();
         }
     };
@@ -53,7 +53,7 @@ public class AuthFragment extends Fragment {
     View.OnClickListener fbButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            socialNetworkApi = new FacebookApi(getActivity());
+            socialNetworkApi = new FacebookApi((MainActivity)getActivity());
             socialNetworkApi.login();
         }
     };

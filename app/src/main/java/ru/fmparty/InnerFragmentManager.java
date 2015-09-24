@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 
 import ru.fmparty.apiaccess.SocialNetworkApi;
+import ru.fmparty.utils.InnerDB;
 
 public class InnerFragmentManager {
 
@@ -18,7 +19,7 @@ public class InnerFragmentManager {
     private SocialNetworkApi socialNetworkApi;
 
 
-    private final String TAG = "InnerFragmentManager";
+    private final String TAG = "FlashMob InnrFrMngr";
 
     InnerFragmentManager(Activity activity){
         this.activity = activity;
@@ -30,22 +31,36 @@ public class InnerFragmentManager {
     }
 
     public void initializeMainFragment() {
+        Log.d(TAG, "initializeMainFragment");
         mainFragment = new MainFragment();
         myListFragment = new MyListFragment();
         myListFragment.setSocialNetworkApi(socialNetworkApi);
-        mainFragment.setListeners( myListButtonListener,allListButtonListener, createMobButtonListener, menuButtonListener);
+        mainFragment.setListeners(myListButtonListener, allListButtonListener, createMobButtonListener, menuButtonListener);
+
+        Log.d(TAG, "start main transaction");
+        activity.getFragmentManager().beginTransaction()
+                .add(R.id.frgmCont, mainFragment)
+                .commit();
+
+        Log.d(TAG, "middle of main transaction");
 
         activity.getFragmentManager().beginTransaction()
-                .replace(R.id.frgmCont, mainFragment)
                 .add(R.id.mainFragCont, myListFragment)
                 .commit();
+        Log.d(TAG, "end main transaction");
     }
 
     public void startFragmentForAuth() {
         authFragment = new AuthFragment();
         Log.d(TAG, "startFragmentForAuth");
         activity.getFragmentManager().beginTransaction()
-                .add(R.id.frgmCont, authFragment)
+                .replace(R.id.frgmCont, authFragment)
+                .commit();
+    }
+
+    public void endAuthFragment(){
+        activity.getFragmentManager().beginTransaction()
+                .remove(authFragment)
                 .commit();
     }
 
@@ -63,6 +78,7 @@ public class InnerFragmentManager {
                 .remove(mainFragment)
                 .commit();
 
+        InnerDB.clearData(activity);
         activity.recreate();
     }
 

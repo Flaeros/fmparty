@@ -1,5 +1,8 @@
 package ru.fmparty.apiaccess;
 
+import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -13,18 +16,26 @@ import java.util.List;
 
 import ru.fmparty.ChatActivity;
 import ru.fmparty.FindMobFragment;
+import ru.fmparty.MainActivity;
 import ru.fmparty.MobDetailActivity;
 import ru.fmparty.MyListFragment;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.entity.Message;
 import ru.fmparty.utils.AsyncResponse;
+import ru.fmparty.utils.DatabaseHelper;
 import ru.fmparty.utils.HttpObjectPair;
+import ru.fmparty.utils.InnerDB;
 import ru.fmparty.utils.PostCallTask;
 
 public class DbApi {
     private final static String TAG = "FlashMob DbApi";
 
-    public static void createUser(int socNetId, long socUserId, String name){
+    /*
+       Checking if the user already exists in DB
+       return ID if yes
+       create and return ID if no
+    */
+    public static void createUser(int socNetId, final long socUserId, String name, final MainActivity activity){
 
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "createUser"));
@@ -32,7 +43,25 @@ public class DbApi {
         argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
         argsList.add(new HttpObjectPair("name", name));
 
-        new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+        new PostCallTask(new AsyncResponse() {
+            void onSuccess(ResultObject resultObject) {
+                int id = 0;
+
+                try {
+                    id = resultObject.getJsonObject().getInt("id");
+                } catch (JSONException e) {
+                    Log.d(TAG, "error = " + e.toString());
+                    e.printStackTrace();
+                }
+
+                String innerUserId = InnerDB.getInnerUserId(activity, socUserId);
+
+                if(innerUserId != null)
+                    Log.d(TAG, "userId InnerValueId = " + innerUserId);
+                else if(id != 0)
+                    InnerDB.setInnerUserId(activity, id, socUserId);
+            }
+        }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
     public static void sendMsg(String message, int chatId, int socNetId, long socUserId) {
@@ -46,6 +75,7 @@ public class DbApi {
     }
 
     public static void getMessages(final ChatActivity activity, int chatId, long socUserId, int socNetId, ProgressBar progressBar) {
+        progressBar.setVisibility(ProgressBar.VISIBLE);
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "getMessages"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
@@ -77,7 +107,7 @@ public class DbApi {
                 }
 
                 Log.d(TAG, "messages = " + messages);
-                activity.showMessages(messages, user_id);
+                activity.loadMessagesCallback(messages, user_id);
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
@@ -124,7 +154,7 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void findMobs(final FindMobFragment findMobFragment, String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, Boolean useDate, ProgressBar progressBar) {
+    public static void findMobs(final FindMobFragment findMobFragment, String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, String userId, Boolean useDate, ProgressBar progressBar) {
         List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "findMobs"));
         argsList.add(new HttpObjectPair("mobName", mobNameStr));
@@ -132,6 +162,7 @@ public class DbApi {
         argsList.add(new HttpObjectPair("mobDate", mobDateStr));
         argsList.add(new HttpObjectPair("mobCity", mobCityStr));
         argsList.add(new HttpObjectPair("useDate", useDate.toString()));
+        argsList.add(new HttpObjectPair("userId", userId));
 
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
@@ -220,6 +251,54 @@ public class DbApi {
 
                 Log.d(TAG, "chat = " + chat);
                 mobDetailActivity.fillChat(chat);
+            }
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void getNewMessages(final ChatActivity chatActivity, long lastId, int chatId, final long userId) {
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "getNewMessages"));
+        argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
+        argsList.add(new HttpObjectPair("lastid", String.valueOf(lastId)));
+
+        new PostCallTask(new AsyncResponse(){
+            public void onSuccess(ResultObject resultObject) {
+                Log.d(TAG, "resultObject = " + resultObject);
+                List<Message> messages = new ArrayList<>();
+                try {
+                    JSONArray jsonMsgs = resultObject.getJsonArray();
+
+                    for(int i =0; i < jsonMsgs.length(); i++){
+                        JSONObject jObj = jsonMsgs.getJSONObject(i);
+                        Message msg = new Message(jObj.getLong("id")
+                                ,jObj.getInt("chatId")
+                                ,jObj.getLong("userId")
+                                ,jObj.getString("userName")
+                                ,jObj.getString("text"));
+                        messages.add(msg);
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
+                }
+
+                Log.d(TAG, "messages = " + messages);
+                chatActivity.loadMessagesCallback(messages, userId);
+            }
+        }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void leaveChat(final ChatActivity chatActivity, int chatId, String userId, ProgressBar progressBar) {
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "leaveChat"));
+        argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
+        argsList.add(new HttpObjectPair("userid", userId));
+
+        new PostCallTask(new AsyncResponse(){
+            public void onSuccess(ResultObject resultObject) {
+                Log.d(TAG, "onSuccess resultObject =" + resultObject);
+                chatActivity.setResult(ResultCode.CHAT_LEFT.get());
+                chatActivity.finish();
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }

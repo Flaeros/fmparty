@@ -19,7 +19,7 @@ public class ChatRefreshThread extends Thread {
         try {
             while (chatActivity.isRunning()) {
                 Thread.sleep(delay);
-                chatActivity.loadMessages();
+                chatActivity.updateMessages();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

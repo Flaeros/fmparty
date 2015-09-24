@@ -30,8 +30,11 @@ class MsgApi {
         }
     }
     
-    public function getMessages($chatId){
+    public function getMessages($chatId, $lastId = 0){
         $query = str_replace('{1}', $chatId, self::$SELECT_MSGS);
+        if($lastId > 0)
+            $query .= ' AND m.id > ' . $lastId; 
+        dlog($query);
         $result = mysql_query($query, $this->link);
         
         if(!$result)

@@ -35,9 +35,40 @@ switch ($do) {
     case 'getChat':
         getChat();
         break;
+    case 'getNewMessages':
+        getNewMessages();
+        break;
+    case 'leaveChat':
+        leaveChat();
+        break;
     case 'updateUser':
         updateUser();
         break;
+}
+
+function leaveChat(){
+    $chatApi = new ChatApi();
+    $chatId = intval($_POST['chatid']);
+    $userId = intval($_POST['userid']);
+    
+    $result = $chatApi->removeRef($userId, $chatId);
+ 
+    dlog('leaveChat');
+    dlog($result);
+    
+    writeResult($result);    
+}
+
+function getNewMessages(){
+    $chatId = intval($_POST['chatid']);
+    $lastId = intval($_POST['lastid']);
+    
+    $msgApi = new MsgApi();
+    $result = $msgApi->getMessages($chatId, $lastId);
+    dlog('getNewMessages');
+    dlog($result);
+    
+    writeResult($result);    
 }
 
 function getChat(){
@@ -49,20 +80,7 @@ function getChat(){
     
     $result = $chatApi->getChat($chatId);
     
-    $jsonResult = new ResultObject();
-    if($result > 0){
-        dlog('true');
-        $jsonResult->resultCode = Consts::DB_SUCCESS;
-        $jsonResult->resultObject = $result;   
-    }
-    else{
-        dlog('false');
-        $jsonResult->resultCode = Consts::DB_ERROR;
-        $jsonResult->resultObject = "";
-    }
-
-    dlog($jsonResult);
-    echo json_encode($jsonResult);
+    writeResult($result);
 }
 
 function updateChatImage(){
@@ -75,19 +93,7 @@ function updateChatImage(){
     dlog('updateChatImage');
     dlog($result);
     
-    if($result) {
-        dlog('true');
-        $jsonResult->resultCode = Consts::DB_SUCCESS;
-        $jsonResult->resultObject = "";
-    }
-    else{
-        dlog('false');
-        $jsonResult->resultCode = Consts::DB_ERROR;
-        $jsonResult->resultObject = "";
-    }
-    
-    dlog($jsonResult);
-    echo json_encode($jsonResult);
+    writeResult($result);
 }
 
 function joinMob(){
@@ -103,19 +109,7 @@ function joinMob(){
     $result = $chatApi->insertRef($userId, $chatId);
     dlog($result);
     
-    if($result) {
-        dlog('true');
-        $jsonResult->resultCode = Consts::DB_SUCCESS;
-        $jsonResult->resultObject = "";
-    }
-    else{
-        dlog('false');
-        $jsonResult->resultCode = Consts::DB_ERROR;
-        $jsonResult->resultObject = "";
-    }
-    
-    dlog($jsonResult);
-    echo json_encode($jsonResult);
+    writeResult($result);
 }
 
 function findMobs(){
@@ -125,25 +119,13 @@ function findMobs(){
     $mobDate = mysql_real_escape_string($_POST['mobDate']);
     $mobCity = mysql_real_escape_string($_POST['mobCity']);
     $useDate = mysql_real_escape_string($_POST['useDate']);
+    $userId = mysql_real_escape_string($_POST['userId']);
  
-    $result = $chatApi->findChats($mobName, $mobDescr, $mobDate, $mobCity, $useDate);
+    $result = $chatApi->findChats($mobName, $mobDescr, $mobDate, $mobCity, $useDate, $userId);
     dlog('findMobs');
     dlog($result);
     
-    $jsonResult = new ResultObject();
-    if($result > 0){
-        dlog('true');
-        $jsonResult->resultCode = Consts::DB_SUCCESS;
-        $jsonResult->resultObject = $result;   
-    }
-    else{
-        dlog('false');
-        $jsonResult->resultCode = Consts::DB_ERROR;
-        $jsonResult->resultObject = "";
-    }
-
-    dlog($jsonResult);
-    echo json_encode($jsonResult);
+    writeResult($result);
 }
 
 function getMessages(){
@@ -230,20 +212,7 @@ function getChats(){
     
     $result = $chatApi->getChats($socUserId, $socNetId);
     
-    $jsonResult = new ResultObject();
-    if($result > 0){
-        dlog('true');
-        $jsonResult->resultCode = Consts::DB_SUCCESS;
-        $jsonResult->resultObject = $result;   
-    }
-    else{
-        dlog('false');
-        $jsonResult->resultCode = Consts::DB_ERROR;
-        $jsonResult->resultObject = "";
-    }
-
-    dlog($jsonResult);
-    echo json_encode($jsonResult);
+    writeResult($result);
 }
 
 function createChat(){
@@ -330,4 +299,21 @@ function isUserExists($socUserId, $socNetId){
 
 function updateUser(){
     
+}
+
+function writeResult($result){
+    $jsonResult = new ResultObject();
+    if($result > 0){
+        dlog('true');
+        $jsonResult->resultCode = Consts::DB_SUCCESS;        
+        $jsonResult->resultObject = $result;   
+    }
+    else{
+        dlog('false');
+        $jsonResult->resultCode = Consts::DB_ERROR;
+        $jsonResult->resultObject = "";
+    }
+
+    dlog($jsonResult);
+    echo json_encode($jsonResult);   
 }

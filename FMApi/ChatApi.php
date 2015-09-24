@@ -48,7 +48,15 @@ class ChatApi {
         
         return $result;
     }
-   
+    
+    public function removeRef($userId, $chatId){
+        $query = str_replace('{1}', $userId, self::$REMOVE_REF);
+        $query = str_replace('{2}', $chatId, $query);
+        $result = mysql_query($query, $this->link);
+        
+        return $result;
+    }
+
     public function getChat($chatId){
         $query = str_replace('{1}', $chatId, self::$SELECT_CHAT);
         $result = mysql_query($query, $this->link);
@@ -59,10 +67,13 @@ class ChatApi {
         dlog($row);
         
         if($row != false) {
-            $chat = new Chat($row[0], $row[1], $row[2], $row[3], $row[4], $row[5], $row[6]);
+            $chat = new Chat($row[0], $row[1], $row[2],
+                    ($row[3] != NULL ? $row[3] : ''),
+                    ($row[4] != NULL ? $row[4] : ''),
+                    ($row[5] != NULL ? $row[5] : ''),
+                    ($row[6] != NULL ? $row[6] : ''));
             return $chat;
         }
-        
         return false;
     }
     
@@ -80,28 +91,32 @@ class ChatApi {
         
         $chatArray;
         while($row = mysql_fetch_array($result)){
-            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image'], $row['descr'], $row['fdate'], $row['city']);
+            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], 
+                    ($row['image'] != NULL ? $row['image'] : '' ) ,
+                    ($row['descr'] != NULL ? $row['descr'] : ''), 
+                    ($row['fdate'] != NULL ? $row['fdate'] : ''),
+                    ($row['city'] != NULL) ? $row['city'] : '');
             $chatArray[] = $chat;
         }
         
         return $chatArray;
     }
     
-    public function findChats($mobName, $mobDescrStr, $mobDateStr, $mobCityStr, $useDate){
+    public function findChats($mobName, $mobDescrStr, $mobDateStr, $mobCityStr, $useDate, $userId){
         dlog($mobName);
         dlog($mobDescrStr);
         dlog($mobDateStr);
         dlog($mobCityStr);
         dlog($useDate);
         
-        $query = self::$SELECT_CHATS;
+        $query = str_replace('{1}', $userId, self::$SELECT_CHATS);
         
         if($mobName != "")
-            $query .= "AND name like '{$mobName}' ";
+            $query .= "AND name like '%{$mobName}%' ";
         if($mobDescrStr != "")
-            $query .= "AND descr like '{$mobDescrStr}' ";
+            $query .= "AND descr like '%{$mobDescrStr}%' ";
         if($mobCityStr != "")
-            $query .= "AND city like '{$mobCityStr}' ";            
+            $query .= "AND city like '%{$mobCityStr}%' ";            
         if($useDate == "true")
             $query .= "AND fdate like '{$mobDateStr}' ";
             
@@ -116,7 +131,11 @@ class ChatApi {
         
         $chatArray;
         while($row = mysql_fetch_array($result)){
-            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], $row['image'], $row['descr'], $row['fdate'], $row['city']);
+            $chat = new Chat($row['id'], $row['admin_id'], $row['name'], 
+                    ($row['image'] != NULL ? $row['image'] : '' ) ,
+                    ($row['descr'] != NULL ? $row['descr'] : ''), 
+                    ($row['fdate'] != NULL ? $row['fdate'] : ''),
+                    ($row['city'] != NULL) ? $row['city'] : '');
             $chatArray[] = $chat;
         }
         
@@ -127,6 +146,7 @@ class ChatApi {
    private static $INSERT_REF = "INSERT INTO fm_refs values ({1}, '{2}')";
    private static $SELECT_CHAT = "SELECT * FROM fm_chats WHERE id = {1}";
    private static $SELECT_USER_CHAT = "SELECT c.* FROM fm_chats c, fm_refs r WHERE r.user_id = {1} AND c.id = r.chat_id";
-   private static $SELECT_CHATS = "SELECT * FROM fm_chats WHERE 1=1 ";
+   private static $SELECT_CHATS = "SELECT * FROM fm_chats WHERE id NOT IN (select chat_id from fm_refs WHERE user_id = {1}) ";
    private static $UPDATE_CHAT_IMAGE = "UPDATE fm_chats set image = '{1}' WHERE id = {2}";
+   private static $REMOVE_REF = "DELETE FROM fm_refs where user_id = {1} and chat_id = {2}";
 }

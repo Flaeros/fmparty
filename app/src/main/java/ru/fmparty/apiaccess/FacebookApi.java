@@ -22,10 +22,11 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.List;
 
+import ru.fmparty.MainActivity;
 import ru.fmparty.utils.DownloadImageTask;
 
 public class FacebookApi implements SocialNetworkApi {
-    Activity activity;
+    MainActivity activity;
     CallbackManager callbackManager;
     AccessToken token;
     final String TAG = "FlashMob: FacebookApi";
@@ -35,7 +36,7 @@ public class FacebookApi implements SocialNetworkApi {
 
     private long userId;
 
-    public FacebookApi(Activity act){
+    public FacebookApi(MainActivity act){
         this.activity = act;
 
         callbackManager = CallbackManager.Factory.create();
@@ -73,6 +74,8 @@ public class FacebookApi implements SocialNetworkApi {
             FacebookApi.this.userId = Long.valueOf(loginResult.getAccessToken().getUserId());
             createUser();
             setResult(ResultCode.SUCCESS.get());
+
+
         }
         @Override
         public void onCancel() {}
@@ -99,7 +102,7 @@ public class FacebookApi implements SocialNetworkApi {
                             Log.d(TAG, "id = " + id);
                             Log.d(TAG, "name = " + name);
 
-                            DbApi.createUser(SocNetId.FACEBOOK.get(), id, name);
+                            DbApi.createUser(SocNetId.FACEBOOK.get(), id, name, activity);
                         }
                         catch (Exception e){
                             Log.v(TAG, "JSON error");

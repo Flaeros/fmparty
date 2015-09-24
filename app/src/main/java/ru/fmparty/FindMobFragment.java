@@ -2,8 +2,11 @@ package ru.fmparty;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,8 @@ import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
+import ru.fmparty.utils.DatabaseHelper;
+import ru.fmparty.utils.InnerDB;
 
 public class FindMobFragment extends Fragment{
     private final String TAG = "FlashMob FindMob";
@@ -124,7 +129,10 @@ public class FindMobFragment extends Fragment{
     }
 
     private void findMobs(String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, boolean useDate) {
-        DbApi.findMobs(this, mobNameStr, mobDescrStr, mobDateStr, mobCityStr, useDate, progressBar);
+
+        String userId = InnerDB.getInnerUserId(getActivity(), socialNetworkApi.getUserId());
+        Log.d(TAG, "userId = " + userId);
+        DbApi.findMobs(this, mobNameStr, mobDescrStr, mobDateStr, mobCityStr, userId, useDate, progressBar);
     }
 
     public void showMobs(List<Chat> chats){

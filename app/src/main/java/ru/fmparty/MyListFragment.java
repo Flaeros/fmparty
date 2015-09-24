@@ -19,12 +19,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
+import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.utils.DatabaseHelper;
@@ -48,6 +50,7 @@ public class MyListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
+
         View view = inflater.inflate(R.layout.my_list_fragment,
                 container, false);
 
@@ -101,7 +104,20 @@ public class MyListFragment extends Fragment {
         chatIntent.putExtra("socUserId", String.valueOf(socialNetworkApi.getUserId()));
         chatIntent.putExtra("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId()));
 
-        startActivity(chatIntent);
+        startActivityForResult(chatIntent, 2409);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d(TAG, "onActivityResult");
+        Log.d(TAG, "requestCode = " + requestCode + " resultCode = " + resultCode);
+
+        if(requestCode == 2409 && resultCode == ResultCode.CHAT_LEFT.get()){
+            Log.v(TAG, "ChatLeft");
+            loadChatsFromServer();
+        }
     }
 
     public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi){
@@ -109,7 +125,7 @@ public class MyListFragment extends Fragment {
     }
 
     private void loadChatsFromSQLite(){
-        Cursor cursor = mSqLiteDatabase.query("chats", new String[]{DatabaseHelper.CHAT_ID_COLUMN,
+        Cursor cursor = mSqLiteDatabase.query(DatabaseHelper.CHATS_TABLE, new String[]{DatabaseHelper.CHAT_ID_COLUMN,
                         DatabaseHelper.CHAT_ADMIN_ID_COLUMN, DatabaseHelper.CHAT_NAME_COLUMN,
                         DatabaseHelper.CHAT_IMAGE_COLUMN, DatabaseHelper.CHAT_DESCR_COLUMN,
                         DatabaseHelper.CHAT_FDATE_COLUMN, DatabaseHelper.CHAT_CITY_COLUMN
@@ -138,7 +154,7 @@ public class MyListFragment extends Fragment {
         cursor.close();
     }
 
-    private void loadChatsFromServer() {
+    public void loadChatsFromServer() {
         DbApi.getChats(this, socialNetworkApi.getSocialCodeId(), socialNetworkApi.getUserId(), progressBar);
     }
 
@@ -160,7 +176,7 @@ public class MyListFragment extends Fragment {
     private void updateChatsSQLite() {
 
         String deleteQuery = "DELETE FROM " +
-                DatabaseHelper.DATABASE_TABLE ;
+                DatabaseHelper.CHATS_TABLE;
         mSqLiteDatabase.execSQL(deleteQuery);
 
         for(Chat chat : chats){
@@ -174,7 +190,7 @@ public class MyListFragment extends Fragment {
             newValues.put(DatabaseHelper.CHAT_FDATE_COLUMN, chat.getDate());
             newValues.put(DatabaseHelper.CHAT_CITY_COLUMN, chat.getCity());
 
-            long result = mSqLiteDatabase.insert("chats", null, newValues);
+            long result = mSqLiteDatabase.insert(DatabaseHelper.CHATS_TABLE, null, newValues);
         }
 
     }

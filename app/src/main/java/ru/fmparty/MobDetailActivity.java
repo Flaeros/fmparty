@@ -46,6 +46,7 @@ public class MobDetailActivity extends Activity{
         socUserId = Long.valueOf(getIntent().getExtras().getString("socUserId"));
         socNetId = Integer.valueOf(getIntent().getExtras().getString("socNetId"));
         String chatName = getIntent().getExtras().getString("chatName");
+        String joined = getIntent().getExtras().getString("joined");
 
         Button joinMobButton = (Button) findViewById(R.id.joinMob);
 
@@ -58,23 +59,29 @@ public class MobDetailActivity extends Activity{
 
         DbApi.getChat(this, chatId, progressBar);
 
+        if(joined!= null && joined.equals("yes"))
+            joinMobButton.setVisibility(Button.GONE);
+
         joinMobButton.setOnClickListener(joinMobButtonnListener);
-
-
 
         title.setText(chatName);
         descr.setText(chatName);
-
     }
 
     public void fillChat(Chat chat){
         this.chat = chat;
 
-        descr.setText(chat.getDescr());
-        mobDate.setText(chat.getDate());
-        mobCity.setText(chat.getCity());
+        Log.d(TAG, "chat = " + chat);
+
+        if(!chat.getDescr().isEmpty())
+            descr.setText(chat.getDescr());
+        if(!chat.getDate().isEmpty())
+            mobDate.setText(chat.getDate());
+        if(!chat.getCity().isEmpty())
+            mobCity.setText(chat.getCity());
+
         if(!this.isDestroyed() )
-        Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).into(imageView);
+            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).into(imageView);
     }
 
     private View.OnClickListener joinMobButtonnListener = new View.OnClickListener() {

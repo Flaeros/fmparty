@@ -11,4 +11,7 @@
     <string name="action_open_profile">My Profile</string>
     <string name="action_logout">Logout</string>
 
+    <string name="action_chat_info">Chat info</string>
+    <string name="action_leave_chat">Leave chat</string>
+
 </resources>

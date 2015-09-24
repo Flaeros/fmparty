@@ -20,17 +20,18 @@ import com.vk.sdk.api.model.VKList;
 
 import org.json.JSONException;
 
+import ru.fmparty.MainActivity;
 import ru.fmparty.utils.DownloadImageTask;
 
 public class VkontakteApi implements SocialNetworkApi{
-    Activity activity;
+    MainActivity activity;
     final String TAG = "FlashMob: VkontakteApi";
 
     private int result;
 
     private long userId;
 
-    public VkontakteApi(Activity act){
+    public VkontakteApi(MainActivity act){
         this.activity = act;
     }
 
@@ -81,7 +82,7 @@ public class VkontakteApi implements SocialNetworkApi{
                         Log.v(TAG, response.json.toString());
 
                         VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
-                        DbApi.createUser(SocNetId.VKONTAKTE.get(), user.getId(), user.first_name);
+                        DbApi.createUser(SocNetId.VKONTAKTE.get(), user.getId(), user.first_name, activity);
                     }
                 });
     }
