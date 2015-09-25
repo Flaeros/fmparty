@@ -132,16 +132,7 @@ public class ChatActivity extends Activity{
 
         cursor.close();
 
-        cursor = mSqLiteDatabase.query(DatabaseHelper.AUX_TABLE, new String[]{
-                DatabaseHelper.AUX_SIGN_COLUMN, DatabaseHelper.AUX_VALUE_COLUMN}
-                , "sign = 'innerUserId'", null, null, null, null) ;
-
-        if(cursor.getCount() != 0 ) {
-            cursor.moveToFirst();
-            String valueId = cursor.getString(cursor.getColumnIndex(DatabaseHelper.AUX_VALUE_COLUMN));
-            Log.d(TAG, "userId InnerValueId = " + valueId);
-            userId = Long.valueOf(valueId);
-        }
+        userId = Long.valueOf(InnerDB.getInnerUserId(this, socUserId));
     }
 
     public void loadMessagesCallback(List<Message> messageList, long user_id){
@@ -211,13 +202,15 @@ public class ChatActivity extends Activity{
             TextView textMsgText = (TextView) itemView.findViewById(R.id.msgText);
             textMsgText.setText(message.getText());
 
+            TextView textMsgUser = (TextView) itemView.findViewById(R.id.msgUser);
+
             if(message.getUserId() == userId) {
                 textMsgText.setGravity(Gravity.RIGHT);
+                textMsgUser.setText("");
             }
-            else{
-                TextView textMsgUser = (TextView) itemView.findViewById(R.id.msgUser);
+            else
                 textMsgUser.setText(message.getUserName()+":");
-            }
+
             return itemView;
         }
 
