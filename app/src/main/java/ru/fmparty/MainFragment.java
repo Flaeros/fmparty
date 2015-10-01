@@ -1,7 +1,11 @@
 package ru.fmparty;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class MainFragment extends Fragment{
+import ru.fmparty.utils.InnerDB;
+
+public class MainFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final String TAG = "FlashMob MainFragment";
 
     private View.OnClickListener myListButtonListener;
@@ -37,6 +43,12 @@ public class MainFragment extends Fragment{
 
         setHasOptionsMenu(true);
 
+        // Регистрируем этот OnSharedPreferenceChangeListener
+        Context context = getActivity().getApplicationContext();
+        SharedPreferences prefs =
+                PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+
         return view;
     }
 
@@ -59,13 +71,49 @@ public class MainFragment extends Fragment{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case R.id.action_settings:
+                openSettings();
+                return true;
+            case R.id.action_open_profile:
+                openProfile();
+                return true;
             case R.id.action_logout:
-                MainActivity activity = (MainActivity) getActivity();
-                activity.getManager().recreateAfterLogOut();
+                logout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void openProfile() {
+        String userIdStr = InnerDB.getInnerUserId(getActivity(), ((MainActivity) getActivity()).getSocialNetworkApi().getUserId());
+        int userId = Integer.valueOf(userIdStr);
+
+        Log.d(TAG, "openProfile userId = " + userId);
+        Intent profileIntent = new Intent(getActivity(), ProfileActivity.class);
+
+        profileIntent.putExtra("userId", String.valueOf(userId));
+        profileIntent.putExtra("isEditable", Boolean.TRUE.toString());
+
+        startActivity(profileIntent);
+    }
+
+    private void openSettings() {
+        Intent i = new Intent(this.getActivity(), AppPreferenceActivity.class);
+        startActivity(i);
+    }
+
+    private void logout() {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.getManager().recreateAfterLogOut();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "Settings changed");
+        if(key.equals("allow_sound")) {
+            Boolean current = sharedPreferences.getBoolean(key, false);
+            Log.d(TAG, "key = " + key + "; current value = " + current);
+        }
+    }
 }

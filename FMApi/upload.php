@@ -1,8 +1,8 @@
 <?php
 // Where the file is going to be placed 
 $target_path = "uploads/";
-$new_width = 70;
-$new_height = 70;
+$new_width = 200;
+$new_height = 200;
 
 $server = $_SERVER['DOCUMENT_ROOT'];
 

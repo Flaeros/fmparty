@@ -22,6 +22,11 @@
         </activity>
         <activity
             android:windowSoftInputMode="adjustResize"
+            android:name=".ProfileActivity"
+            android:label="@string/profile_title">
+        </activity>
+        <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".ChatActivity"
             android:label="@string/chat_title">
         </activity>
@@ -29,6 +34,10 @@
             android:windowSoftInputMode="adjustResize"
             android:name=".MobDetailActivity"
             android:label="@string/mob_detail_title">
+        </activity>
+        <activity
+            android:name=".AppPreferenceActivity"
+            android:label="@string/settings_title">
         </activity>
 		<activity android:name="com.vk.sdk.VKOpenAuthActivity" />
 

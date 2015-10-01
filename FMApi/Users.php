@@ -15,10 +15,14 @@ class Users{
 
     public function getUserById($id){
         $result = mysql_query(self::$SELECT_BY_ID.$id, $this->link);
+        dlog($result);
+        dlog(self::$SELECT_BY_ID.$id);
         $row = mysql_fetch_row($result);
         dlog($row);
         if($row != false) {
-            $user = new User($row[0], $row[1], $row[2], $row[3]);
+            $user = new User($row[0], $row[1], $row[2], $row[3], $row[4]);
+            dlog("got");
+            dlog($user);
             return $user;
         }
         return false;
@@ -34,9 +38,7 @@ class Users{
         dlog($result);
         
         if($row != false) {
-            
             dlog($row);
-            
             return $row[0];
         }
         return false;
@@ -51,24 +53,25 @@ class Users{
         if($row != false) {
             dlog("getUserBySocNet users");
             dlog($row);
-            $user = new User($row[0], $row[1], $row[2], $row[3]);
+            $user = new User($row[0], $row[1], $row[2], $row[3], $row[4]);
             
             return $user;
         }
         return false;
     }
     
-    public function updateUser(User $user){
-        $query = str_replace('{1}', $user->getName(), self::$UPDATE_USER_NAME);
-        $query = str_replace('{2}', $user->getId(), $query);
-        $result = mysql_query($query, $this->link, $this->link);
+    public function updateUser($userId, $filename, $userName){
+        $query = str_replace('{1}', $userName, self::$UPDATE_USER);
+        $query = str_replace('{2}', $filename, $query);
+        $query = str_replace('{3}', $userId, $query);
+        $result = mysql_query($query, $this->link);
         return $result;
     }
     
     public function createUser(User $user){
-        $query = str_replace('{1}', $user->getSocNetId(), self::$INSERT_USER);
-        $query = str_replace('{2}', $user->getSocUserId(), $query);
-        $query = str_replace('{3}', $user->getName(), $query);
+        $query = str_replace('{1}', $user->socNetId, self::$INSERT_USER);
+        $query = str_replace('{2}', $user->socUserId, $query);
+        $query = str_replace('{3}', $user->name, $query);
         dlog($query);
         $result = mysql_query($query, $this->link);
         return $result;
@@ -77,6 +80,6 @@ class Users{
     private static $SELECT_BY_ID = 'SELECT * FROM fm_users where id = ';
     private static $SELECT_BY_SOC_NET_ID = 'SELECT * FROM fm_users where socuserid = {1} and socnet = {2}';
     private static $INSERT_USER = "INSERT INTO fm_users(socnet, socuserid, name) values ({1}, {2}, '{3}')";
-    private static $UPDATE_USER_NAME = 'UPDATE fm_users set name = {1} where id = {2}';
+    private static $UPDATE_USER = "UPDATE fm_users set name = '{1}', image = '{2}' where id = {3}";
     
 }

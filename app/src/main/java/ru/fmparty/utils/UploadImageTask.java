@@ -1,14 +1,8 @@
 package ru.fmparty.utils;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.ProgressBar;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -27,9 +21,15 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
 
     private static String TAG = "FlashMob UploadImageTask";
     private ProgressBar progressBar;
+    private AsyncResponse asyncResponse;
 
     public UploadImageTask(ProgressBar progressBar) {
         this.progressBar = progressBar;
+    }
+
+    public UploadImageTask(ProgressBar progressBar, AsyncResponse asyncResponse) {
+        this.progressBar = progressBar;
+        this.asyncResponse = asyncResponse;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
     protected ResultObject doInBackground(String... params) {
         ResultObject result = null;
 
-        String filePath = params[0];
+        String filePath = params[1];
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
         DataInputStream inStream = null;
@@ -118,7 +118,12 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
             while ((filename = inStream.readLine()) != null) {
 
                 Log.d(TAG, "Server Response " + filename);
-                DbApi.updateChatImage(params[1], filename);
+
+                String methodToCall = params[0];
+                if(methodToCall.equals("updateChatImage"))
+                    DbApi.updateChatImage(params[2], filename);
+                else if(methodToCall.equals("updateUser"))
+                    DbApi.updateUser(params[2], filename, params[3], progressBar, asyncResponse);
             }
 
             inStream.close();

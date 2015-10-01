@@ -1,29 +1,18 @@
 package ru.fmparty;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookSdk;
 import com.vk.sdk.VKSdk;
 
-import org.json.JSONException;
-
-import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.FacebookApi;
 import ru.fmparty.apiaccess.ResultCode;
-import ru.fmparty.apiaccess.ResultObject;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.apiaccess.VkontakteApi;
-import ru.fmparty.utils.DatabaseHelper;
-import ru.fmparty.utils.InnerDB;
 
 
 public class MainActivity extends Activity {
@@ -71,6 +60,7 @@ public class MainActivity extends Activity {
     }
 
     public InnerFragmentManager getManager() { return manager; }
+    public SocialNetworkApi getSocialNetworkApi() { return socialNetworkApi; }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

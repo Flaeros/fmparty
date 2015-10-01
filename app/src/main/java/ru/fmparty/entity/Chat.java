@@ -56,7 +56,7 @@ public class Chat {
 
     @Override
     public String toString(){
-        return "Chat: id: " + id + "; admin_id: " + admin_id + "; name: " + name + "; descr: " + descr + "; date: " + date + "; city: " + city ;
+        return "{Chat: id: " + id + "; admin_id: " + admin_id + "; name: " + name + "; descr: " + descr + "; date: " + date + "; city: " + city + "}";
     }
 
     @Override

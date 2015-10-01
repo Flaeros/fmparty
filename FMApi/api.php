@@ -41,9 +41,39 @@ switch ($do) {
     case 'leaveChat':
         leaveChat();
         break;
+    case 'getUser':
+        getUser();
+        break;
     case 'updateUser':
         updateUser();
         break;
+}
+
+function updateUser(){
+    $userApi = new Users();
+    
+    $userId = intval($_POST['userId']);
+    $filename = mysql_real_escape_string($_POST['filename']);
+    $userName = mysql_real_escape_string($_POST['userName']);
+    
+    $result = $userApi->updateUser($userId, $filename, $userName);
+    
+    dlog('updateUser');
+    dlog($result);
+    
+    writeResult($result);
+}
+
+function getUser(){
+    $userApi = new Users();
+    
+    $userId = intval($_POST['id']);
+    
+    $result = $userApi->getUserById($userId);
+    
+    dlog('getUser');
+    dlog($result);
+    writeResult($result);
 }
 
 function leaveChat(){
@@ -295,10 +325,6 @@ function isUserExists($socUserId, $socNetId){
         return false;
     else 
         return $result;
-}
-
-function updateUser(){
-    
 }
 
 function writeResult($result){

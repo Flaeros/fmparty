@@ -2,6 +2,7 @@ package ru.fmparty.utils;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import org.apache.http.HttpResponse;
@@ -34,6 +35,7 @@ public class PostCallTask extends AsyncTask<HttpObjectPair, Integer, ResultObjec
 
     public PostCallTask(){}
     public PostCallTask(AsyncResponse asyncResponse){ delegate = asyncResponse; }
+    public PostCallTask(ProgressBar progressBar){ this.progressBar = progressBar; progressBar.setVisibility(View.VISIBLE);}
 
     public PostCallTask(AsyncResponse asyncResponse, ProgressBar progressBar){
         delegate = asyncResponse;

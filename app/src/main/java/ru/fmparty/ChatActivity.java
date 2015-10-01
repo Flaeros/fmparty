@@ -7,22 +7,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.entity.Message;
+import ru.fmparty.entity.User;
 import ru.fmparty.utils.ChatRefreshThread;
 import ru.fmparty.utils.DatabaseHelper;
+import ru.fmparty.utils.GetUserCallback;
 import ru.fmparty.utils.InnerDB;
 
 public class ChatActivity extends Activity{
@@ -197,24 +200,72 @@ public class ChatActivity extends Activity{
             if (itemView == null) {
                 itemView = ChatActivity.this.getLayoutInflater().inflate(R.layout.msg_layout, parent, false);
             }
-            Message message = messages.get(position);
+            final Message message = messages.get(position);
 
             TextView textMsgText = (TextView) itemView.findViewById(R.id.msgText);
             textMsgText.setText(message.getText());
 
             TextView textMsgUser = (TextView) itemView.findViewById(R.id.msgUser);
 
+            ImageView userPic = (ImageView) itemView.findViewById(R.id.profileImage);
+
+            userPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showUserProfile(message.getUserId(), message.getUserId() == userId);
+                }
+            });
+
             if(message.getUserId() == userId) {
-                textMsgText.setGravity(Gravity.RIGHT);
+                textMsgText.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
                 textMsgUser.setText("");
+                userPic.setVisibility(View.GONE);
             }
-            else
-                textMsgUser.setText(message.getUserName()+":");
+            else {
+                createOrGetUserPic(userPic, message.getUserId());
+                textMsgUser.setText(message.getUserName() + ":");
+                textMsgText.setGravity(Gravity.CENTER_VERTICAL);
+                userPic.setVisibility(View.VISIBLE);
+            }
 
             return itemView;
         }
 
     }
+
+    public void createOrGetUserPic(final ImageView userPic, int userId) {
+        String image = InnerDB.getUserImage(this, userId);
+
+        if(image != null)
+            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + image ).into(userPic);
+        else{
+            DbApi.getUser(userId, new GetUserCallback() {
+                @Override
+                public void setUser(User user) {
+                    if(user.getImage() != null && !user.getImage().isEmpty()) {
+                        Log.d(TAG, "pic set null");
+                        InnerDB.setUserImage(ChatActivity.this, user);
+                        Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).into(userPic);
+                    }
+                    else{
+                        Log.d(TAG, "pic set default");
+                        userPic.setImageResource(R.drawable.default_userpic);
+                    }
+                }
+            });
+        }
+    }
+
+    private void showUserProfile(long userId, boolean isEditable) {
+        Log.d(TAG, "showUserProfile userId = " + userId);
+        Intent profileIntent = new Intent(this, ProfileActivity.class);
+
+        profileIntent.putExtra("userId", String.valueOf(userId));
+        profileIntent.putExtra("isEditable", String.valueOf(isEditable));
+
+        startActivity(profileIntent);
+    }
+
     private View.OnClickListener menuButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

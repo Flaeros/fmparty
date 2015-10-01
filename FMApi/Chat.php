@@ -19,38 +19,17 @@ class Chat {
     }
 
     function __construct2($name, $admin){
-        $this->setName($name);
-        $this->setAdmin($admin);
+        $this->name = $name;
+        $this->admin = $admin;
     }
     
     function __construct7($id, $admin, $name, $image, $descr, $date, $city){
-        $this->setId($id);
-        $this->setAdmin($admin);
-        $this->setName($name);
-        $this->setImage($image);
-        $this->setDescr($descr);
-        $this->setDate($date);
-        $this->setCity($city);
+        $this->id = $id;
+        $this->admin = $admin;
+        $this->name = $name;
+        $this->image = $image;
+        $this->descr = $descr;
+        $this->date = $date;
+        $this->city = $city;
     }
-       
-    public function getId(){ return $this->id;}
-    public function setId($id){ $this->id = $id;}
-
-    public function getAdmin(){ return $this->admin;}
-    public function setAdmin($admin){ $this->admin = $admin;}
-    
-    public function getName(){ return $this->name;}
-    public function setName($name){ $this->name = $name;}
-    
-    public function getImage(){ return $this->image;}
-    public function setImage($image){ $this->image = $image;}
-    
-    public function getDescr(){ return $this->descr;}
-    public function setDescr($descr){ $this->descr = $descr;}
-    
-    public function getDate(){ return $this->date;}
-    public function setDate($date){ $this->date = $date;}
-    
-    public function getCity(){ return $this->city;}
-    public function setCity($city){ $this->city = $city;}
 }

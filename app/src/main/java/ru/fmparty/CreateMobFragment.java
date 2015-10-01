@@ -161,7 +161,7 @@ public class CreateMobFragment extends Fragment {
 
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 if(filePath != null)
-                    new UploadImageTask(progressBar).execute(filePath, String.valueOf(id));
+                    new UploadImageTask(progressBar).execute("updateChatImage", filePath, String.valueOf(id));
             }catch (JSONException e){
                 Log.d(TAG, e.toString());
                 Log.d(TAG, e.getMessage());

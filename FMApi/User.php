@@ -6,6 +6,8 @@ class User {
     public $socNetId;
     public $socUserId;
     public $name;
+    public $image;
+    
 
     function __construct(){
         $a = func_get_args(); 
@@ -16,27 +18,16 @@ class User {
     }
             
     function __construct3($socNetId, $socUserId, $name){
-        $this->setSocNetId($socNetId);
-        $this->setSocUserId($socUserId);
-        $this->setName($name);
+        $this->socNetId = $socNetId;
+        $this->socUserId = $socUserId;
+        $this->name = $name;
     }
     
-    function __construct4($id, $socNetId, $socUserId, $name){
-        $this->setId($id);
-        $this->setSocNetId($socNetId);
-        $this->setSocUserId($socUserId);
-        $this->setName($name);
+    function __construct5($id, $socNetId, $socUserId, $name, $image){
+        $this->id = $id;
+        $this->socNetId = $socNetId;
+        $this->socUserId = $socUserId;
+        $this->name = $name;
+        $this->image = $image;
     }
-    
-    public function getId(){ return $this->id;}
-    public function setId($id){ $this->id = $id;}
-
-    public function getSocNetId(){ return $this->socNetId;}
-    public function setSocNetId($socnet){ $this->socNetId = $socnet;}
-    
-    public function getSocUserId(){ return $this->socUserId;}
-    public function setSocUserId($socUserId){ $this->socUserId = $socUserId;}
-    
-    public function getName(){ return $this->name;}
-    public function setName($name){ $this->name = $name;}
 }

@@ -3,11 +3,11 @@ package ru.fmparty.entity;
 public class Message {
     private long id;
     private int chatId;
-    private long userId;
+    private int userId;
     private String userName;
     private String text;
 
-    public Message(long id, int chatId, long userId, String userName, String text) {
+    public Message(long id, int chatId, int userId, String userName, String text) {
         this.id = id;
         this.chatId = chatId;
         this.userId = userId;
@@ -16,17 +16,13 @@ public class Message {
     }
 
     public String getText() { return text; }
-
-    public long getUserId() { return userId; }
-
+    public int getUserId() { return userId; }
     public int getChatId() { return chatId; }
-
     public String getUserName() { return userName; }
-
     public long getId() { return id; }
 
     @Override
-    public String toString(){ return "Message: id: " + id + "; chatId: " + chatId + "; userId: " + userId + "; text: " + text; }
+    public String toString(){ return "{Message: id: " + id + "; chatId: " + chatId + "; userId: " + userId + "; text: " + text + "}"; }
 
     @Override
     public int hashCode() {

@@ -10,8 +10,10 @@ import ru.fmparty.apiaccess.Consts;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    //TODO constants to ENUM refactoring
     public static final String CHATS_TABLE = "chats";
     public static final String MSGS_TABLE = "msgs";
+    public static final String USERS_TABLE = "users";
     public static final String AUX_TABLE = "aux";
 
     public static final String CHAT_ID_COLUMN = "id";
@@ -27,6 +29,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String MSG_USER_ID_COLUMN = "user_id";
     public static final String MSG_USER_NAME_COLUMN = "user_name";
     public static final String MSG_TEXT_COLUMN = "text";
+
+    public static final String USER_ID_COLUMN = "id";
+    public static final String USER_IMAGE_COLUMN = "image";
 
     public static final String AUX_SIGN_COLUMN = "sign";
     public static final String AUX_VALUE_COLUMN = "value";
@@ -52,6 +57,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             MSG_USER_NAME_COLUMN + " text, " +
             MSG_TEXT_COLUMN + " text ); ";
 
+    private static final String CREATE_USERS_TABLE =
+            "CREATE TABLE " + USERS_TABLE + "(\n " +
+                    USER_ID_COLUMN + " integer, " +
+                    USER_IMAGE_COLUMN + " text ); ";
+
     private static final String CREATE_AUX_TABLE =
             "CREATE TABLE " + AUX_TABLE + "(\n " +
             AUX_SIGN_COLUMN + " text, " +
@@ -75,16 +85,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_CHATS_TABLE);
         db.execSQL(CREATE_MSGS_TABLE);
+        db.execSQL(CREATE_USERS_TABLE);
         db.execSQL(CREATE_AUX_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-// Запишем в журнал
         Log.w(TAG, "Обновляемся с версии " + oldVersion + " на версию " + newVersion);
 
         db.execSQL("DROP TABLE IF EXISTS " + CHATS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MSGS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + USERS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + AUX_TABLE);
 
         onCreate(db);

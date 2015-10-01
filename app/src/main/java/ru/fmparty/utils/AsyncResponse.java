@@ -2,10 +2,6 @@ package ru.fmparty.utils;
 
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.ResultObject;
 
@@ -26,9 +22,7 @@ public abstract class AsyncResponse {
         }
     }
 
-    void onSuccess(ResultObject resultObject) {
-
-    }
+    abstract protected void onSuccess(ResultObject resultObject);
 
     void onError() {
         Log.d(TAG, "error");

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import ru.fmparty.apiaccess.Consts;
+import ru.fmparty.entity.User;
 
 public class InnerDB {
     private static DatabaseHelper databaseHelper;
@@ -63,5 +64,35 @@ public class InnerDB {
         mSqLiteDatabase.execSQL("DELETE FROM " + DatabaseHelper.CHATS_TABLE);
         mSqLiteDatabase.execSQL("DELETE FROM " + DatabaseHelper.MSGS_TABLE);
         mSqLiteDatabase.execSQL("DELETE FROM " + DatabaseHelper.AUX_TABLE);
+    }
+
+
+    public static String getUserImage(Activity activity, long userId) {
+        loadHelper(activity);
+
+        Cursor cursor = mSqLiteDatabase.query(DatabaseHelper.USERS_TABLE, new String[]{
+                DatabaseHelper.USER_ID_COLUMN, DatabaseHelper.USER_IMAGE_COLUMN}
+                , DatabaseHelper.USER_ID_COLUMN + " = " + userId, null, null, null, null) ;
+
+        String result = null;
+
+        if(cursor.getCount() != 0 ) {
+            cursor.moveToFirst();
+            result = cursor.getString(cursor.getColumnIndex(DatabaseHelper.USER_IMAGE_COLUMN));
+        }
+
+        return result;
+    }
+
+    public static void setUserImage(Activity activity, User user) {
+        loadHelper(activity);
+
+        ContentValues newValues = new ContentValues();
+
+        newValues.put(DatabaseHelper.USER_ID_COLUMN, user.getId());
+        newValues.put(DatabaseHelper.USER_IMAGE_COLUMN, user.getImage());
+
+        long result = mSqLiteDatabase.insert(DatabaseHelper.USERS_TABLE, null, newValues);
+        Log.d(TAG, "result = " + result);
     }
 }

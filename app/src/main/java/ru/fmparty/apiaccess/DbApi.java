@@ -1,8 +1,5 @@
 package ru.fmparty.apiaccess;
 
-import android.app.Activity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -21,8 +18,9 @@ import ru.fmparty.MobDetailActivity;
 import ru.fmparty.MyListFragment;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.entity.Message;
+import ru.fmparty.entity.User;
 import ru.fmparty.utils.AsyncResponse;
-import ru.fmparty.utils.DatabaseHelper;
+import ru.fmparty.utils.GetUserCallback;
 import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.InnerDB;
 import ru.fmparty.utils.PostCallTask;
@@ -44,7 +42,8 @@ public class DbApi {
         argsList.add(new HttpObjectPair("name", name));
 
         new PostCallTask(new AsyncResponse() {
-            void onSuccess(ResultObject resultObject) {
+            @Override
+            protected void onSuccess(ResultObject resultObject) {
                 int id = 0;
 
                 try {
@@ -60,6 +59,36 @@ public class DbApi {
                     Log.d(TAG, "userId InnerValueId = " + innerUserId);
                 else if(id != 0)
                     InnerDB.setInnerUserId(activity, id, socUserId);
+            }
+        }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
+    public static void getUser(int id, final GetUserCallback getUserCallback){
+
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "getUser"));
+        argsList.add(new HttpObjectPair("id", String.valueOf(id)));
+
+        new PostCallTask(new AsyncResponse() {
+            @Override
+            protected void onSuccess(ResultObject resultObject) {
+                User user = null;
+                try {
+                    JSONObject jObj = resultObject.getJsonObject();
+
+                    user = new User(jObj.getInt("id")
+                            ,jObj.getInt("socNetId")
+                            ,jObj.getLong("socUserId")
+                            ,jObj.getString("name")
+                            ,jObj.getString("image"));
+
+                } catch (JSONException e) {
+                    Log.d(TAG, "error = " + e.toString());
+                    e.printStackTrace();
+                }
+
+                if(user != null)
+                    getUserCallback.setUser(user);
             }
         }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
@@ -83,7 +112,8 @@ public class DbApi {
         argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
 
         new PostCallTask(new AsyncResponse() {
-            void onSuccess(ResultObject resultObject) {
+            @Override
+            protected void onSuccess(ResultObject resultObject) {
                 Log.d(TAG, "resultObject = " + resultObject);
                 List<Message> messages = new ArrayList<>();
                 long user_id = 0;
@@ -96,7 +126,7 @@ public class DbApi {
                         JSONObject jObj = jsonMsgs.getJSONObject(i);
                         Message msg = new Message(jObj.getLong("id")
                                                  ,jObj.getInt("chatId")
-                                                 ,jObj.getLong("userId")
+                                                 ,jObj.getInt("userId")
                                                  ,jObj.getString("userName")
                                                  ,jObj.getString("text"));
                         messages.add(msg);
@@ -213,6 +243,17 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
+    public static void updateUser(String userId, String filename, String userName, ProgressBar progressBar, AsyncResponse asyncResponse) {
+        Log.d(TAG, "userId = " + userId);
+        List<HttpObjectPair> argsList = new ArrayList<>();
+        argsList.add(new HttpObjectPair("do", "updateUser"));
+        argsList.add(new HttpObjectPair("userId", userId));
+        argsList.add(new HttpObjectPair("userName", userName));
+        argsList.add(new HttpObjectPair("filename", filename));
+
+        new PostCallTask(asyncResponse, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+    }
+
     public static void updateChatImage(String chatId, String filename) {
         Log.d(TAG, "chatId = " + chatId);
         List<HttpObjectPair> argsList = new ArrayList<>();
@@ -272,7 +313,7 @@ public class DbApi {
                         JSONObject jObj = jsonMsgs.getJSONObject(i);
                         Message msg = new Message(jObj.getLong("id")
                                 ,jObj.getInt("chatId")
-                                ,jObj.getLong("userId")
+                                ,jObj.getInt("userId")
                                 ,jObj.getString("userName")
                                 ,jObj.getString("text"));
                         messages.add(msg);
