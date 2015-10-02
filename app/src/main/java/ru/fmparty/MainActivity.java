@@ -13,6 +13,7 @@ import ru.fmparty.apiaccess.FacebookApi;
 import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.apiaccess.VkontakteApi;
+import ru.fmparty.utils.ImageHelper;
 
 
 public class MainActivity extends Activity {
@@ -68,6 +69,13 @@ public class MainActivity extends Activity {
 
         Log.d(TAG, "onActivityResult");
         Log.d(TAG, "requestCode = " + requestCode + " resultCode = " + resultCode);
+
+        //for image select when create chat
+        if (requestCode == 1)
+            if (resultCode == Activity.RESULT_OK) {
+                manager.getCreateMobFragment().onActivityResultHelp(data, this);
+                return;
+            }
 
         socialNetworkApi = manager.getAuthorizedApi();
         socialNetworkApi.onActivityResult(requestCode, resultCode, data);

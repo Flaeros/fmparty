@@ -25,7 +25,7 @@ public abstract class AsyncResponse {
     abstract protected void onSuccess(ResultObject resultObject);
 
     void onError() {
-        Log.d(TAG, "error");
+        //or for no result
     }
 
 }

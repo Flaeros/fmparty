@@ -16,19 +16,19 @@ public class InnerFragmentManager {
     private CreateMobFragment createMobFragment;
 
     private Activity activity;
+
     private SocialNetworkApi socialNetworkApi;
-
-
     private final String TAG = "FlashMob InnrFrMngr";
+
 
     InnerFragmentManager(Activity activity){
         this.activity = activity;
     }
 
-
     public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi) {
         this.socialNetworkApi = socialNetworkApi;
     }
+
 
     public void initializeMainFragment() {
         Log.d(TAG, "initializeMainFragment");
@@ -107,6 +107,8 @@ public class InnerFragmentManager {
                 .replace(R.id.mainFragCont, createMobFragment)
                 .commit();
     }
+
+    public CreateMobFragment getCreateMobFragment() { return createMobFragment; }
 
     View.OnClickListener allListButtonListener = new View.OnClickListener() {
         @Override

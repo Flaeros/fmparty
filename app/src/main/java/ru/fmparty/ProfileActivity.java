@@ -22,6 +22,7 @@ import ru.fmparty.apiaccess.ResultObject;
 import ru.fmparty.entity.User;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.GetUserCallback;
+import ru.fmparty.utils.ImageHelper;
 import ru.fmparty.utils.UploadImageTask;
 
 public class ProfileActivity extends Activity {
@@ -92,48 +93,13 @@ public class ProfileActivity extends Activity {
         selectImageButton.setVisibility(View.VISIBLE);
     }
 
-    private void selectImageFromGallery(){
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, 1);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1)
             if (resultCode == Activity.RESULT_OK) {
-                Uri selectedImage = data.getData();
-
-                this.filePath = getPath(selectedImage);
-                Log.d(TAG, "filePath = " + filePath);
-                String file_extn = filePath.substring(filePath.lastIndexOf(".")+1);
-                profileImage.setImageURI(selectedImage);
-
-                try {
-                    if (file_extn.equals("img") || file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("gif") || file_extn.equals("png")) {
-                        //FINE
-                    }
-                    else{
-                        //NOT IN REQUIRED FORMAT
-                        filePath = null;
-                    }
-                } catch (Exception e) { //FileNotFoundException
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                filePath = ImageHelper.onActivityResultHelp(data, this, profileImage);
             }
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = { MediaStore.MediaColumns.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        cursor.moveToFirst();
-        String imagePath = cursor.getString(column_index);
-
-        return imagePath;
     }
 
     private void fillInfo() {
@@ -156,7 +122,7 @@ public class ProfileActivity extends Activity {
     private View.OnClickListener selectImageButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            selectImageFromGallery();
+            ImageHelper.selectImageFromGallery(ProfileActivity.this);
         }
     };
 }

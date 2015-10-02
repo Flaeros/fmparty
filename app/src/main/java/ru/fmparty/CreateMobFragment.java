@@ -28,6 +28,7 @@ import ru.fmparty.apiaccess.ResultObject;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.HttpObjectPair;
+import ru.fmparty.utils.ImageHelper;
 import ru.fmparty.utils.PostCallTask;
 import ru.fmparty.utils.UploadImageTask;
 
@@ -66,56 +67,13 @@ public class CreateMobFragment extends Fragment {
         return view;
     }
 
-    private void selectImageFromGallery(){
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, 1);
-    }
 
     private View.OnClickListener selectImageButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            selectImageFromGallery();
+            ImageHelper.selectImageFromGallery(getActivity());
         }
     };
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1)
-            if (resultCode == Activity.RESULT_OK) {
-                Uri selectedImage = data.getData();
-
-                this.filePath = getPath(selectedImage);
-                Log.d(TAG, "filePath = " + filePath);
-                String file_extn = filePath.substring(filePath.lastIndexOf(".")+1);
-                imagePreview.setImageURI(selectedImage);
-
-                try {
-                    if (file_extn.equals("img") || file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("gif") || file_extn.equals("png")) {
-                        //FINE
-                    }
-                    else{
-                        //NOT IN REQUIRED FORMAT
-                        filePath = null;
-                    }
-                } catch (Exception e) { //FileNotFoundException
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = { MediaStore.MediaColumns.DATA };
-        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        cursor.moveToFirst();
-        String imagePath = cursor.getString(column_index);
-
-        return imagePath;
-    }
 
     private View.OnClickListener createMobButtonListener = new View.OnClickListener() {
         @Override
@@ -172,5 +130,9 @@ public class CreateMobFragment extends Fragment {
 
     public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi) {
         this.socialNetworkApi = socialNetworkApi;
+    }
+
+    public void onActivityResultHelp(Intent data, Activity activity) {
+        filePath = ImageHelper.onActivityResultHelp(data, activity, imagePreview);
     }
 }
