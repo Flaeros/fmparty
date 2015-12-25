@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import ru.fmparty.apiaccess.SocialAccess;
 import ru.fmparty.tabs.SlidingTabLayout;
 import ru.fmparty.utils.InnerDB;
 import ru.fmparty.utils.Nameable;
@@ -93,7 +94,7 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
     }
 
     private void openProfile() {
-        String userIdStr = InnerDB.getInstance().getInnerUserId(((MainActivity) getActivity()).getSocialNetworkApi().getUserId());
+        String userIdStr = InnerDB.getInstance().getInnerUserId(SocialAccess.getInstance().getApi().getUserId());
         int userId = Integer.valueOf(userIdStr);
 
         Log.d(TAG, "openProfile userId = " + userId);

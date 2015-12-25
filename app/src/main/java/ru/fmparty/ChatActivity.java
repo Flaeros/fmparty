@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,7 +39,7 @@ import ru.fmparty.utils.DatabaseHelper;
 import ru.fmparty.utils.GetUserCallback;
 import ru.fmparty.utils.InnerDB;
 
-public class ChatActivity extends Activity{
+public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "FlashMob ChatActivity";
 
     private int chatId;
@@ -70,8 +71,7 @@ public class ChatActivity extends Activity{
         socNetId = Integer.valueOf(getIntent().getExtras().getString("socNetId"));
         chatName = getIntent().getExtras().getString("chatName");
 
-        TextView text = (TextView) findViewById(R.id.chatTitle);
-        text.setText(chatName);
+        setTitle(chatName);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(sendButtonListener);
@@ -80,9 +80,6 @@ public class ChatActivity extends Activity{
         msgList = (ListView) findViewById(R.id.msgList);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        Button menuButton = (Button) findViewById(R.id.chatMenuButton);
-        menuButton.setOnClickListener(menuButtonListener);
 
         mDatabaseHelper = new DatabaseHelper(this, Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
         mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
@@ -264,13 +261,6 @@ public class ChatActivity extends Activity{
 
         startActivity(profileIntent);
     }
-
-    private View.OnClickListener menuButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            openOptionsMenu();
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

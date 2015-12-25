@@ -13,6 +13,7 @@ import com.vk.sdk.VKSdk;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.FacebookApi;
 import ru.fmparty.apiaccess.ResultCode;
+import ru.fmparty.apiaccess.SocialAccess;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.apiaccess.VkontakteApi;
 
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
         else if(AccessToken.getCurrentAccessToken() != null)
             socialNetworkApi = new FacebookApi(this);
 
+        SocialAccess.getInstance(socialNetworkApi).getApi(); // set api
+
+        Log.d(TAG, "[startMainFragment] socialNetworkApi = " + socialNetworkApi);
         initializeMainFragment();
     }
 
@@ -80,7 +84,13 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-        socialNetworkApi = manager.getAuthorizedApi();
+        Log.d(TAG, "requestCode = " + requestCode);
+        Log.d(TAG, "resultCode = " + resultCode);
+        //success auth code for vk & fb
+        if(requestCode == 10485 || requestCode == 64206)
+            socialNetworkApi = manager.getAuthorizedApi();
+
+
         if(socialNetworkApi == null) {
             Log.v(TAG, "Error");
             return;
