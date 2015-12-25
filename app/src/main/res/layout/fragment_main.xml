@@ -3,52 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/myList"
-        android:text="MyList"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
-    <Button
-        android:id="@+id/allList"
-        android:text="Find"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/myList"
-        android:layout_toEndOf="@+id/myList" />
-
-    <Button
-        android:id="@+id/createMob"
-        android:text="Create"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/allList"
-        android:layout_toEndOf="@+id/allList" />
-
-    <Button
-        android:id="@+id/menuButton"
-        android:text="Menu"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"  />
-
-    <FrameLayout
-        android:id="@+id/mainFragCont"
+    <ru.fmparty.tabs.SlidingTabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/myList">
-    </FrameLayout>
+        android:elevation="2dp"
+        />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@id/tabs"
+        >
+    </android.support.v4.view.ViewPager>
 
 </RelativeLayout>

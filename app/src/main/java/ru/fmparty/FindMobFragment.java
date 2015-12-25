@@ -1,11 +1,9 @@
 package ru.fmparty;
 
-import android.app.Fragment;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,10 +30,10 @@ import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
-import ru.fmparty.utils.DatabaseHelper;
 import ru.fmparty.utils.InnerDB;
+import ru.fmparty.utils.Nameable;
 
-public class FindMobFragment extends Fragment{
+public class FindMobFragment extends Fragment implements Nameable {
     private final String TAG = "FlashMob FindMob";
 
     private SocialNetworkApi socialNetworkApi;
@@ -156,6 +154,11 @@ public class FindMobFragment extends Fragment{
 
     public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi) {
         this.socialNetworkApi = socialNetworkApi;
+    }
+
+    @Override
+    public String getTitle() {
+        return "Find Mob";
     }
 
     private class MobListArrayAdapter extends ArrayAdapter<Chat> {

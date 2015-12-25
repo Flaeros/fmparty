@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,17 +18,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import java.util.List;
+
+import ru.fmparty.tabs.SlidingTabLayout;
 import ru.fmparty.utils.InnerDB;
+import ru.fmparty.utils.Nameable;
 
 public class MainFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final String TAG = "FlashMob MainFragment";
 
-    private View.OnClickListener myListButtonListener;
-    private View.OnClickListener allListButtonListener;
-    private View.OnClickListener createMobButtonListener;
-    private View.OnClickListener menuButtonListener;
+    ViewPager pager;
+    SlidingTabLayout tabs;
+
+    private List<Nameable> fragmentList;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,34 +45,27 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         Log.v(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_main, null);
 
-        Button myListButton = (Button) view.findViewById(R.id.myList);
-        Button allListButton = (Button) view.findViewById(R.id.allList);
-        Button createMobButton = (Button) view.findViewById(R.id.createMob);
-        Button menuButton = (Button) view.findViewById(R.id.menuButton);
-
-        myListButton.setOnClickListener(myListButtonListener);
-        allListButton.setOnClickListener(allListButtonListener);
-        createMobButton.setOnClickListener(createMobButtonListener);
-        menuButton.setOnClickListener(menuButtonListener);
-
         setHasOptionsMenu(true);
 
-        // Регистрируем этот OnSharedPreferenceChangeListener
         Context context = getActivity().getApplicationContext();
         SharedPreferences prefs =
                 PreferenceManager.getDefaultSharedPreferences(context);
         prefs.registerOnSharedPreferenceChangeListener(this);
 
+        pager = (ViewPager) view.findViewById(R.id.pager);
+        Log.d(TAG, "[onCreateView] pager = " + pager );
+        tabs = (SlidingTabLayout) view.findViewById(R.id.tabs);
+
+        PagerAdapter pagerAdapter = new MyFragmentPagerAdapter(((FragmentActivity)getActivity()).getSupportFragmentManager());
+        Log.d(TAG, "pager = " + pager);
+        Log.d(TAG, "pagerAdapter = " + pagerAdapter);
+        pager.setAdapter(pagerAdapter);
+
+        tabs.setDistributeEvenly(true);
+        tabs.setViewPager(pager);
+
         return view;
     }
-
-    public void setListeners(View.OnClickListener... listeners)  {
-        this.myListButtonListener = listeners[0];
-        this.allListButtonListener = listeners[1];
-        this.createMobButtonListener = listeners[2];
-        this.menuButtonListener = listeners[3];
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -114,6 +121,33 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         if(key.equals("allow_sound")) {
             Boolean current = sharedPreferences.getBoolean(key, false);
             Log.d(TAG, "key = " + key + "; current value = " + current);
+        }
+    }
+
+    public void setFragmentList(List<Nameable> fragmentList) {
+        this.fragmentList = fragmentList;
+    }
+
+    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+
+        public MyFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            Log.d(TAG, "[getItem] position = " + position);
+            return (android.support.v4.app.Fragment) fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragmentList.get(position).getTitle();
         }
     }
 }

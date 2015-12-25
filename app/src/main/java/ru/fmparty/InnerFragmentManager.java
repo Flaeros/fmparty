@@ -1,11 +1,14 @@
 package ru.fmparty;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.utils.InnerDB;
+import ru.fmparty.utils.Nameable;
 
 public class InnerFragmentManager {
 
@@ -15,13 +18,15 @@ public class InnerFragmentManager {
     private FindMobFragment findMobFragment;
     private CreateMobFragment createMobFragment;
 
-    private Activity activity;
+
+    private List<Nameable> fragmentList;
+    private AppCompatActivity activity;
 
     private SocialNetworkApi socialNetworkApi;
     private final String TAG = "FlashMob InnrFrMngr";
 
 
-    InnerFragmentManager(Activity activity){
+    InnerFragmentManager(AppCompatActivity  activity){
         this.activity = activity;
     }
 
@@ -32,22 +37,30 @@ public class InnerFragmentManager {
 
     public void initializeMainFragment() {
         Log.d(TAG, "initializeMainFragment");
+
         mainFragment = new MainFragment();
         myListFragment = new MyListFragment();
+        findMobFragment = new FindMobFragment();
+        createMobFragment = new CreateMobFragment();
+
+        fragmentList = new ArrayList<>();
+        fragmentList.add(myListFragment);
+        fragmentList.add(findMobFragment);
+        fragmentList.add(createMobFragment);
+
+        mainFragment.setFragmentList(fragmentList);
+
         myListFragment.setSocialNetworkApi(socialNetworkApi);
-        mainFragment.setListeners(myListButtonListener, allListButtonListener, createMobButtonListener, menuButtonListener);
+        findMobFragment.setSocialNetworkApi(socialNetworkApi);
+        createMobFragment.setSocialNetworkApi(socialNetworkApi);
+
 
         Log.d(TAG, "start main transaction");
         activity.getFragmentManager().beginTransaction()
                 .add(R.id.frgmCont, mainFragment)
                 .commit();
 
-        Log.d(TAG, "middle of main transaction");
 
-        activity.getFragmentManager().beginTransaction()
-                .add(R.id.mainFragCont, myListFragment)
-                .commit();
-        Log.d(TAG, "end main transaction");
     }
 
     public void startFragmentForAuth() {
@@ -65,6 +78,10 @@ public class InnerFragmentManager {
     }
 
     public SocialNetworkApi getAuthorizedApi(){
+        if(authFragment == null) {
+            Log.v(TAG, "Error");
+            return null;
+        }
         return authFragment.getSocialNetworkApi();
     }
 
@@ -74,7 +91,6 @@ public class InnerFragmentManager {
         socialNetworkApi.logout();
 
         activity.getFragmentManager().beginTransaction()
-                .remove(myListFragment)
                 .remove(mainFragment)
                 .commit();
 
@@ -82,59 +98,6 @@ public class InnerFragmentManager {
         activity.recreate();
     }
 
-    private void showAllList(){
-        if(findMobFragment == null)
-            findMobFragment = new FindMobFragment();
-        findMobFragment.setSocialNetworkApi(socialNetworkApi);
-
-        activity.getFragmentManager().beginTransaction()
-                .replace(R.id.mainFragCont, findMobFragment)
-                .commit();
-    }
-
-    private void showMyList(){
-        activity.getFragmentManager().beginTransaction()
-                .replace(R.id.mainFragCont, myListFragment)
-                .commit();
-    }
-
-    private void showCreateMob() {
-        if(createMobFragment == null)
-            createMobFragment = new CreateMobFragment();
-        createMobFragment.setSocialNetworkApi(socialNetworkApi);
-
-        activity.getFragmentManager().beginTransaction()
-                .replace(R.id.mainFragCont, createMobFragment)
-                .commit();
-    }
 
     public CreateMobFragment getCreateMobFragment() { return createMobFragment; }
-
-    View.OnClickListener allListButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showAllList();
-        }
-    };
-
-    View.OnClickListener myListButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showMyList();
-        }
-    };
-
-    View.OnClickListener createMobButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showCreateMob();
-        }
-    };
-
-    View.OnClickListener menuButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            activity.openOptionsMenu();
-        }
-    };
 }

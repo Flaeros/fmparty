@@ -1,11 +1,11 @@
 package ru.fmparty;
 
-import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +29,9 @@ import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.utils.DatabaseHelper;
+import ru.fmparty.utils.Nameable;
 
-public class MyListFragment extends Fragment {
+public class MyListFragment extends Fragment implements Nameable {
 
     private final String TAG = "FlashMob MyListFragment";
     private SocialNetworkApi socialNetworkApi;
@@ -192,6 +193,11 @@ public class MyListFragment extends Fragment {
             long result = mSqLiteDatabase.insert(DatabaseHelper.CHATS_TABLE, null, newValues);
         }
 
+    }
+
+    @Override
+    public String getTitle() {
+        return "My Mobs";
     }
 
     private class ChatListArrayAdapter extends ArrayAdapter<Chat> {

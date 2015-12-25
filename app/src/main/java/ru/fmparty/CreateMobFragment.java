@@ -1,12 +1,9 @@
 package ru.fmparty;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +26,11 @@ import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.utils.AsyncResponse;
 import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.ImageHelper;
+import ru.fmparty.utils.Nameable;
 import ru.fmparty.utils.PostCallTask;
 import ru.fmparty.utils.UploadImageTask;
 
-public class CreateMobFragment extends Fragment {
+public class CreateMobFragment extends Fragment implements Nameable {
     private final String TAG = "FlashMob CreateMob";
 
     private EditText chatName;
@@ -134,5 +132,10 @@ public class CreateMobFragment extends Fragment {
 
     public void onActivityResultHelp(Intent data, Activity activity) {
         filePath = ImageHelper.onActivityResultHelp(data, activity, imagePreview);
+    }
+
+    @Override
+    public String getTitle() {
+        return "Create Mob";
     }
 }
