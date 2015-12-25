@@ -78,7 +78,7 @@ public class InnerFragmentManager {
                 .remove(mainFragment)
                 .commit();
 
-        InnerDB.clearData(activity);
+        InnerDB.getInstance().clearData();
         activity.recreate();
     }
 

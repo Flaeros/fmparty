@@ -13,7 +13,6 @@ import java.util.List;
 
 import ru.fmparty.ChatActivity;
 import ru.fmparty.FindMobFragment;
-import ru.fmparty.MainActivity;
 import ru.fmparty.MobDetailActivity;
 import ru.fmparty.MyListFragment;
 import ru.fmparty.entity.Chat;
@@ -27,18 +26,47 @@ import ru.fmparty.utils.PostCallTask;
 
 public class DbApi {
     private final static String TAG = "FlashMob DbApi";
+    private SocialNetworkApi socialNetworkApi;
+
+    private static volatile DbApi instance;
+
+    public static DbApi getInstance() {
+        DbApi localInstance = instance;
+        if (localInstance == null) {
+            synchronized (DbApi.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new DbApi();
+                }
+            }
+        }
+        return localInstance;
+    }
+
+    public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi){
+        this.socialNetworkApi = socialNetworkApi;
+    }
+
+    private List<HttpObjectPair> defaultArgList(){
+        List<HttpObjectPair> argsList = new ArrayList<>();
+
+        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socialNetworkApi.getSocialCodeId())));
+        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socialNetworkApi.getUserId())));
+        argsList.add(new HttpObjectPair("token", socialNetworkApi.getToken()));
+
+        Log.d(TAG, "socialNetworkApi.getToken() = " + socialNetworkApi.getToken());
+        return argsList;
+    }
 
     /*
        Checking if the user already exists in DB
        return ID if yes
        create and return ID if no
     */
-    public static void createUser(int socNetId, final long socUserId, String name, final MainActivity activity){
+    public void createUser(String name){
+        List<HttpObjectPair>argsList = defaultArgList();
 
-        List<HttpObjectPair> argsList = new ArrayList<>();
         argsList.add(new HttpObjectPair("do", "createUser"));
-        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
-        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
         argsList.add(new HttpObjectPair("name", name));
 
         new PostCallTask(new AsyncResponse() {
@@ -53,19 +81,17 @@ public class DbApi {
                     e.printStackTrace();
                 }
 
-                String innerUserId = InnerDB.getInnerUserId(activity, socUserId);
-
-                if(innerUserId != null)
-                    Log.d(TAG, "userId InnerValueId = " + innerUserId);
-                else if(id != 0)
-                    InnerDB.setInnerUserId(activity, id, socUserId);
+                String innerUserId = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
+                if(innerUserId == null && id != 0)
+                    InnerDB.getInstance().setInnerUserId(id, socialNetworkApi.getUserId());
             }
         }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void getUser(int id, final GetUserCallback getUserCallback){
+    public void getUser(int id, final GetUserCallback getUserCallback){
 
-        List<HttpObjectPair> argsList = new ArrayList<>();
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "getUser"));
         argsList.add(new HttpObjectPair("id", String.valueOf(id)));
 
@@ -93,23 +119,22 @@ public class DbApi {
         }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void sendMsg(String message, int chatId, int socNetId, long socUserId) {
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void sendMsg(String message, int chatId) {
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "sendMsg"));
         argsList.add(new HttpObjectPair("textMsg", message));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
-        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
-        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
+
         new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void getMessages(final ChatActivity activity, int chatId, long socUserId, int socNetId, ProgressBar progressBar) {
+    public void getMessages(final ChatActivity activity, int chatId, ProgressBar progressBar) {
         progressBar.setVisibility(ProgressBar.VISIBLE);
-        List<HttpObjectPair> argsList = new ArrayList<>();
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "getMessages"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
-        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
-        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
 
         new PostCallTask(new AsyncResponse() {
             @Override
@@ -142,11 +167,9 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void getChats(final MyListFragment myListFragment, int socNetId, long socUserId, ProgressBar progressBar){
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void getChats(final MyListFragment myListFragment, ProgressBar progressBar){
+        List<HttpObjectPair>argsList = defaultArgList();
         argsList.add(new HttpObjectPair("do", "getChats"));
-        argsList.add(new HttpObjectPair("socUserId", String.valueOf(socUserId)));
-        argsList.add(new HttpObjectPair("socNetId", String.valueOf(socNetId)));
 
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
@@ -184,8 +207,9 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void findMobs(final FindMobFragment findMobFragment, String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, String userId, Boolean useDate, ProgressBar progressBar) {
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void findMobs(final FindMobFragment findMobFragment, String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, String userId, Boolean useDate, ProgressBar progressBar) {
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "findMobs"));
         argsList.add(new HttpObjectPair("mobName", mobNameStr));
         argsList.add(new HttpObjectPair("mobDescr", mobDescrStr));
@@ -227,12 +251,11 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void joinMob(final MobDetailActivity mobDetailActivity, int chatId, int socNetId, long socUserId, ProgressBar progressBar) {
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void joinMob(final MobDetailActivity mobDetailActivity, int chatId, ProgressBar progressBar) {
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "joinMob"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
-        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socUserId)));
-        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socNetId)));
 
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
@@ -243,9 +266,9 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void updateUser(String userId, String filename, String userName, ProgressBar progressBar, AsyncResponse asyncResponse) {
-        Log.d(TAG, "userId = " + userId);
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void updateUser(String userId, String filename, String userName, ProgressBar progressBar, AsyncResponse asyncResponse) {
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "updateUser"));
         argsList.add(new HttpObjectPair("userId", userId));
         argsList.add(new HttpObjectPair("userName", userName));
@@ -254,9 +277,9 @@ public class DbApi {
         new PostCallTask(asyncResponse, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void updateChatImage(String chatId, String filename) {
-        Log.d(TAG, "chatId = " + chatId);
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void updateChatImage(String chatId, String filename) {
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "updateChatImage"));
         argsList.add(new HttpObjectPair("chatid", chatId));
         argsList.add(new HttpObjectPair("filename", filename));
@@ -264,10 +287,11 @@ public class DbApi {
         new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void getChat(final MobDetailActivity mobDetailActivity, int chatId, ProgressBar progressBar) {
+    public void getChat(final MobDetailActivity mobDetailActivity, int chatId, ProgressBar progressBar) {
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
-        List<HttpObjectPair> argsList = new ArrayList<>();
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "getChat"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
 
@@ -296,8 +320,9 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void getNewMessages(final ChatActivity chatActivity, long lastId, int chatId, final long userId) {
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void getNewMessages(final ChatActivity chatActivity, long lastId, int chatId, final long userId) {
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "getNewMessages"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
         argsList.add(new HttpObjectPair("lastid", String.valueOf(lastId)));
@@ -329,8 +354,9 @@ public class DbApi {
         }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public static void leaveChat(final ChatActivity chatActivity, int chatId, String userId, ProgressBar progressBar) {
-        List<HttpObjectPair> argsList = new ArrayList<>();
+    public void leaveChat(final ChatActivity chatActivity, int chatId, String userId, ProgressBar progressBar) {
+        List<HttpObjectPair>argsList = defaultArgList();
+
         argsList.add(new HttpObjectPair("do", "leaveChat"));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
         argsList.add(new HttpObjectPair("userid", userId));

@@ -130,9 +130,9 @@ public class FindMobFragment extends Fragment{
 
     private void findMobs(String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, boolean useDate) {
 
-        String userId = InnerDB.getInnerUserId(getActivity(), socialNetworkApi.getUserId());
+        String userId = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
         Log.d(TAG, "userId = " + userId);
-        DbApi.findMobs(this, mobNameStr, mobDescrStr, mobDateStr, mobCityStr, userId, useDate, progressBar);
+        DbApi.getInstance().findMobs(this, mobNameStr, mobDescrStr, mobDateStr, mobCityStr, userId, useDate, progressBar);
     }
 
     public void showMobs(List<Chat> chats){

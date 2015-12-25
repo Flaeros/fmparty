@@ -6,28 +6,38 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import ru.fmparty.FMPartyApp;
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.entity.User;
 
 public class InnerDB {
     private static DatabaseHelper databaseHelper;
     private static SQLiteDatabase mSqLiteDatabase;
-    private static Activity currentActivity;
 
+    private static volatile InnerDB instance;
     private static final String TAG = "FlashMob InnerDB";
 
-    private static void loadHelper(Activity activity){
-        if(activity.equals(currentActivity))
-            return;
-
-        currentActivity = activity;
-        databaseHelper = new DatabaseHelper(activity, Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
-        mSqLiteDatabase = databaseHelper.getWritableDatabase();
+    public static InnerDB getInstance() {
+        InnerDB localInstance = instance;
+        if (localInstance == null) {
+            synchronized (InnerDB.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new InnerDB();
+                }
+            }
+        }
+        return localInstance;
     }
 
-    public static String getInnerUserId(Activity activity, long outerId) {
-        loadHelper(activity);
+    InnerDB(){
+        if(mSqLiteDatabase == null) {
+            databaseHelper = new DatabaseHelper(FMPartyApp.getContext(), Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
+            mSqLiteDatabase = databaseHelper.getWritableDatabase();
+        }
+    }
 
+    public String getInnerUserId(long outerId) {
         Cursor cursor = mSqLiteDatabase.query(DatabaseHelper.AUX_TABLE, new String[]{
                 DatabaseHelper.AUX_SIGN_COLUMN, DatabaseHelper.AUX_VALUE_COLUMN}
                 , DatabaseHelper.AUX_SIGN_COLUMN + " = 'innerUserId' and " + DatabaseHelper.AUX_OPTIONAl_COLUMN + " = '" + outerId + "'", null, null, null, null) ;
@@ -41,13 +51,12 @@ public class InnerDB {
             result = cursor.getString(cursor.getColumnIndex(DatabaseHelper.AUX_VALUE_COLUMN));
             Log.d(TAG, "userId InnerValueId = " + result);
         }
+        cursor.close();
 
         return result;
     }
 
-    public static void setInnerUserId(Activity activity, int id, long outerId) {
-        loadHelper(activity);
-
+    public void setInnerUserId(int id, long outerId) {
         ContentValues newValues = new ContentValues();
 
         newValues.put(DatabaseHelper.AUX_SIGN_COLUMN, "innerUserId");
@@ -58,18 +67,14 @@ public class InnerDB {
         Log.d(TAG, "result = " + result);
     }
 
-    public static void clearData(Activity activity) {
-        loadHelper(activity);
-
+    public void clearData() {
         mSqLiteDatabase.execSQL("DELETE FROM " + DatabaseHelper.CHATS_TABLE);
         mSqLiteDatabase.execSQL("DELETE FROM " + DatabaseHelper.MSGS_TABLE);
         mSqLiteDatabase.execSQL("DELETE FROM " + DatabaseHelper.AUX_TABLE);
     }
 
 
-    public static String getUserImage(Activity activity, long userId) {
-        loadHelper(activity);
-
+    public String getUserImage(long userId) {
         Cursor cursor = mSqLiteDatabase.query(DatabaseHelper.USERS_TABLE, new String[]{
                 DatabaseHelper.USER_ID_COLUMN, DatabaseHelper.USER_IMAGE_COLUMN}
                 , DatabaseHelper.USER_ID_COLUMN + " = " + userId, null, null, null, null) ;
@@ -80,13 +85,12 @@ public class InnerDB {
             cursor.moveToFirst();
             result = cursor.getString(cursor.getColumnIndex(DatabaseHelper.USER_IMAGE_COLUMN));
         }
+        cursor.close();
 
         return result;
     }
 
-    public static void setUserImage(Activity activity, User user) {
-        loadHelper(activity);
-
+    public void setUserImage(User user) {
         ContentValues newValues = new ContentValues();
 
         newValues.put(DatabaseHelper.USER_ID_COLUMN, user.getId());

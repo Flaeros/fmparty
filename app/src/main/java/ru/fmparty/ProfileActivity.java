@@ -58,7 +58,7 @@ public class ProfileActivity extends Activity {
 
 
         Log.d(TAG, "onCreate userId = " + userId);
-        DbApi.getUser(userId, new GetUserCallback() {
+        DbApi.getInstance().getUser(userId, new GetUserCallback() {
             @Override
             public void setUser(User user) {
                 ProfileActivity.this.user = user;

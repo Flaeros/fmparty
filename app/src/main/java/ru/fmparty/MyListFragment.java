@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.facebook.AccessToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,7 +154,7 @@ public class MyListFragment extends Fragment {
     }
 
     public void loadChatsFromServer() {
-        DbApi.getChats(this, socialNetworkApi.getSocialCodeId(), socialNetworkApi.getUserId(), progressBar);
+        DbApi.getInstance().getChats(this, progressBar);
     }
 
     public void updateChatsCallback(List<Chat> chats){

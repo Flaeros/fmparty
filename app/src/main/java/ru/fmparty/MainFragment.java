@@ -86,7 +86,7 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
     }
 
     private void openProfile() {
-        String userIdStr = InnerDB.getInnerUserId(getActivity(), ((MainActivity) getActivity()).getSocialNetworkApi().getUserId());
+        String userIdStr = InnerDB.getInstance().getInnerUserId(((MainActivity) getActivity()).getSocialNetworkApi().getUserId());
         int userId = Integer.valueOf(userIdStr);
 
         Log.d(TAG, "openProfile userId = " + userId);

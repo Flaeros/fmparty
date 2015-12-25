@@ -9,11 +9,11 @@ import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.vk.sdk.VKSdk;
 
+import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.FacebookApi;
 import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.apiaccess.VkontakteApi;
-import ru.fmparty.utils.ImageHelper;
 
 
 public class MainActivity extends Activity {
@@ -41,6 +41,7 @@ public class MainActivity extends Activity {
         else{
             manager.startFragmentForAuth();
         }
+
     }
 
     private void startMainFragment() {
@@ -57,6 +58,7 @@ public class MainActivity extends Activity {
         Log.d(TAG, "initializeMainFragment");
         socialNetworkApi.setUserId();
         manager.setSocialNetworkApi(socialNetworkApi);
+        DbApi.getInstance().setSocialNetworkApi(socialNetworkApi);
         manager.initializeMainFragment();
     }
 
@@ -78,6 +80,10 @@ public class MainActivity extends Activity {
             }
 
         socialNetworkApi = manager.getAuthorizedApi();
+        if(socialNetworkApi == null) {
+            Log.v(TAG, "Error");
+            return;
+        }
         socialNetworkApi.onActivityResult(requestCode, resultCode, data);
         int result = socialNetworkApi.getResult();
 

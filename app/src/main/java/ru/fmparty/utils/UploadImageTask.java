@@ -121,9 +121,9 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
 
                 String methodToCall = params[0];
                 if(methodToCall.equals("updateChatImage"))
-                    DbApi.updateChatImage(params[2], filename);
+                    DbApi.getInstance().updateChatImage(params[2], filename);
                 else if(methodToCall.equals("updateUser"))
-                    DbApi.updateUser(params[2], filename, params[3], progressBar, asyncResponse);
+                    DbApi.getInstance().updateUser(params[2], filename, params[3], progressBar, asyncResponse);
             }
 
             inStream.close();

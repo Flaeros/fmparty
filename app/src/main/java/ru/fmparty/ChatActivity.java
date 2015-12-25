@@ -103,7 +103,7 @@ public class ChatActivity extends Activity{
             loadMsgsFromSQLite();
 
         if(messages == null)
-            DbApi.getMessages(this, chatId, socUserId, socNetId, progressBar);
+            DbApi.getInstance().getMessages(this, chatId, progressBar);
         else
             showMessages();
     }
@@ -135,7 +135,7 @@ public class ChatActivity extends Activity{
 
         cursor.close();
 
-        userId = Long.valueOf(InnerDB.getInnerUserId(this, socUserId));
+        userId = Long.valueOf(InnerDB.getInstance().getInnerUserId(socUserId));
     }
 
     public void loadMessagesCallback(List<Message> messageList, long user_id){
@@ -184,7 +184,7 @@ public class ChatActivity extends Activity{
 
     public void updateMessages() {
         Log.d(TAG, "lastId = " + lastId);
-        DbApi.getNewMessages(this, lastId, chatId, userId);
+        DbApi.getInstance().getNewMessages(this, lastId, chatId, userId);
     }
 
 
@@ -234,20 +234,19 @@ public class ChatActivity extends Activity{
     }
 
     public void createOrGetUserPic(final ImageView userPic, int userId) {
-        String image = InnerDB.getUserImage(this, userId);
+        String image = InnerDB.getInstance().getUserImage(userId);
 
         if(image != null)
             Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + image ).into(userPic);
         else{
-            DbApi.getUser(userId, new GetUserCallback() {
+            DbApi.getInstance().getUser(userId, new GetUserCallback() {
                 @Override
                 public void setUser(User user) {
-                    if(user.getImage() != null && !user.getImage().isEmpty()) {
+                    if (user.getImage() != null && !user.getImage().isEmpty()) {
                         Log.d(TAG, "pic set null");
-                        InnerDB.setUserImage(ChatActivity.this, user);
+                        InnerDB.getInstance().setUserImage(user);
                         Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).into(userPic);
-                    }
-                    else{
+                    } else {
                         Log.d(TAG, "pic set default");
                         userPic.setImageResource(R.drawable.default_userpic);
                     }
@@ -312,8 +311,8 @@ public class ChatActivity extends Activity{
     }
 
     private void leaveChat() {
-        String userId = InnerDB.getInnerUserId(this, socUserId);
-        DbApi.leaveChat(this, chatId, userId, progressBar);
+        String userId = InnerDB.getInstance().getInnerUserId(socUserId);
+        DbApi.getInstance().leaveChat(this, chatId, userId, progressBar);
     }
 
     private void showChatDetails() {
@@ -334,7 +333,7 @@ public class ChatActivity extends Activity{
         public void onClick(View v) {
             String message = msgField.getText().toString();
             if(!message.isEmpty()) {
-                DbApi.sendMsg(message, chatId, socNetId, socUserId);
+                DbApi.getInstance().sendMsg(message, chatId);
                 msgField.setText("");
                 loadMessages();
             }

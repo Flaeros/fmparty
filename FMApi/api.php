@@ -7,6 +7,15 @@ include 'MsgApi.php';
 mb_internal_encoding("UTF-8");
 
 $do = $_POST['do'];
+
+if(!authorize($do)){
+    dlog('not authorized');
+    return;
+}
+else{
+    dlog('yes authorized');
+}
+
 switch ($do) {
     case 'createUser':
         createUser();
@@ -47,6 +56,67 @@ switch ($do) {
     case 'updateUser':
         updateUser();
         break;
+}
+
+function authorize($do){
+    dlog('do = ' . $do);
+        
+    $vk_validate = "https://api.vk.com/method/users.get?access_token=";
+    $fb_validate = "https://graph.facebook.com/me?access_token=";
+    
+    $userApi = new Users();
+    $socUserId = intval($_POST['socuserid']);
+    $socNetId = intval($_POST['socnetid']);
+    $token = mysql_real_escape_string($_POST['token']);
+    dlog('$socUserId = '.$socUserId);
+    dlog('$socNetId = '.$socNetId);
+    dlog('$token = '.$token);
+    
+    
+    
+    switch ($socNetId) {
+        case 1:
+            $url = $vk_validate . $token;
+            dlog($url);
+            $response = file_get_contents($url);
+            
+            $json = json_decode($response);
+            $data = $json->response;
+            $userId = $data[0]->uid;
+                        
+            $error = $json->error;
+            $error_code = $error->error_code;
+            
+            dlog(" userId = " . $userId);
+            dlog(" error_code = " . $error_code);
+            
+            if($error_code > 0){
+                dlog("error");
+                return false;
+            }
+            if($socUserId == $userId){
+                dlog("passed for vk");
+                return true;
+            }
+            break;
+        case 2:
+            $url = $fb_validate . $token;
+            dlog($url);
+            $response = file_get_contents($url);
+            
+            $json = json_decode($response);
+            $userId = $json->id;
+            dlog("id = " . $userId);
+            
+            if($socUserId == $userId){
+                dlog("passed for fb");
+                return true;
+            }
+            break;
+    }
+    dlog('response from SOCNET = ' . $response);
+
+    return false;
 }
 
 function updateUser(){
@@ -234,8 +304,8 @@ function sendMsg(){
 
 function getChats(){
     $chatApi = new ChatApi();
-    $socUserId = intval($_POST['socUserId']);
-    $socNetId = intval($_POST['socNetId']);
+    $socUserId = intval($_POST['socuserid']);
+    $socNetId = intval($_POST['socnetid']);
     
     $jsonResult = new ResultObject();
     dlog('getChats');
@@ -247,8 +317,8 @@ function getChats(){
 
 function createChat(){
     $chatApi = new ChatApi();
-    $socUserId = intval($_POST['socUserId']);
-    $socNetId = intval($_POST['socNetId']);
+    $socUserId = intval($_POST['socuserid']);
+    $socNetId = intval($_POST['socnetid']);
     $chatName = mysql_real_escape_string($_POST['chatName']);
     $chatDescr = mysql_real_escape_string($_POST['chatDescr']);
     $chatDate = mysql_real_escape_string($_POST['chatDate']);

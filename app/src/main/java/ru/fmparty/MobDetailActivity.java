@@ -57,7 +57,7 @@ public class MobDetailActivity extends Activity{
         mobDate = (TextView) findViewById(R.id.mobDate);
         mobCity = (TextView) findViewById(R.id.mobCity);
 
-        DbApi.getChat(this, chatId, progressBar);
+        DbApi.getInstance().getChat(this, chatId, progressBar);
 
         if(joined!= null && joined.equals("yes"))
             joinMobButton.setVisibility(Button.GONE);
@@ -93,7 +93,7 @@ public class MobDetailActivity extends Activity{
     };
 
     private void joinMob() {
-        DbApi.joinMob(this, chatId, socNetId, socUserId, progressBar);
+        DbApi.getInstance().joinMob(this, chatId, progressBar);
     }
 
 }

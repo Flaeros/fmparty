@@ -14,5 +14,7 @@ public interface SocialNetworkApi {
     void createUser();
     int getSocialCodeId();
 
+    String getToken();
+
     void logout();
 }

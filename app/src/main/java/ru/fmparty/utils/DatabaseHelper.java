@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String AUX_VALUE_COLUMN = "value";
     public static final String AUX_OPTIONAl_COLUMN = "optional";
 
-    public static final String TAG = "FMParty DatabaseHelper";
+    public static final String TAG = "FlashMob DatabaseHelper";
 
     private static final String CREATE_CHATS_TABLE =
             "CREATE TABLE " + CHATS_TABLE + " (\n " +
