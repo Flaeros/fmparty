@@ -1,6 +1,5 @@
 package ru.fmparty;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -242,7 +241,8 @@ public class ChatActivity extends AppCompatActivity {
                     if (user.getImage() != null && !user.getImage().isEmpty()) {
                         Log.d(TAG, "pic set null");
                         InnerDB.getInstance().setUserImage(user);
-                        Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).into(userPic);
+                        if(ChatActivity.this.isRunning())
+                            Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).into(userPic);
                     } else {
                         Log.d(TAG, "pic set default");
                         userPic.setImageResource(R.drawable.default_userpic);

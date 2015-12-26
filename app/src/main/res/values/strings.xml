@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">FMParty</string>
 
-
-
     <string name="facebook_app_id">1181836061843253</string>
     <string name="chat_title">Chat Title</string>
     <string name="mob_detail_title">Mob detail</string>
@@ -19,4 +17,7 @@
     <string name="allow_sound_title">Allow sound</string>
     <string name="settings_title">Settings</string>
 
+    <color name="indigo_blue">#3B5998</color>
+    <color name="indigo_blue_dark">#1A237E</color>
+    <color name="white">#FFF</color>
 </resources>

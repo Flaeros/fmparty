@@ -65,6 +65,13 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         tabs.setDistributeEvenly(true);
         tabs.setViewPager(pager);
 
+        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.white);
+            }
+        });
+
         return view;
     }
 

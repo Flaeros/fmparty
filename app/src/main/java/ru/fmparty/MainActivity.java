@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
 
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setElevation(0);
 
         VKSdk.initialize(this);
         FacebookSdk.sdkInitialize(this);
