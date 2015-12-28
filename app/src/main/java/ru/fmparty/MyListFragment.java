@@ -223,7 +223,7 @@ public class MyListFragment extends Fragment implements Nameable {
 
             ImageView imageView = (ImageView) itemView.findViewById(R.id.item_chatImage);
             if(chat.getImage() != null && MyListFragment.this.isVisible()) {
-                Glide.with(getActivity()).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).into(imageView);
+                Glide.with(getActivity()).load(Consts.ApiPHP.get() + "uploads/" + chat.getImage()).asBitmap().into(imageView);
             }
             else{
                 imageView.setImageResource(R.drawable.default_chat);

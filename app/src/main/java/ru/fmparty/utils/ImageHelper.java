@@ -34,7 +34,7 @@ public class ImageHelper {
         String filePath = getPath(selectedImage, activity);
 
         Log.d(TAG, "filePath = " + filePath);
-        String file_extn = filePath.substring(filePath.lastIndexOf(".") + 1);
+        String file_extn = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();
         imageView.setImageURI(selectedImage);
 
         try
@@ -43,6 +43,7 @@ public class ImageHelper {
                 //FINE
             } else {
                 //NOT IN REQUIRED FORMAT
+                Log.d(TAG, " Wrong format. file_extn = " + file_extn);
                 filePath = null;
             }
         } catch (

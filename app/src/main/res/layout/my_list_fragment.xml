@@ -10,7 +10,11 @@
         <ListView
             android:id="@+id/chatList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:dividerHeight="0.2dp"
+            android:divider="@drawable/list_divider"
+            />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar

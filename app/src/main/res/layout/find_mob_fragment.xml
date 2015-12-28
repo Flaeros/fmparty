@@ -48,15 +48,35 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+
+
+    <TextView
+        android:id="@+id/labelCity"
+        android:text="City:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/mobDescr" />
+
+    <EditText
+        android:id="@+id/mobCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="20"
+        android:layout_below="@+id/labelCity"
+        android:layout_alignLeft="@+id/labelCity"
+        android:layout_alignStart="@+id/labelCity" />
+
     <TextView
         android:id="@+id/labelDate"
         android:text="Date:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@+id/mobDescr"
-        android:layout_alignLeft="@+id/mobDescr"
-        android:layout_alignStart="@+id/mobDescr" />
+        android:layout_below="@+id/mobCity"
+        android:layout_alignLeft="@+id/mobCity"
+        android:layout_alignStart="@+id/mobCity" />
 
     <TextView
         android:id="@+id/useDateLabel"
@@ -81,37 +101,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/useDateLabel"
+        android:datePickerMode="spinner"
         android:calendarViewShown="false"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:id="@+id/labelCity"
-        android:text="City:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@+id/mobDate" />
 
-    <EditText
-        android:id="@+id/mobCity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="20"
-        android:layout_below="@+id/labelCity"
-        android:layout_alignLeft="@+id/labelCity"
-        android:layout_alignStart="@+id/labelCity" />
 
     <Button
         android:id="@+id/findMobButton"
         android:text="Find"
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mobCity"
-        android:layout_alignLeft="@+id/mobCity"
-        android:layout_alignStart="@+id/mobCity" />
+        android:layout_below="@+id/mobDate"
+        android:layout_alignLeft="@+id/mobDate"
+        android:layout_alignStart="@+id/mobDate" />
 
     <ListView
         android:id="@+id/mobList"

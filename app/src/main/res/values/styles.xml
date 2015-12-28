@@ -5,6 +5,7 @@
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="colorPrimary">@color/indigo_blue</item>
         <item name="colorPrimaryDark">@color/indigo_blue_dark</item>
+        <item name="android:buttonStyle">@style/MyButton</item>
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
@@ -14,6 +15,12 @@
 
     <style name="TitleTextStyle" parent="style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">#FFF</item>
+    </style>
+
+    <style name="MyButton" parent="style/Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@drawable/mybutton</item>
     </style>
 
 </resources>

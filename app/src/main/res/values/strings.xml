@@ -17,7 +17,11 @@
     <string name="allow_sound_title">Allow sound</string>
     <string name="settings_title">Settings</string>
 
+    <color name="indigo_blue_ultralight">#C5CAE9</color>
+    <color name="indigo_blue_mediumlight">#9FA8DA</color>
+    <color name="indigo_blue_light">#5C6BC0</color>
     <color name="indigo_blue">#3B5998</color>
     <color name="indigo_blue_dark">#1A237E</color>
     <color name="white">#FFF</color>
+    <color name="gray">#A9A9A9</color>
 </resources>

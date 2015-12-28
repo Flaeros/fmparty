@@ -98,8 +98,9 @@ public class CreateMobFragment extends Fragment implements Nameable {
         argsList.add(new HttpObjectPair("chatDescr", String.valueOf(chatDescr)));
         argsList.add(new HttpObjectPair("chatDate", String.valueOf(chatDate)));
         argsList.add(new HttpObjectPair("chatCity", String.valueOf(chatCity)));
-        argsList.add(new HttpObjectPair("socUserId", String.valueOf(socialNetworkApi.getUserId())));
-        argsList.add(new HttpObjectPair("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId())));
+        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socialNetworkApi.getUserId())));
+        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socialNetworkApi.getSocialCodeId())));
+        argsList.add(new HttpObjectPair("token", String.valueOf(socialNetworkApi.getToken())));
 
         progressBar.setVisibility(ProgressBar.VISIBLE);
         new PostCallTask(asyncResponse, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
@@ -116,6 +117,7 @@ public class CreateMobFragment extends Fragment implements Nameable {
                 Toast.makeText(getActivity(), "Чат " + name +" создан!", Toast.LENGTH_SHORT).show();
 
                 progressBar.setVisibility(ProgressBar.VISIBLE);
+                Log.d(TAG, "[asyncResponse]filePath = " +filePath);
                 if(filePath != null)
                     new UploadImageTask(progressBar).execute("updateChatImage", filePath, String.valueOf(id));
             }catch (JSONException e){
@@ -132,6 +134,7 @@ public class CreateMobFragment extends Fragment implements Nameable {
 
     public void onActivityResultHelp(Intent data, Activity activity) {
         filePath = ImageHelper.onActivityResultHelp(data, activity, imagePreview);
+        Log.d(TAG, "[onActivityResultHelp]filePath = " +filePath);
     }
 
     @Override
