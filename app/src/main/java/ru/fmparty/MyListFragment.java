@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -30,6 +31,7 @@ import ru.fmparty.apiaccess.SocialAccess;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.utils.DatabaseHelper;
+import ru.fmparty.utils.InnerDB;
 import ru.fmparty.utils.Nameable;
 
 public class MyListFragment extends Fragment implements Nameable {
@@ -94,11 +96,17 @@ public class MyListFragment extends Fragment implements Nameable {
     AdapterView.OnItemClickListener onChatItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            TextView chatNameView = (TextView) view.findViewById(R.id.item_chatName);
-            TextView chatIdView = (TextView) view.findViewById(R.id.chatId);
-            String chatName = chatNameView.getText().toString();
-            int chatId = Integer.valueOf(chatIdView.getText().toString());
-            showChat(chatId, chatName);
+            String userId = InnerDB.getInstance().getInnerUserId(SocialAccess.getInstance().getApi().getUserId());
+            Log.d(TAG, "[onItemClick] userId = " + userId);
+            if(userId == null)
+                Toast.makeText(getActivity().getApplicationContext(), "Please wait. Application is loading", Toast.LENGTH_SHORT).show();
+            else {
+                TextView chatNameView = (TextView) view.findViewById(R.id.item_chatName);
+                TextView chatIdView = (TextView) view.findViewById(R.id.chatId);
+                String chatName = chatNameView.getText().toString();
+                int chatId = Integer.valueOf(chatIdView.getText().toString());
+                showChat(chatId, chatName);
+            }
         }
     };
 
