@@ -72,7 +72,9 @@ public class VkontakteApi implements SocialNetworkApi{
 
     @Override
     public String getToken() {
-        return VKAccessToken.currentToken().accessToken;
+        if(VKAccessToken.currentToken() != null)
+            return VKAccessToken.currentToken().accessToken;
+        return null;
     }
 
     @Override

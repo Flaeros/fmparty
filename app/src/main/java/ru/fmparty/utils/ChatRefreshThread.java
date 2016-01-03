@@ -3,6 +3,7 @@ package ru.fmparty.utils;
 import android.util.Log;
 
 import ru.fmparty.ChatActivity;
+import ru.fmparty.apiaccess.SocialAccess;
 
 public class ChatRefreshThread extends Thread {
 
@@ -17,9 +18,10 @@ public class ChatRefreshThread extends Thread {
     @Override
     public void run() {
         try {
-            while (chatActivity.isRunning()) {
+            while (chatActivity.isRunning() && !chatActivity.isFinishing()) {
                 Thread.sleep(delay);
-                chatActivity.updateMessages();
+                if(SocialAccess.getInstance().getApi().isLoggedIn())
+                    chatActivity.updateMessages();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

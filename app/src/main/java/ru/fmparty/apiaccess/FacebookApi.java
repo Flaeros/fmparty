@@ -87,6 +87,7 @@ public class FacebookApi implements SocialNetworkApi {
                             long id = object.getLong("id");
                             Log.d(TAG, "id = " + id);
                             Log.d(TAG, "name = " + name);
+                            Log.d(TAG, "rly? = ");
                             DbApi.getInstance().createUser(name);
                         }
                         catch (Exception e){
@@ -121,5 +122,8 @@ public class FacebookApi implements SocialNetworkApi {
     }
 
     @Override
-    public void logout() { LoginManager.getInstance().logOut(); }
+    public void logout() {
+        AccessToken.setCurrentAccessToken(null);
+        LoginManager.getInstance().logOut();
+    }
 }

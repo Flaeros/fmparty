@@ -26,6 +26,7 @@ import java.util.List;
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.apiaccess.ResultCode;
+import ru.fmparty.apiaccess.SocialAccess;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.utils.DatabaseHelper;
@@ -69,6 +70,11 @@ public class MyListFragment extends Fragment implements Nameable {
         if(chats == null)
             loadChatsFromSQLite();
 
+        Log.d(TAG, "Load chats from server");
+        Log.d(TAG, "soc api = " + socialNetworkApi);
+        socialNetworkApi = SocialAccess.getInstance().getApi();
+        Log.d(TAG, "soc api = " + socialNetworkApi);
+        Log.d(TAG, "myListFragment = " + this);
         if(chats == null)
             loadChatsFromServer();
         else
@@ -101,8 +107,9 @@ public class MyListFragment extends Fragment implements Nameable {
                 ChatActivity.class);
         chatIntent.putExtra("chatId", String.valueOf(chatId));
         chatIntent.putExtra("chatName", chatName);
-        chatIntent.putExtra("socUserId", String.valueOf(socialNetworkApi.getUserId()));
-        chatIntent.putExtra("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId()));
+        Log.d(TAG, "socialNetworkApi = " + socialNetworkApi);
+        chatIntent.putExtra("socUserId", String.valueOf(SocialAccess.getInstance().getApi().getUserId()));
+        chatIntent.putExtra("socNetId", String.valueOf(SocialAccess.getInstance().getApi().getSocialCodeId()));
 
         startActivityForResult(chatIntent, 2409);
     }
@@ -118,10 +125,6 @@ public class MyListFragment extends Fragment implements Nameable {
             Log.v(TAG, "ChatLeft");
             loadChatsFromServer();
         }
-    }
-
-    public void setSocialNetworkApi(SocialNetworkApi socialNetworkApi){
-        this.socialNetworkApi = socialNetworkApi;
     }
 
     private void loadChatsFromSQLite(){
@@ -198,6 +201,10 @@ public class MyListFragment extends Fragment implements Nameable {
     @Override
     public String getTitle() {
         return "My Mobs";
+    }
+
+    public void destroyList() {
+        chats = null;
     }
 
     private class ChatListArrayAdapter extends ArrayAdapter<Chat> {

@@ -39,7 +39,9 @@ public class InnerFragmentManager {
         Log.d(TAG, "initializeMainFragment");
 
         mainFragment = new MainFragment();
+        Log.d(TAG, "initialize MyList Fragment");
         myListFragment = new MyListFragment();
+        Log.d(TAG, "init end");
         findMobFragment = new FindMobFragment();
         createMobFragment = new CreateMobFragment();
 
@@ -50,7 +52,9 @@ public class InnerFragmentManager {
 
         mainFragment.setFragmentList(fragmentList);
 
-        myListFragment.setSocialNetworkApi(socialNetworkApi);
+        Log.d(TAG, "set socialNetworkApi = " + socialNetworkApi);
+        Log.d(TAG, "myListFragment = " + myListFragment);
+
         findMobFragment.setSocialNetworkApi(socialNetworkApi);
         createMobFragment.setSocialNetworkApi(socialNetworkApi);
 
@@ -67,8 +71,9 @@ public class InnerFragmentManager {
         authFragment = new AuthFragment();
         Log.d(TAG, "startFragmentForAuth");
         activity.getFragmentManager().beginTransaction()
-                .replace(R.id.frgmCont, authFragment)
+                .add(R.id.frgmCont, authFragment)
                 .commit();
+        Log.d(TAG, "auth fragment added");
     }
 
     public void endAuthFragment(){
@@ -89,6 +94,15 @@ public class InnerFragmentManager {
         if(socialNetworkApi == null)
             return;
         socialNetworkApi.logout();
+        mainFragment.destroyPager();
+        myListFragment.destroyList();
+
+
+        activity.getSupportFragmentManager().beginTransaction()
+                .remove(myListFragment)
+                .remove(findMobFragment)
+                .remove(createMobFragment)
+                .commit();
 
         activity.getFragmentManager().beginTransaction()
                 .remove(mainFragment)

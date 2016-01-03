@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
         else if(AccessToken.getCurrentAccessToken() != null)
             socialNetworkApi = new FacebookApi(this);
 
-        SocialAccess.getInstance(socialNetworkApi).getApi(); // set api
-
         Log.d(TAG, "[startMainFragment] socialNetworkApi = " + socialNetworkApi);
         initializeMainFragment();
     }
@@ -63,13 +61,15 @@ public class MainActivity extends AppCompatActivity {
     private void initializeMainFragment() {
         Log.d(TAG, "initializeMainFragment");
         socialNetworkApi.setUserId();
+        Log.d(TAG, "set socialNetworkApi = " + socialNetworkApi);
         manager.setSocialNetworkApi(socialNetworkApi);
+        SocialAccess.getInstance(socialNetworkApi).getApi(); // set api
+
         DbApi.getInstance().setSocialNetworkApi(socialNetworkApi);
         manager.initializeMainFragment();
     }
 
     public InnerFragmentManager getManager() { return manager; }
-    public SocialNetworkApi getSocialNetworkApi() { return socialNetworkApi; }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == 10485 || requestCode == 64206)
             socialNetworkApi = manager.getAuthorizedApi();
 
-
         if(socialNetworkApi == null) {
             Log.v(TAG, "Error");
             return;
@@ -99,13 +98,15 @@ public class MainActivity extends AppCompatActivity {
         socialNetworkApi.onActivityResult(requestCode, resultCode, data);
         int result = socialNetworkApi.getResult();
 
-        if(ResultCode.SUCCESS.get() == result) {
+        Log.d(TAG, "result = " + result);
+
+        if(ResultCode.SUCCESS.get() == result && requestCode != 199017) {
             Log.v(TAG, "Success result code");
             getManager().endAuthFragment();
             initializeMainFragment();
             Log.v(TAG, "End onResult");
         }
-        else if(ResultCode.ERROR.get() == result) {
+        else if(ResultCode.ERROR.get() == result || requestCode == 199017) {
             Log.v(TAG, "Error result code");
         }
         else

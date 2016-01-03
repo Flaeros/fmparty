@@ -50,11 +50,14 @@ public class DbApi {
     private List<HttpObjectPair> defaultArgList(){
         List<HttpObjectPair> argsList = new ArrayList<>();
 
-        argsList.add(new HttpObjectPair("socnetid", String.valueOf(socialNetworkApi.getSocialCodeId())));
-        argsList.add(new HttpObjectPair("socuserid", String.valueOf(socialNetworkApi.getUserId())));
-        argsList.add(new HttpObjectPair("token", socialNetworkApi.getToken()));
+        Log.d(TAG, "socialNetworkApi" + socialNetworkApi);
+        if(socialNetworkApi != null) {
+            argsList.add(new HttpObjectPair("socnetid", String.valueOf(socialNetworkApi.getSocialCodeId())));
+            argsList.add(new HttpObjectPair("socuserid", String.valueOf(socialNetworkApi.getUserId())));
+            argsList.add(new HttpObjectPair("token", socialNetworkApi.getToken()));
+            Log.d(TAG, "socialNetworkApi.getToken() = " + socialNetworkApi.getToken());
+        }
 
-        Log.d(TAG, "socialNetworkApi.getToken() = " + socialNetworkApi.getToken());
         return argsList;
     }
 
@@ -64,6 +67,7 @@ public class DbApi {
        create and return ID if no
     */
     public void createUser(String name){
+        Log.d(TAG, "[createUser]");
         List<HttpObjectPair>argsList = defaultArgList();
 
         argsList.add(new HttpObjectPair("do", "createUser"));
@@ -80,8 +84,10 @@ public class DbApi {
                     Log.d(TAG, "error = " + e.toString());
                     e.printStackTrace();
                 }
+                Log.d(TAG, "id = " + id);
 
                 String innerUserId = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
+                Log.d(TAG, "innerUserId = " + innerUserId);
                 if(innerUserId == null && id != 0)
                     InnerDB.getInstance().setInnerUserId(id, socialNetworkApi.getUserId());
             }

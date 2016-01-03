@@ -131,7 +131,14 @@ public class ChatActivity extends AppCompatActivity {
 
         cursor.close();
 
-        userId = Long.valueOf(InnerDB.getInstance().getInnerUserId(socUserId));
+        Log.d(TAG, "socUserId = " + socUserId);
+
+        String user_id  = InnerDB.getInstance().getInnerUserId(socUserId);
+        Log.d(TAG, "user_id = " + user_id);
+        Log.d(TAG, "CANNOT BE NULL = " + user_id);
+
+        //if(user_id != null)
+            userId = Long.valueOf(user_id);
     }
 
     public void loadMessagesCallback(List<Message> messageList, long user_id){

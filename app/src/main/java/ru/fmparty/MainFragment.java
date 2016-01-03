@@ -44,6 +44,9 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "onCreateView");
+        Log.v(TAG, "fragmentList = " + fragmentList);
+        if(fragmentList == null )
+            return null;
         View view = inflater.inflate(R.layout.fragment_main, null);
 
         setHasOptionsMenu(true);
@@ -57,10 +60,11 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         Log.d(TAG, "[onCreateView] pager = " + pager );
         tabs = (SlidingTabLayout) view.findViewById(R.id.tabs);
 
-        PagerAdapter pagerAdapter = new MyFragmentPagerAdapter(((FragmentActivity)getActivity()).getSupportFragmentManager());
+        PagerAdapter pagerAdapter = new MyFragmentPagerAdapter(((FragmentActivity)getActivity()).getSupportFragmentManager(), fragmentList);
         Log.d(TAG, "pager = " + pager);
         Log.d(TAG, "pagerAdapter = " + pagerAdapter);
         pager.setAdapter(pagerAdapter);
+        pager.setOffscreenPageLimit(3);
 
         tabs.setDistributeEvenly(true);
         tabs.setViewPager(pager);
@@ -77,6 +81,7 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -87,6 +92,8 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
         switch (item.getItemId())
         {
             case R.id.action_settings:
+                Log.d(TAG, "fragmentList = " + fragmentList);
+                Log.d(TAG, "pager adapter = " + pager.getAdapter());
                 openSettings();
                 return true;
             case R.id.action_open_profile:
@@ -133,29 +140,38 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
     }
 
     public void setFragmentList(List<Nameable> fragmentList) {
+        Log.d(TAG, "[setFragmentList] fragmentList = " + fragmentList);
         this.fragmentList = fragmentList;
+    }
+
+    public void destroyPager() {
+        pager.setAdapter(null);
     }
 
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-        public MyFragmentPagerAdapter(FragmentManager fm) {
+        private final List<Nameable> fragmentList;
+
+        public MyFragmentPagerAdapter(FragmentManager fm, List<Nameable> fragmentList) {
             super(fm);
+            Log.d(TAG, "[MyFragmentPagerAdapter] fragmentList = " + fragmentList);
+            this.fragmentList = fragmentList;
         }
 
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
             Log.d(TAG, "[getItem] position = " + position);
-            return (android.support.v4.app.Fragment) fragmentList.get(position);
+            return (android.support.v4.app.Fragment) this.fragmentList.get(position);
         }
 
         @Override
         public int getCount() {
-            return fragmentList.size();
+            return this.fragmentList.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return fragmentList.get(position).getTitle();
+            return this.fragmentList.get(position).getTitle();
         }
     }
 }
