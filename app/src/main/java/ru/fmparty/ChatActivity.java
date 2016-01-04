@@ -104,6 +104,15 @@ public class ChatActivity extends AppCompatActivity {
             showMessages();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent answerIntent = new Intent();
+        answerIntent.putExtra("ChatClosed", "Yes");
+        setResult(RESULT_OK, answerIntent);
+        finish();
+        return;
+    }
+
     private void loadMsgsFromSQLite(){
         Cursor cursor = mSqLiteDatabase.query(DatabaseHelper.MSGS_TABLE, new String[]{
                         DatabaseHelper.MSG_ID_COLUMN, DatabaseHelper.MSG_CHAT_ID_COLUMN,

@@ -20,6 +20,7 @@ public class ChatRefreshThread extends Thread {
         try {
             while (chatActivity.isRunning() && !chatActivity.isFinishing()) {
                 Thread.sleep(delay);
+                Log.d(TAG, "is logged = " + SocialAccess.getInstance().getApi().isLoggedIn());
                 if(SocialAccess.getInstance().getApi().isLoggedIn())
                     chatActivity.updateMessages();
             }

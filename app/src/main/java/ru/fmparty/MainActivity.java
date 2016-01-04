@@ -85,6 +85,16 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+        boolean fromChat = false;
+
+        String chatClosed = data.getStringExtra("ChatClosed");
+        if(chatClosed != null) {
+            Log.d(TAG, "chatClosed = " + chatClosed);
+            if("Yes".equals(chatClosed))
+                fromChat = true;
+
+        }
+
         Log.d(TAG, "requestCode = " + requestCode);
         Log.d(TAG, "resultCode = " + resultCode);
         //success auth code for vk & fb
@@ -100,13 +110,13 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "result = " + result);
 
-        if(ResultCode.SUCCESS.get() == result && requestCode != 199017) {
+        if(ResultCode.SUCCESS.get() == result && !fromChat) {
             Log.v(TAG, "Success result code");
             getManager().endAuthFragment();
             initializeMainFragment();
             Log.v(TAG, "End onResult");
         }
-        else if(ResultCode.ERROR.get() == result || requestCode == 199017) {
+        else if(ResultCode.ERROR.get() == result || fromChat) {
             Log.v(TAG, "Error result code");
         }
         else

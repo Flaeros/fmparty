@@ -40,7 +40,7 @@ public class FacebookApi implements SocialNetworkApi {
     }
 
     @Override
-    public boolean isLoggedIn() { return token != null; }
+    public boolean isLoggedIn() { return AccessToken.getCurrentAccessToken() != null; }
 
     @Override
     public void login() { LoginManager.getInstance().logInWithReadPermissions(activity, permissions); }
