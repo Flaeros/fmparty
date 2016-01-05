@@ -158,7 +158,7 @@ public class FindMobFragment extends Fragment implements Nameable {
 
     @Override
     public String getTitle() {
-        return "Find Mob";
+        return FMPartyApp.getContext().getString(R.string.findMobTitle);
     }
 
     private class MobListArrayAdapter extends ArrayAdapter<Chat> {

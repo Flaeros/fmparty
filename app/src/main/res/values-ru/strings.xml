@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">FMParty</string>
+
+    <string name="facebook_app_id">1181836061843253</string>
+    <string name="chat_title">Чат</string>
+    <string name="mob_detail_title">Моб</string>
+    <string name="profile_title">Профиль</string>
+
+    <string name="action_settings">Настройки</string>
+    <string name="action_open_profile">Мой профиль</string>
+    <string name="action_logout">Выйти</string>
+
+    <string name="action_chat_info">Данные чата</string>
+    <string name="action_leave_chat">Покинуть чат</string>
+
+    <string name="allow_sound_summary">Вы можете выключить звук при получении новых сообщений</string>
+    <string name="allow_sound_title">Разрешить звук</string>
+    <string name="settings_title">Настройки</string>
+    <string name="language_title">Язык</string>
+    <string name="language_summary">Выбрать язык интерфейса</string>
+
+    <string name="myListTitle">Мои встречи</string>
+    <string name="createMobTitle">Создать</string>
+    <string name="findMobTitle">Найти</string>
+    <string name="send">Отпр.</string>
+    <string name="titleStr">Тема</string>
+    <string name="descrStr">Описание</string>
+    <string name="dateStr">Дата</string>
+    <string name="cityStr">Город</string>
+    <string name="joinFMBStr">Присоединиться!</string>
+    <string name="profileNameStr">Имя</string>
+    <string name="userNameStr">Имя Польз.</string>
+    <string name="enterMobName">Введите название встречи:</string>
+    <string name="selectChatImage">Выберите картинку для встречи</string>
+    <string name="changeAvatar">Сменить аватар</string>
+    <string name="updateProfile">Применить изменения</string>
+    <string name="useDate">Использовать дату?</string>
+    <string name="loginVK">Зайти через Vkontakte</string>
+    <string name="loginFB">Зайти через Facebook</string>
+    <string name="msgStr">Сообщение</string>
+
+
+    <color name="indigo_blue_ultralight">#C5CAE9</color>
+    <color name="indigo_blue_mediumlight">#9FA8DA</color>
+    <color name="indigo_blue_light">#5C6BC0</color>
+    <color name="indigo_blue">#3B5998</color>
+    <color name="indigo_blue_dark">#1A237E</color>
+    <color name="white">#FFF</color>
+    <color name="gray">#A9A9A9</color>
+</resources>

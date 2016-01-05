@@ -8,13 +8,14 @@
          >
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="7dp">
 
     <TextView
         android:id="@+id/labelName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name:"
+        android:text="@string/titleStr"
         android:textAppearance="?android:attr/textAppearanceLarge"
         />
     <EditText
@@ -31,9 +32,10 @@
         android:id="@+id/labelDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description:"
+        android:text="@string/descrStr"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_below="@+id/mobName"
+        android:layout_marginTop="10dp"
         />
 
     <EditText
@@ -52,11 +54,12 @@
 
     <TextView
         android:id="@+id/labelCity"
-        android:text="City:"
+        android:text="@string/cityStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@+id/mobDescr" />
+        android:layout_below="@+id/mobDescr"
+        android:layout_marginTop="10dp" />
 
     <EditText
         android:id="@+id/mobCity"
@@ -70,17 +73,18 @@
 
     <TextView
         android:id="@+id/labelDate"
-        android:text="Date:"
+        android:text="@string/dateStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_below="@+id/mobCity"
         android:layout_alignLeft="@+id/mobCity"
-        android:layout_alignStart="@+id/mobCity" />
+        android:layout_alignStart="@+id/mobCity"
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/useDateLabel"
-        android:text="Use date?"
+        android:text="@string/useDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -112,7 +116,7 @@
 
     <Button
         android:id="@+id/findMobButton"
-        android:text="Find"
+        android:text="@string/findMobTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/mobDate"

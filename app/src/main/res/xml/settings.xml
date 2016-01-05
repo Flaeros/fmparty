@@ -5,4 +5,12 @@
         android:title="@string/allow_sound_title"
         android:summary="@string/allow_sound_summary"
         android:defaultValue="true" />
+    <ListPreference
+        android:key="language"
+        android:title="@string/language_title"
+        android:summary="@string/language_summary"
+        android:defaultValue="English"
+        android:entries="@array/languageList"
+        android:entryValues="@array/languageValues"
+        />
 </PreferenceScreen>

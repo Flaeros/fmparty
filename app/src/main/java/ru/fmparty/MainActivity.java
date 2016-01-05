@@ -87,12 +87,14 @@ public class MainActivity extends AppCompatActivity {
 
         boolean fromChat = false;
 
-        String chatClosed = data.getStringExtra("ChatClosed");
-        if(chatClosed != null) {
-            Log.d(TAG, "chatClosed = " + chatClosed);
-            if("Yes".equals(chatClosed))
-                fromChat = true;
+        if(data != null) {
+            String chatClosed = data.getStringExtra("ChatClosed");
+            if (chatClosed != null) {
+                Log.d(TAG, "chatClosed = " + chatClosed);
+                if ("Yes".equals(chatClosed))
+                    fromChat = true;
 
+            }
         }
 
         Log.d(TAG, "requestCode = " + requestCode);

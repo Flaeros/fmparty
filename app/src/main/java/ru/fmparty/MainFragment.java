@@ -137,6 +137,10 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
             Boolean current = sharedPreferences.getBoolean(key, false);
             Log.d(TAG, "key = " + key + "; current value = " + current);
         }
+        if(key.equals("language")) {
+            String current = sharedPreferences.getString(key, "English");
+            Log.d(TAG, "key = " + key + "; current value = " + current);
+        }
     }
 
     public void setFragmentList(List<Nameable> fragmentList) {

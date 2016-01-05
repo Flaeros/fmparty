@@ -47,7 +47,7 @@ public class MyListFragment extends Fragment implements Nameable {
 
     private DatabaseHelper mDatabaseHelper;
     private SQLiteDatabase mSqLiteDatabase;
-
+    private String title;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -208,7 +208,7 @@ public class MyListFragment extends Fragment implements Nameable {
 
     @Override
     public String getTitle() {
-        return "My Mobs";
+        return FMPartyApp.getContext().getString(R.string.myListTitle);
     }
 
     public void destroyList() {

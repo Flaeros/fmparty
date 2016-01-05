@@ -139,6 +139,7 @@ public class CreateMobFragment extends Fragment implements Nameable {
 
     @Override
     public String getTitle() {
-        return "Create Mob";
+        return FMPartyApp.getContext().getString(R.string.createMobTitle);
+
     }
 }

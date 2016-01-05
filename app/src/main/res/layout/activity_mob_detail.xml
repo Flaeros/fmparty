@@ -3,7 +3,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
-        android:text="Title"
+        android:text="@string/titleStr"
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/descr"
-        android:text="Descr"
+        android:text="@string/descrStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -27,7 +27,7 @@
 
     <TextView
         android:id="@+id/mobDate"
-        android:text="Date"
+        android:text="@string/dateStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -38,7 +38,7 @@
 
     <TextView
         android:id="@+id/mobCity"
-        android:text="City"
+        android:text="@string/cityStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -61,7 +61,7 @@
         android:layout_alignParentEnd="true" />
 
     <Button
-        android:text="Join FlashMob!"
+        android:text="@string/joinFMBStr"
         android:id="@+id/joinMob"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

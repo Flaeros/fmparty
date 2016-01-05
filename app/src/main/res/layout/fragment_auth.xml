@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Sign in with Vkontakte"
+        android:text="@string/loginVK"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
@@ -16,7 +16,7 @@
         android:id="@+id/fbButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign in with Facebook"
+        android:text="@string/loginFB"
         android:layout_marginTop="76dp"
         android:layout_below="@+id/vkButton"
         android:layout_alignStart="@+id/vkButton"

@@ -6,7 +6,7 @@
 
     <EditText
         android:id="@+id/profileName"
-        android:text="Profile Name"
+        android:text="@string/profileNameStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -36,7 +36,7 @@
 
     <Button
         android:id="@+id/selectImageButton"
-        android:text="Select Profile Image"
+        android:text="@string/changeAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/profileImage"
@@ -46,7 +46,7 @@
 
     <Button
         android:id="@+id/updateProfileButton"
-        android:text="Update Profile"
+        android:text="@string/updateProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
