@@ -2,10 +2,7 @@ package ru.fmparty;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -105,7 +102,7 @@ public class ProfileActivity extends Activity {
     private void fillInfo() {
         profileName.setText(user.getName());
         if(!this.isDestroyed() && user.getImage() != null && !user.getImage().isEmpty())
-            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).into(profileImage);
+            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).asBitmap().into(profileImage);
         else
             profileImage.setImageResource(R.drawable.default_userpic);
 

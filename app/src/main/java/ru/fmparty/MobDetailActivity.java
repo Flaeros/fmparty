@@ -81,7 +81,7 @@ public class MobDetailActivity extends Activity{
             mobCity.setText(chat.getCity());
 
         if(!this.isDestroyed() )
-            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).into(imageView);
+            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).asBitmap().into(imageView);
     }
 
     private View.OnClickListener joinMobButtonnListener = new View.OnClickListener() {

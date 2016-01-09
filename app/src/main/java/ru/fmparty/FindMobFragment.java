@@ -188,7 +188,7 @@ public class FindMobFragment extends Fragment implements Nameable {
 
 
             if(chat.getImage() != null && FindMobFragment.this.isVisible()) {
-                Glide.with(getActivity()).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).into(imageView);
+                Glide.with(getActivity()).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).asBitmap().into(imageView);
             }
             else{
                 imageView.setImageResource(R.drawable.default_chat);

@@ -249,7 +249,7 @@ public class ChatActivity extends AppCompatActivity {
         String image = InnerDB.getInstance().getUserImage(userId);
 
         if(image != null)
-            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + image ).into(userPic);
+            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + image ).asBitmap().into(userPic);
         else{
             DbApi.getInstance().getUser(userId, new GetUserCallback() {
                 @Override
@@ -258,7 +258,7 @@ public class ChatActivity extends AppCompatActivity {
                         Log.d(TAG, "pic set null");
                         InnerDB.getInstance().setUserImage(user);
                         if(ChatActivity.this.isRunning())
-                            Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).into(userPic);
+                            Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).asBitmap().into(userPic);
                     } else {
                         Log.d(TAG, "pic set default");
                         userPic.setImageResource(R.drawable.default_userpic);
