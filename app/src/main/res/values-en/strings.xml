@@ -37,6 +37,10 @@
     <string name="loginVK">Sign in with Vkontakte</string>
     <string name="loginFB">Sign in with Facebook</string>
     <string name="msgStr">Message Text</string>
+    <string name="enterMessage">Enter your message</string>
+    <string name="confirmLeaveChat">Are you sure you want to leave this chat?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>
     <color name="indigo_blue_mediumlight">#9FA8DA</color>

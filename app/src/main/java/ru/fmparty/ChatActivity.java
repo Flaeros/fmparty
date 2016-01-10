@@ -302,9 +302,9 @@ public class ChatActivity extends AppCompatActivity {
     private void confirmLeaveChat() {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Leave Chat")
-                .setMessage("Are you sure you want to leave this chat?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setTitle(getString(R.string.action_leave_chat))
+                .setMessage(getString(R.string.confirmLeaveChat))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -312,7 +312,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
 
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton(getString(R.string.no), null)
                 .show();
     }
 

@@ -38,6 +38,10 @@
     <string name="loginVK">Зайти через Vkontakte</string>
     <string name="loginFB">Зайти через Facebook</string>
     <string name="msgStr">Сообщение</string>
+    <string name="enterMessage">Введите сообщение</string>
+    <string name="confirmLeaveChat">Вы уверены что хотите покинуть чат?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>
