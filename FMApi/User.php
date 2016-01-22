@@ -6,6 +6,7 @@ class User {
     public $socNetId;
     public $socUserId;
     public $name;
+    public $desc;
     public $image;
     
 
@@ -23,11 +24,12 @@ class User {
         $this->name = $name;
     }
     
-    function __construct5($id, $socNetId, $socUserId, $name, $image){
+    function __construct6($id, $socNetId, $socUserId, $name, $desc, $image){
         $this->id = $id;
         $this->socNetId = $socNetId;
         $this->socUserId = $socUserId;
         $this->name = $name;
+        $this->desc = $desc;
         $this->image = $image;
     }
 }

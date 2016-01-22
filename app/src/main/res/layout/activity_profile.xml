@@ -34,12 +34,22 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
 
+    <EditText
+        android:id="@+id/profileDesc"
+        android:layout_width="wrap_content"
+        android:hint="@string/profileDescHint"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/profileImage"
+        android:layout_marginTop="10dp"/>
+
     <Button
         android:id="@+id/selectImageButton"
         android:text="@string/changeAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profileImage"
+        android:layout_below="@+id/profileDesc"
         android:visibility="gone"
         android:layout_marginTop="10dp"
         />

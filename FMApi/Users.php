@@ -20,7 +20,7 @@ class Users{
         $row = mysql_fetch_row($result);
         dlog($row);
         if($row != false) {
-            $user = new User($row[0], $row[1], $row[2], $row[3], $row[4]);
+            $user = new User($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
             dlog("got");
             dlog($user);
             return $user;
@@ -53,18 +53,21 @@ class Users{
         if($row != false) {
             dlog("getUserBySocNet users");
             dlog($row);
-            $user = new User($row[0], $row[1], $row[2], $row[3], $row[4]);
+            $user = new User($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]);
             
             return $user;
         }
         return false;
     }
     
-    public function updateUser($userId, $filename, $userName){
+    public function updateUser($userId, $filename, $userName, $userDesc){
+        dlog("updateUser userId = $userId userDesc= $userDesc ");
         $query = str_replace('{1}', $userName, self::$UPDATE_USER);
         $query = str_replace('{2}', $filename, $query);
-        $query = str_replace('{3}', $userId, $query);
+        $query = str_replace('{3}', $userDesc, $query);
+        $query = str_replace('{4}', $userId, $query);
         $result = mysql_query($query, $this->link);
+        dlog("query = $query");
         return $result;
     }
     
@@ -80,6 +83,6 @@ class Users{
     private static $SELECT_BY_ID = 'SELECT * FROM fm_users where id = ';
     private static $SELECT_BY_SOC_NET_ID = 'SELECT * FROM fm_users where socuserid = {1} and socnet = {2}';
     private static $INSERT_USER = "INSERT INTO fm_users(socnet, socuserid, name) values ({1}, {2}, '{3}')";
-    private static $UPDATE_USER = "UPDATE fm_users set name = '{1}', image = '{2}' where id = {3}";
+    private static $UPDATE_USER = "UPDATE fm_users set name = '{1}', image = '{2}', descr = '{3}' where id = {4}";
     
 }

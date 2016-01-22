@@ -41,6 +41,7 @@
     <string name="confirmLeaveChat">Are you sure you want to leave this chat?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="profileDescHint">Enter Description</string>
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>
     <color name="indigo_blue_mediumlight">#9FA8DA</color>

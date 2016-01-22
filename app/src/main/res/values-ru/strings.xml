@@ -42,6 +42,7 @@
     <string name="confirmLeaveChat">Вы уверены что хотите покинуть чат?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="profileDescHint">Введите описание</string>
 
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>

@@ -112,6 +112,7 @@ public class DbApi {
                             ,jObj.getInt("socNetId")
                             ,jObj.getLong("socUserId")
                             ,jObj.getString("name")
+                            ,jObj.getString("desc")
                             ,jObj.getString("image"));
 
                 } catch (JSONException e) {
@@ -272,12 +273,13 @@ public class DbApi {
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public void updateUser(String userId, String filename, String userName, ProgressBar progressBar, AsyncResponse asyncResponse) {
+    public void updateUser(String userId, String filename, String userName, String userDesc, ProgressBar progressBar, AsyncResponse asyncResponse) {
         List<HttpObjectPair>argsList = defaultArgList();
 
         argsList.add(new HttpObjectPair("do", "updateUser"));
         argsList.add(new HttpObjectPair("userId", userId));
         argsList.add(new HttpObjectPair("userName", userName));
+        argsList.add(new HttpObjectPair("userDesc", userDesc));
         argsList.add(new HttpObjectPair("filename", filename));
 
         new PostCallTask(asyncResponse, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));

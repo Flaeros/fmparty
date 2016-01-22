@@ -5,13 +5,15 @@ public class User {
     private final int socNetId;
     private final long socUserId;
     private final String name;
+    private final String desc;
     private String image;
 
-    public User(int id, int socNetId, long socUserId, String name, String image) {
+    public User(int id, int socNetId, long socUserId, String name, String desc, String image) {
         this.id = id;
         this.socNetId = socNetId;
         this.socUserId = socUserId;
         this.name = name;
+        this.desc = desc;
         this.image = image;
     }
 
@@ -19,6 +21,7 @@ public class User {
     public int getSocNetId() { return socNetId; }
     public long getSocUserId() { return socUserId; }
     public String getName() { return name; }
+    public String getDesc() { return desc; }
     public String getImage() { return image; }
 
     public String setImage() { return image; }
@@ -52,6 +55,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "{User: id: " + id + "; socNetId: " + socNetId + "; socUserId: " + socUserId + "; name: " + name + "; image: " + image + "}";
+        return "{User: id: " + id + "; socNetId: " + socNetId + "; socUserId: " + socUserId + "; name: " + name  + "; desc: " + desc + "; image: " + image + "}";
     }
 }

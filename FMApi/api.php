@@ -125,8 +125,9 @@ function updateUser(){
     $userId = intval($_POST['userId']);
     $filename = mysql_real_escape_string($_POST['filename']);
     $userName = mysql_real_escape_string($_POST['userName']);
+    $userDesc = mysql_real_escape_string($_POST['userDesc']);
     
-    $result = $userApi->updateUser($userId, $filename, $userName);
+    $result = $userApi->updateUser($userId, $filename, $userName, $userDesc);
     
     dlog('updateUser');
     dlog($result);

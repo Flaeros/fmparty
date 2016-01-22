@@ -25,6 +25,7 @@ import ru.fmparty.utils.UploadImageTask;
 public class ProfileActivity extends Activity {
 
     private EditText profileName;
+    private EditText profileDesc;
     private ImageView profileImage;
     private Button updateProfileButton;
     private Button selectImageButton;
@@ -43,6 +44,7 @@ public class ProfileActivity extends Activity {
 
 
         profileName = (EditText) findViewById(R.id.profileName);
+        profileDesc = (EditText) findViewById(R.id.profileDesc);
         profileImage = (ImageView) findViewById(R.id.profileImage);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         updateProfileButton = (Button) findViewById(R.id.updateProfileButton);
@@ -67,21 +69,31 @@ public class ProfileActivity extends Activity {
         if(isEditable)
             setEditable();
         else
-            profileName.setKeyListener(null);
+            setUneditable();
+    }
+
+    private void setUneditable() {
+        profileName.setKeyListener(null);
+        profileDesc.setKeyListener(null);
     }
 
     private void updateProfile() {
         Log.d(TAG, "updateProfile");
         progressBar.setVisibility(View.VISIBLE);
         String userName = profileName.getText().toString();
-        new UploadImageTask(progressBar,
-                new AsyncResponse(){
-                    @Override
-                    protected void onSuccess(ResultObject resultObject) {
-                        Toast.makeText(ProfileActivity.this, "Profile has been updated!", Toast.LENGTH_LONG).show();
+        String userDesc = profileDesc.getText().toString();
+
+        if(filePath == null)
+            DbApi.getInstance().updateUser(String.valueOf(userId), user.getImage(), userName, userDesc, progressBar, null);
+        else
+            new UploadImageTask(progressBar,
+                    new AsyncResponse(){
+                        @Override
+                        protected void onSuccess(ResultObject resultObject) {
+                            Toast.makeText(ProfileActivity.this, "Profile has been updated!", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-        ).execute("updateUser", filePath, String.valueOf(userId), userName);
+            ).execute("updateUser", filePath, String.valueOf(userId), userName, userDesc);
     }
 
     private void setEditable() {
@@ -101,6 +113,7 @@ public class ProfileActivity extends Activity {
 
     private void fillInfo() {
         profileName.setText(user.getName());
+        profileDesc.setText(user.getDesc());
         if(!this.isDestroyed() && user.getImage() != null && !user.getImage().isEmpty())
             Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).asBitmap().into(profileImage);
         else
