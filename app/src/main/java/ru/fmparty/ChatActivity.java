@@ -80,6 +80,8 @@ public class ChatActivity extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mDatabaseHelper = new DatabaseHelper(this, Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
         mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
 
@@ -264,7 +266,7 @@ public class ChatActivity extends AppCompatActivity {
                         userPic.setImageResource(R.drawable.default_userpic);
                     }
                 }
-            });
+            }, progressBar);
         }
     }
 
@@ -293,6 +295,9 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
             case R.id.action_leave_chat:
                 confirmLeaveChat();
+                return true;
+            case android.R.id.home:
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -339,7 +344,7 @@ public class ChatActivity extends AppCompatActivity {
         public void onClick(View v) {
             String message = msgField.getText().toString();
             if(!message.isEmpty()) {
-                DbApi.getInstance().sendMsg(message, chatId);
+                DbApi.getInstance().sendMsg(message, chatId, progressBar);
                 msgField.setText("");
                 loadMessages();
             }

@@ -94,8 +94,8 @@ public class DbApi {
         }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public void getUser(int id, final GetUserCallback getUserCallback){
-
+    public void getUser(int id, final GetUserCallback getUserCallback, ProgressBar progressBar){
+        progressBar.setVisibility(ProgressBar.VISIBLE);
         List<HttpObjectPair>argsList = defaultArgList();
 
         argsList.add(new HttpObjectPair("do", "getUser"));
@@ -123,17 +123,18 @@ public class DbApi {
                 if(user != null)
                     getUserCallback.setUser(user);
             }
-        }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+        }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public void sendMsg(String message, int chatId) {
+    public void sendMsg(String message, int chatId, ProgressBar progressBar) {
         List<HttpObjectPair>argsList = defaultArgList();
+        progressBar.setVisibility(ProgressBar.VISIBLE);
 
         argsList.add(new HttpObjectPair("do", "sendMsg"));
         argsList.add(new HttpObjectPair("textMsg", message));
         argsList.add(new HttpObjectPair("chatid", String.valueOf(chatId)));
 
-        new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+        new PostCallTask(progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
     public void getMessages(final ChatActivity activity, int chatId, ProgressBar progressBar) {

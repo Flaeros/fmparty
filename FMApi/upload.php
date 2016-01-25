@@ -1,4 +1,6 @@
 <?php
+require_once 'Consts.php';
+
 // Where the file is going to be placed 
 $target_path = "uploads/";
 $new_width = 200;
@@ -44,12 +46,27 @@ if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) {
 ***********************************************************************************/
 function img_resize($src, $dest, $width, $height, $rgb=0xFFFFFF, $quality=100)
 {
+  dlog('img_resize = ');
   if (!file_exists($src)) return false;
 
   $size = getimagesize($src);
-
+  
   if ($size === false) return false;
 
+  $orig_w = $size[0];
+  $orig_h = $size[1];
+  
+  if($size[0] > $size[1]) {
+      $size[0] = $size[1];
+      $is_x = true;
+      $offset = ($orig_w - $orig_h) / 2;
+  }
+  else {
+      $size[1] = $size[0];
+      $is_x = false;
+      $offset = ($orig_h - $orig_w) / 2;
+  }
+  
   // Определяем исходный формат по MIME-информации, предоставленной
   // функцией getimagesize, и выбираем соответствующую формату
   // imagecreatefrom-функцию.
@@ -57,23 +74,15 @@ function img_resize($src, $dest, $width, $height, $rgb=0xFFFFFF, $quality=100)
   $icfunc = "imagecreatefrom" . $format;
   if (!function_exists($icfunc)) return false;
 
-  $x_ratio = $width / $size[0];
-  $y_ratio = $height / $size[1];
-
-  $ratio       = min($x_ratio, $y_ratio);
-  $use_x_ratio = ($x_ratio == $ratio);
-
-  $new_width   = $use_x_ratio  ? $width  : floor($size[0] * $ratio);
-  $new_height  = !$use_x_ratio ? $height : floor($size[1] * $ratio);
-  $new_left    = $use_x_ratio  ? 0 : floor(($width - $new_width) / 2);
-  $new_top     = !$use_x_ratio ? 0 : floor(($height - $new_height) / 2);
-    
+  $orig_left    = !$is_x  ? 0 : floor($offset);
+  $orig_top     = $is_x ? 0 : floor($offset);
+  
   $isrc = $icfunc($src);
   $idest = imagecreatetruecolor($width, $height);
-
+  
   imagefill($idest, 0, 0, $rgb);
-  imagecopyresampled($idest, $isrc, $new_left, $new_top, 0, 0, 
-    $new_width, $new_height, $size[0], $size[1]);
+  imagecopyresampled($idest, $isrc, 0, 0, $orig_left, $orig_top, 
+    $width, $height, $size[0], $size[1]);
 
   imagejpeg($idest, $dest, $quality);
 

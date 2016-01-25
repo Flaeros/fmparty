@@ -2,7 +2,9 @@ package ru.fmparty;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,7 +17,7 @@ import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
 import ru.fmparty.entity.Chat;
 
-public class MobDetailActivity extends Activity{
+public class MobDetailActivity extends AppCompatActivity {
 
     private final static String TAG = "FlashMob MobDetail";
 
@@ -57,6 +59,8 @@ public class MobDetailActivity extends Activity{
         mobDate = (TextView) findViewById(R.id.mobDate);
         mobCity = (TextView) findViewById(R.id.mobCity);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         DbApi.getInstance().getChat(this, chatId, progressBar);
 
         if(joined!= null && joined.equals("yes"))
@@ -82,6 +86,16 @@ public class MobDetailActivity extends Activity{
 
         if(!this.isDestroyed() )
             Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" +chat.getImage()).asBitmap().into(imageView);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                break;
+        }
+        return true;
     }
 
     private View.OnClickListener joinMobButtonnListener = new View.OnClickListener() {

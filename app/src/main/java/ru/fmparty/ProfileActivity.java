@@ -3,7 +3,9 @@ package ru.fmparty;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +24,7 @@ import ru.fmparty.utils.GetUserCallback;
 import ru.fmparty.utils.ImageHelper;
 import ru.fmparty.utils.UploadImageTask;
 
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends AppCompatActivity {
 
     private EditText profileName;
     private EditText profileDesc;
@@ -55,6 +57,7 @@ public class ProfileActivity extends Activity {
         userId = Integer.valueOf(getIntent().getExtras().getString("userId"));
         boolean isEditable = Boolean.valueOf(getIntent().getExtras().getString("isEditable"));
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Log.d(TAG, "onCreate userId = " + userId);
         DbApi.getInstance().getUser(userId, new GetUserCallback() {
@@ -64,12 +67,23 @@ public class ProfileActivity extends Activity {
                 Log.d(TAG, "user = " + user);
                 fillInfo();
             }
-        });
+        }, progressBar);
 
         if(isEditable)
             setEditable();
         else
             setUneditable();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                break;
+        }
+        return true;
     }
 
     private void setUneditable() {
