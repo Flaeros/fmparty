@@ -5,8 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.fmparty.FMPartyApp;
 import ru.fmparty.apiaccess.Consts;
+import ru.fmparty.entity.Chat;
 import ru.fmparty.entity.User;
 
 public class InnerDB {
@@ -33,6 +37,54 @@ public class InnerDB {
         if(mSqLiteDatabase == null) {
             databaseHelper = new DatabaseHelper(FMPartyApp.getContext(), Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
             mSqLiteDatabase = databaseHelper.getWritableDatabase();
+        }
+    }
+
+    public List<Chat> loadChats(){
+        Cursor cursor = mSqLiteDatabase.query(DatabaseHelper.CHATS_TABLE, new String[]{DatabaseHelper.CHAT_ID_COLUMN,
+                        DatabaseHelper.CHAT_ADMIN_ID_COLUMN, DatabaseHelper.CHAT_NAME_COLUMN,
+                        DatabaseHelper.CHAT_IMAGE_COLUMN, DatabaseHelper.CHAT_DESCR_COLUMN,
+                        DatabaseHelper.CHAT_FDATE_COLUMN, DatabaseHelper.CHAT_CITY_COLUMN
+                },
+                null, null,null, null, null) ;
+        List<Chat> chats = new ArrayList<>();
+
+        while(cursor.moveToNext()){
+            int chatId       = cursor.getInt    (cursor.getColumnIndex(DatabaseHelper.CHAT_ID_COLUMN));
+            int chatAdminId  = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CHAT_ADMIN_ID_COLUMN));
+            String chatName  = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_NAME_COLUMN));
+            String chatImage = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_IMAGE_COLUMN));
+            String chatDescr = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_DESCR_COLUMN));
+            String chatDate  = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_FDATE_COLUMN));
+            String chatCity  = cursor.getString(cursor.getColumnIndex(DatabaseHelper.CHAT_CITY_COLUMN));
+
+            Chat chat = (new Chat.Builder(chatId, chatAdminId, chatName))
+                    .image(chatImage).descr(chatDescr).date(chatDate).city(chatCity)
+                    .build();
+
+            chats.add(chat);
+        }
+
+        cursor.close();
+
+        return chats;
+    }
+
+    public void updateChats(List<Chat> chats){
+        mSqLiteDatabase.execSQL("DELETE FROM " + DatabaseHelper.CHATS_TABLE);
+
+        for(Chat chat : chats){
+            ContentValues newValues = new ContentValues();
+
+            newValues.put(DatabaseHelper.CHAT_ID_COLUMN, chat.getId());
+            newValues.put(DatabaseHelper.CHAT_ADMIN_ID_COLUMN, chat.getAdmin_id());
+            newValues.put(DatabaseHelper.CHAT_NAME_COLUMN, chat.getName());
+            newValues.put(DatabaseHelper.CHAT_IMAGE_COLUMN, chat.getImage());
+            newValues.put(DatabaseHelper.CHAT_DESCR_COLUMN, chat.getDescr());
+            newValues.put(DatabaseHelper.CHAT_FDATE_COLUMN, chat.getDate());
+            newValues.put(DatabaseHelper.CHAT_CITY_COLUMN, chat.getCity());
+
+            long result = mSqLiteDatabase.insert(DatabaseHelper.CHATS_TABLE, null, newValues);
         }
     }
 

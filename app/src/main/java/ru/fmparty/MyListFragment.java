@@ -76,15 +76,10 @@ public class MyListFragment extends Fragment implements Nameable, ChatExitable {
 
         registerForContextMenu(chatListView);
 
-        //Update chats algorithm
         if(chats == null)
             loadChatsFromSQLite();
 
-        Log.d(TAG, "Load chats from server");
-        Log.d(TAG, "soc api = " + socialNetworkApi);
         socialNetworkApi = SocialAccess.getInstance().getApi();
-        Log.d(TAG, "soc api = " + socialNetworkApi);
-        Log.d(TAG, "myListFragment = " + this);
         if(chats == null)
             loadChatsFromServer();
         else
@@ -145,23 +140,15 @@ public class MyListFragment extends Fragment implements Nameable, ChatExitable {
 
     private void showChatDetails(AdapterView.AdapterContextMenuInfo info) {
 
-        TextView chatIdView = (TextView)info.targetView.findViewById(R.id.chatId);
-        TextView chatAdminIdView = (TextView)info.targetView.findViewById(R.id.chatAdminId);
-        TextView chatNameView = (TextView)info.targetView.findViewById(R.id.item_chatName);
-        String chatIdStr = chatIdView.getText().toString();
-        String chatAdminIdStr = chatAdminIdView.getText().toString();
-        String chatName = chatNameView.getText().toString();
+        String chatIdStr = ((TextView)info.targetView.findViewById(R.id.chatId)).getText().toString();
+        String chatAdminIdStr = ((TextView)info.targetView.findViewById(R.id.chatAdminId)).getText().toString();;
+        String chatName = ((TextView)info.targetView.findViewById(R.id.item_chatName)).getText().toString();;
+        String userIdStr = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
 
         int chatId = Integer.valueOf(chatIdStr);
-        int chatAdminId = Integer.valueOf(chatAdminIdStr);
-
-        String userIdStr = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
-        int userId = Integer.valueOf(userIdStr);
-
+        Boolean isEditable = (userIdStr.equals(chatAdminIdStr));
 
         Intent mobIntent = new Intent(getActivity(), MobDetailActivity.class);
-
-        Boolean isEditable = (userId == chatAdminId);
 
         mobIntent.putExtra("chatId", String.valueOf(chatId));
         mobIntent.putExtra("chatName", chatName);
@@ -228,33 +215,9 @@ public class MyListFragment extends Fragment implements Nameable, ChatExitable {
     }
 
     private void loadChatsFromSQLite(){
-        Cursor cursor = mSqLiteDatabase.query(DatabaseHelper.CHATS_TABLE, new String[]{DatabaseHelper.CHAT_ID_COLUMN,
-                        DatabaseHelper.CHAT_ADMIN_ID_COLUMN, DatabaseHelper.CHAT_NAME_COLUMN,
-                        DatabaseHelper.CHAT_IMAGE_COLUMN, DatabaseHelper.CHAT_DESCR_COLUMN,
-                        DatabaseHelper.CHAT_FDATE_COLUMN, DatabaseHelper.CHAT_CITY_COLUMN
-                },
-                null, null,null, null, null) ;
-        List<Chat> chats = new ArrayList<>();
-
-        while(cursor.moveToNext()){
-            int chatId       = cursor.getInt    (cursor.getColumnIndex(DatabaseHelper.CHAT_ID_COLUMN));
-            int chatAdminId  = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CHAT_ADMIN_ID_COLUMN));
-            String chatName  = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_NAME_COLUMN));
-            String chatImage = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_IMAGE_COLUMN));
-            String chatDescr = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_DESCR_COLUMN));
-            String chatDate  = cursor.getString (cursor.getColumnIndex(DatabaseHelper.CHAT_FDATE_COLUMN));
-            String chatCity  = cursor.getString(cursor.getColumnIndex(DatabaseHelper.CHAT_CITY_COLUMN));
-
-            Chat chat = (new Chat.Builder(chatId, chatAdminId, chatName))
-                    .image(chatImage).descr(chatDescr).date(chatDate).city(chatCity)
-                    .build();
-
-            chats.add(chat);
-        }
+        List<Chat> chats = InnerDB.getInstance().loadChats();
         if(!chats.isEmpty())
             this.chats = new ArrayList<>(chats);
-
-        cursor.close();
     }
 
     public void loadChatsFromServer() {
@@ -265,8 +228,7 @@ public class MyListFragment extends Fragment implements Nameable, ChatExitable {
 
         if(this.isAdded()) {
             this.chats = new ArrayList<>(chats);
-            updateChatsSQLite();
-
+            InnerDB.getInstance().updateChats(chats);
             showChats();
         }
     }
@@ -276,27 +238,6 @@ public class MyListFragment extends Fragment implements Nameable, ChatExitable {
         chatListView.setAdapter(chatArrayAdapter);
     }
 
-    private void updateChatsSQLite() {
-
-        String deleteQuery = "DELETE FROM " +
-                DatabaseHelper.CHATS_TABLE;
-        mSqLiteDatabase.execSQL(deleteQuery);
-
-        for(Chat chat : chats){
-            ContentValues newValues = new ContentValues();
-
-            newValues.put(DatabaseHelper.CHAT_ID_COLUMN, chat.getId());
-            newValues.put(DatabaseHelper.CHAT_ADMIN_ID_COLUMN, chat.getAdmin_id());
-            newValues.put(DatabaseHelper.CHAT_NAME_COLUMN, chat.getName());
-            newValues.put(DatabaseHelper.CHAT_IMAGE_COLUMN, chat.getImage());
-            newValues.put(DatabaseHelper.CHAT_DESCR_COLUMN, chat.getDescr());
-            newValues.put(DatabaseHelper.CHAT_FDATE_COLUMN, chat.getDate());
-            newValues.put(DatabaseHelper.CHAT_CITY_COLUMN, chat.getCity());
-
-            long result = mSqLiteDatabase.insert(DatabaseHelper.CHATS_TABLE, null, newValues);
-        }
-
-    }
 
     @Override
     public String getTitle() {
