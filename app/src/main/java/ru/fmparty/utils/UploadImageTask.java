@@ -27,6 +27,10 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
         this.progressBar = progressBar;
     }
 
+    public UploadImageTask( AsyncResponse asyncResponse) {
+        this.asyncResponse = asyncResponse;
+    }
+
     public UploadImageTask(ProgressBar progressBar, AsyncResponse asyncResponse) {
         this.progressBar = progressBar;
         this.asyncResponse = asyncResponse;
@@ -120,8 +124,8 @@ public class UploadImageTask extends AsyncTask<String, Integer, ResultObject> {
                 Log.d(TAG, "Server Response " + filename);
 
                 String methodToCall = params[0];
-                if(methodToCall.equals("updateChatImage"))
-                    DbApi.getInstance().updateChatImage(params[2], filename);
+                if(methodToCall.equals("updateChat"))
+                    DbApi.getInstance().updateChat(params[2], filename, params[3], params[4], params[5], params[6], asyncResponse);
                 else if(methodToCall.equals("updateUser"))
                     DbApi.getInstance().updateUser(params[2], filename, params[3], params[4], progressBar, asyncResponse);
             }

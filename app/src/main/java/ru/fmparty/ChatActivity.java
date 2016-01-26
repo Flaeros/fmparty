@@ -42,6 +42,7 @@ public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "FlashMob ChatActivity";
 
     private int chatId;
+    private int chatAdminId;
     private String chatName;
     private long socUserId;
     private int socNetId;
@@ -66,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         chatId = Integer.valueOf(getIntent().getExtras().getString("chatId"));
+        chatAdminId = Integer.valueOf(getIntent().getExtras().getString("chatAdminId"));
         socUserId = Long.valueOf(getIntent().getExtras().getString("socUserId"));
         socNetId = Integer.valueOf(getIntent().getExtras().getString("socNetId"));
         chatName = getIntent().getExtras().getString("chatName");
@@ -330,11 +332,14 @@ public class ChatActivity extends AppCompatActivity {
 
         Intent mobIntent = new Intent(this, MobDetailActivity.class);
 
+        Boolean isEditable = (userId == chatAdminId);
+
         mobIntent.putExtra("chatId", String.valueOf(chatId));
         mobIntent.putExtra("chatName", chatName);
         mobIntent.putExtra("socNetId", String.valueOf(socNetId));
         mobIntent.putExtra("socUserId", String.valueOf(socUserId));
         mobIntent.putExtra("joined", "yes");
+        mobIntent.putExtra("isEditable", isEditable.toString());
 
         startActivity(mobIntent);
     }

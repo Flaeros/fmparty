@@ -51,6 +51,9 @@ public class ProfileActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         updateProfileButton = (Button) findViewById(R.id.updateProfileButton);
         selectImageButton = (Button) findViewById(R.id.selectImageButton);
+
+        profileImage.setClickable(true);
+        profileImage.setOnClickListener(selectImageButtonListener);
         updateProfileButton.setOnClickListener(updateProfileButtonListener);
         selectImageButton.setOnClickListener(selectImageButtonListener);
 

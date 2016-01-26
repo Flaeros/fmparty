@@ -38,8 +38,8 @@ switch ($do) {
     case 'joinMob':
         joinMob();
         break;
-    case 'updateChatImage':
-        updateChatImage();
+    case 'updateChat':
+        updateChat();
         break;
     case 'getChat':
         getChat();
@@ -184,14 +184,18 @@ function getChat(){
     writeResult($result);
 }
 
-function updateChatImage(){
-    dlog('updateChatImage');
+function updateChat(){
+    dlog('updateChat');
     $chatApi = new ChatApi();
     $chatId = intval($_POST['chatid']);
     $filename = mysql_real_escape_string($_POST['filename']);
+    $chatName = mysql_real_escape_string($_POST['chatName']);
+    $chatDesc = mysql_real_escape_string($_POST['chatDesc']);
+    $chatCity = mysql_real_escape_string($_POST['chatCity']);
+    $chatDate = mysql_real_escape_string($_POST['chatDate']);
     
-    $result = $chatApi->updateChatImage($chatId, $filename);
-    dlog('updateChatImage');
+    $result = $chatApi->updateChat($chatId, $filename, $chatName, $chatDesc, $chatCity, $chatDate);
+    dlog('updateChat');
     dlog($result);
     
     writeResult($result);

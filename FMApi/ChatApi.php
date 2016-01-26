@@ -32,9 +32,13 @@ class ChatApi {
         }
     }
     
-    public function updateChatImage($chatId, $filename){
-        $query = str_replace('{1}', $filename, self::$UPDATE_CHAT_IMAGE);
+    public function updateChat($chatId, $filename, $chatName, $chatDesc, $chatCity, $chatDate){
+        $query = str_replace('{1}', $filename, self::$UPDATE_CHAT);
         $query = str_replace('{2}', $chatId, $query);
+        $query = str_replace('{3}', $chatName, $query);
+        $query = str_replace('{4}', $chatDesc, $query);
+        $query = str_replace('{5}', $chatCity, $query);
+        $query = str_replace('{6}', $chatDate, $query);
         dlog($query);
         $result = mysql_query($query, $this->link);
         dlog($result);
@@ -147,6 +151,6 @@ class ChatApi {
    private static $SELECT_CHAT = "SELECT * FROM fm_chats WHERE id = {1}";
    private static $SELECT_USER_CHAT = "SELECT c.* FROM fm_chats c, fm_refs r WHERE r.user_id = {1} AND c.id = r.chat_id";
    private static $SELECT_CHATS = "SELECT * FROM fm_chats WHERE id NOT IN (select chat_id from fm_refs WHERE user_id = {1}) ";
-   private static $UPDATE_CHAT_IMAGE = "UPDATE fm_chats set image = '{1}' WHERE id = {2}";
+   private static $UPDATE_CHAT = "UPDATE fm_chats set image = '{1}', name = '{3}', descr = '{4}', city = '{5}', fdate = '{6}' WHERE id = {2}";
    private static $REMOVE_REF = "DELETE FROM fm_refs where user_id = {1} and chat_id = {2}";
 }

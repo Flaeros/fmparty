@@ -1,78 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:text="@string/titleStr"
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="45dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="47dp" />
+            <EditText
+                android:text="@string/titleStr"
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="45dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="27dp" />
 
-    <TextView
-        android:id="@+id/descr"
-        android:text="@string/descrStr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@+id/chatImage"
-        android:layout_alignLeft="@+id/title"
-        android:layout_alignStart="@+id/title" />
+            <ImageView
+                android:id="@+id/chatImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/default_chat"
+                android:maxWidth="70dp"
+                android:maxHeight="70dp"
+                android:longClickable="false"
+                android:layout_below="@+id/title"
+                android:layout_alignLeft="@+id/title"
+                android:layout_alignStart="@+id/title" />
 
-    <TextView
-        android:id="@+id/mobDate"
-        android:text="@string/dateStr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginTop="40dp"
-        android:layout_below="@+id/descr"
-        android:layout_alignLeft="@+id/descr"
-        android:layout_alignStart="@+id/descr" />
+            <Button
+                android:id="@+id/selectImageButton"
+                android:text="@string/changeAvatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/chatImage"
+                android:layout_alignLeft="@+id/title"
+                android:layout_alignStart="@+id/title"
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                />
 
-    <TextView
-        android:id="@+id/mobCity"
-        android:text="@string/cityStr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginTop="40dp"
-        android:layout_below="@+id/mobDate"
-        android:layout_alignLeft="@+id/mobDate"
-        android:layout_alignStart="@+id/mobDate" />
+            <EditText
+                android:id="@+id/descr"
+                android:text="@string/descrStr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_below="@+id/selectImageButton"
+                android:layout_alignLeft="@+id/title"
+                android:layout_alignStart="@+id/title" />
 
-    <ImageView
-        android:id="@+id/chatImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:src="@drawable/default_chat"
-        android:maxWidth="70dp"
-        android:maxHeight="70dp"
-        android:longClickable="false"
-        android:layout_alignTop="@+id/title"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
-    <Button
-        android:text="@string/joinFMBStr"
-        android:id="@+id/joinMob"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+            <EditText
+                android:id="@+id/mobCity"
+                android:text="@string/cityStr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/descr"
+                android:layout_alignLeft="@+id/descr"
+                android:layout_alignStart="@+id/descr" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
-</RelativeLayout>
+            <TextView
+                android:id="@+id/mobDate"
+                android:text="@string/dateStr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/mobCity"
+                android:layout_alignLeft="@+id/mobCity"
+                android:layout_alignStart="@+id/mobCity" />
+
+            <DatePicker
+                android:id="@+id/mobDatePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mobCity"
+                android:layout_marginLeft="20dp"
+                android:datePickerMode="spinner"
+                android:calendarViewShown="false"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+            <Button
+                android:id="@+id/updateChatButton"
+                android:text="@string/updateProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:layout_marginLeft="40dp"
+                android:layout_below="@+id/mobDatePicker"/>
+
+
+
+
+            <Button
+                android:text="@string/joinFMBStr"
+                android:id="@+id/joinMob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
+
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

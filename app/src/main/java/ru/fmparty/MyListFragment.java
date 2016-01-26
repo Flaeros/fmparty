@@ -103,17 +103,20 @@ public class MyListFragment extends Fragment implements Nameable {
             else {
                 TextView chatNameView = (TextView) view.findViewById(R.id.item_chatName);
                 TextView chatIdView = (TextView) view.findViewById(R.id.chatId);
+                TextView chatAdminIdView = (TextView) view.findViewById(R.id.chatAdminId);
                 String chatName = chatNameView.getText().toString();
                 int chatId = Integer.valueOf(chatIdView.getText().toString());
-                showChat(chatId, chatName);
+                int chatAdminId = Integer.valueOf(chatAdminIdView.getText().toString());
+                showChat(chatId, chatName, chatAdminId);
             }
         }
     };
 
-    private void showChat(int chatId, String chatName) {
+    private void showChat(int chatId, String chatName, int chatAdminId) {
         Intent chatIntent = new Intent(getActivity(),
                 ChatActivity.class);
         chatIntent.putExtra("chatId", String.valueOf(chatId));
+        chatIntent.putExtra("chatAdminId", String.valueOf(chatAdminId));
         chatIntent.putExtra("chatName", chatName);
         Log.d(TAG, "socialNetworkApi = " + socialNetworkApi);
         chatIntent.putExtra("socUserId", String.valueOf(SocialAccess.getInstance().getApi().getUserId()));
@@ -235,6 +238,9 @@ public class MyListFragment extends Fragment implements Nameable {
 
             TextView chatIdView = (TextView) itemView.findViewById(R.id.chatId);
             chatIdView.setText(String.valueOf(chat.getId()));
+
+            TextView chatAdminIdView = (TextView) itemView.findViewById(R.id.chatAdminId);
+            chatAdminIdView.setText(String.valueOf(chat.getAdmin_id()));
 
             ImageView imageView = (ImageView) itemView.findViewById(R.id.item_chatImage);
             if(chat.getImage() != null && MyListFragment.this.isVisible()) {

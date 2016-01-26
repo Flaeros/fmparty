@@ -1,21 +1,30 @@
 package ru.fmparty;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.Arrays;
+
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
+import ru.fmparty.apiaccess.ResultObject;
 import ru.fmparty.entity.Chat;
+import ru.fmparty.utils.AsyncResponse;
+import ru.fmparty.utils.ImageHelper;
+import ru.fmparty.utils.UploadImageTask;
 
 public class MobDetailActivity extends AppCompatActivity {
 
@@ -24,16 +33,23 @@ public class MobDetailActivity extends AppCompatActivity {
     private int chatId;
     private long socUserId;
     private int socNetId;
+    private String filePath;
 
     private ProgressBar progressBar;
 
     ImageView imageView;
-    TextView title;
-    TextView descr;
+    EditText title;
+    EditText descr;
     TextView mobDate;
-    TextView mobCity;
+    EditText mobCity;
 
     Chat chat;
+
+    private Button updateChatButton;
+    private Button selectImageButton;
+    private DatePicker mobDatePicker;
+
+    boolean isEditable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,15 +65,28 @@ public class MobDetailActivity extends AppCompatActivity {
         socNetId = Integer.valueOf(getIntent().getExtras().getString("socNetId"));
         String chatName = getIntent().getExtras().getString("chatName");
         String joined = getIntent().getExtras().getString("joined");
+        isEditable = Boolean.valueOf(getIntent().getExtras().getString("isEditable"));
+
+        setTitle(chatName);
 
         Button joinMobButton = (Button) findViewById(R.id.joinMob);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imageView = (ImageView) findViewById(R.id.chatImage);
-        title = (TextView) findViewById(R.id.title);
-        descr = (TextView) findViewById(R.id.descr);
+        title = (EditText) findViewById(R.id.title);
+        descr = (EditText) findViewById(R.id.descr);
         mobDate = (TextView) findViewById(R.id.mobDate);
-        mobCity = (TextView) findViewById(R.id.mobCity);
+        mobCity = (EditText) findViewById(R.id.mobCity);
+        mobDatePicker = (DatePicker) findViewById(R.id.mobDatePicker);
+
+        updateChatButton = (Button) findViewById(R.id.updateChatButton);
+        selectImageButton = (Button) findViewById(R.id.selectImageButton);
+
+
+        if(isEditable)
+            setEditable();
+        else
+            setUneditable();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -72,15 +101,48 @@ public class MobDetailActivity extends AppCompatActivity {
         descr.setText(chatName);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data != null)
+            filePath = ImageHelper.onActivityResultHelp(data, this, imageView);
+        Log.d(TAG, "[onActivityResultHelp]filePath = " +filePath);
+    }
+
+    private void setEditable() {
+        Log.d(TAG, "setEditable");
+        selectImageButton.setVisibility(View.VISIBLE);
+
+        mobDate.setVisibility(View.GONE);
+        selectImageButton.setOnClickListener(selectImageButtonListener);
+        imageView.setClickable(true);
+        imageView.setOnClickListener(selectImageButtonListener);
+        updateChatButton.setOnClickListener(updateChatButtonListener);
+    }
+
+    private void setUneditable() {
+        title.setKeyListener(null);
+        descr.setKeyListener(null);
+        mobCity.setKeyListener(null);
+        mobDatePicker.setVisibility(View.GONE);
+        updateChatButton.setVisibility(View.GONE);
+    }
+
     public void fillChat(Chat chat){
         this.chat = chat;
 
         Log.d(TAG, "chat = " + chat);
 
+        if(!chat.getName().isEmpty())
+            title.setText(chat.getName());
         if(!chat.getDescr().isEmpty())
             descr.setText(chat.getDescr());
-        if(!chat.getDate().isEmpty())
+        if(!chat.getDate().isEmpty()) {
             mobDate.setText(chat.getDate());
+
+            if(isEditable) {
+                String[] date = chat.getDate().split("\\.");
+                mobDatePicker.updateDate(Integer.valueOf(date[2]), Integer.valueOf(date[1]) - 1, Integer.valueOf(date[0]));
+            }
+        }
         if(!chat.getCity().isEmpty())
             mobCity.setText(chat.getCity());
 
@@ -109,5 +171,40 @@ public class MobDetailActivity extends AppCompatActivity {
     private void joinMob() {
         DbApi.getInstance().joinMob(this, chatId, progressBar);
     }
+
+    private View.OnClickListener updateChatButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "Click Update Profile");
+            updateChat();
+        }
+    };
+
+    private void updateChat() {
+        String chatName = this.title.getText().toString();
+        String chatDescr = this.descr.getText().toString();
+        String chatDate = String.valueOf(this.mobDatePicker.getDayOfMonth()) +"."+ String.valueOf(this.mobDatePicker.getMonth()+1) +"."+ String.valueOf(this.mobDatePicker.getYear());
+        String chatCity = this.mobCity.getText().toString();
+
+        progressBar.setVisibility(View.VISIBLE);
+        if(filePath != null)
+            new UploadImageTask(hideProgressBarAR).execute("updateChat", filePath, String.valueOf(chatId), chatName, chatDescr, chatCity, chatDate);
+        else
+            DbApi.getInstance().updateChat(String.valueOf(chatId), chat.getImage(), chatName, chatDescr, chatCity, chatDate, hideProgressBarAR);
+    }
+
+    AsyncResponse hideProgressBarAR = new AsyncResponse() {
+        @Override
+        protected void onSuccess(ResultObject resultObject) {
+            progressBar.setVisibility(View.GONE);
+        }
+    };
+
+    private View.OnClickListener selectImageButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ImageHelper.selectImageFromGallery(MobDetailActivity.this);
+        }
+    };
 
 }

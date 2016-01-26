@@ -1,6 +1,7 @@
 package ru.fmparty.apiaccess;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -286,14 +287,18 @@ public class DbApi {
         new PostCallTask(asyncResponse, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public void updateChatImage(String chatId, String filename) {
+    public void updateChat(String chatId, String filename, String chatName, String chatDesc, String chatCity, String chatDate, AsyncResponse asyncResponse) {
         List<HttpObjectPair>argsList = defaultArgList();
 
-        argsList.add(new HttpObjectPair("do", "updateChatImage"));
+        argsList.add(new HttpObjectPair("do", "updateChat"));
         argsList.add(new HttpObjectPair("chatid", chatId));
         argsList.add(new HttpObjectPair("filename", filename));
+        argsList.add(new HttpObjectPair("chatName", chatName));
+        argsList.add(new HttpObjectPair("chatDesc", chatDesc));
+        argsList.add(new HttpObjectPair("chatCity", chatCity));
+        argsList.add(new HttpObjectPair("chatDate", chatDate));
 
-        new PostCallTask().execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
+        new PostCallTask(asyncResponse).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
     public void getChat(final MobDetailActivity mobDetailActivity, int chatId, ProgressBar progressBar) {

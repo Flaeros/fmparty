@@ -117,9 +117,15 @@ public class CreateMobFragment extends Fragment implements Nameable {
                 Toast.makeText(getActivity(), "Чат " + name +" создан!", Toast.LENGTH_SHORT).show();
 
                 progressBar.setVisibility(ProgressBar.VISIBLE);
-                Log.d(TAG, "[asyncResponse]filePath = " +filePath);
+                Log.d(TAG, "[asyncResponse]filePath = " + filePath);
+
+                String chatName = CreateMobFragment.this.chatName.getText().toString();
+                String chatDescr = CreateMobFragment.this.chatDescr.getText().toString();
+                String chatDate = String.valueOf(CreateMobFragment.this.chatDate.getDayOfMonth()) +"."+ String.valueOf(CreateMobFragment.this.chatDate.getMonth()+1) +"."+ String.valueOf(CreateMobFragment.this.chatDate.getYear());
+                String chatCity = CreateMobFragment.this.chatCity.getText().toString();
+
                 if(filePath != null)
-                    new UploadImageTask(progressBar).execute("updateChatImage", filePath, String.valueOf(id));
+                    new UploadImageTask(progressBar).execute("updateChat", filePath, String.valueOf(id), chatName, chatDescr, chatCity, chatDate);
             }catch (JSONException e){
                 Log.d(TAG, e.toString());
                 Log.d(TAG, e.getMessage());
@@ -140,6 +146,5 @@ public class CreateMobFragment extends Fragment implements Nameable {
     @Override
     public String getTitle() {
         return FMPartyApp.getContext().getString(R.string.createMobTitle);
-
     }
 }
