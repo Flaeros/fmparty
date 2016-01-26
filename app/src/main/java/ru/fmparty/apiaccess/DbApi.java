@@ -1,5 +1,6 @@
 package ru.fmparty.apiaccess;
 
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -14,12 +15,14 @@ import java.util.List;
 
 import ru.fmparty.ChatActivity;
 import ru.fmparty.FindMobFragment;
+import ru.fmparty.MainActivity;
 import ru.fmparty.MobDetailActivity;
 import ru.fmparty.MyListFragment;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.entity.Message;
 import ru.fmparty.entity.User;
 import ru.fmparty.utils.AsyncResponse;
+import ru.fmparty.utils.ChatExitable;
 import ru.fmparty.utils.GetUserCallback;
 import ru.fmparty.utils.HttpObjectPair;
 import ru.fmparty.utils.InnerDB;
@@ -368,7 +371,7 @@ public class DbApi {
         }).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
-    public void leaveChat(final ChatActivity chatActivity, int chatId, String userId, ProgressBar progressBar) {
+    public void leaveChat(final ChatExitable chatExitable, int chatId, String userId, ProgressBar progressBar) {
         List<HttpObjectPair>argsList = defaultArgList();
 
         argsList.add(new HttpObjectPair("do", "leaveChat"));
@@ -378,8 +381,7 @@ public class DbApi {
         new PostCallTask(new AsyncResponse(){
             public void onSuccess(ResultObject resultObject) {
                 Log.d(TAG, "onSuccess resultObject =" + resultObject);
-                chatActivity.setResult(ResultCode.CHAT_LEFT.get());
-                chatActivity.finish();
+                chatExitable.exitChat();
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }

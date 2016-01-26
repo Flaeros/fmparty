@@ -1,6 +1,8 @@
 package ru.fmparty;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,7 +10,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,11 +35,12 @@ import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.apiaccess.SocialAccess;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
+import ru.fmparty.utils.ChatExitable;
 import ru.fmparty.utils.DatabaseHelper;
 import ru.fmparty.utils.InnerDB;
 import ru.fmparty.utils.Nameable;
 
-public class MyListFragment extends Fragment implements Nameable {
+public class MyListFragment extends Fragment implements Nameable, ChatExitable {
 
     private final String TAG = "FlashMob MyListFragment";
     private SocialNetworkApi socialNetworkApi;
@@ -68,6 +74,8 @@ public class MyListFragment extends Fragment implements Nameable {
         mDatabaseHelper = new DatabaseHelper(this.getActivity(), Consts.SQLiteDB.get(), null, Integer.valueOf(Consts.DbVersion.get()));
         mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
 
+        registerForContextMenu(chatListView);
+
         //Update chats algorithm
         if(chats == null)
             loadChatsFromSQLite();
@@ -84,6 +92,87 @@ public class MyListFragment extends Fragment implements Nameable {
 
         return view;
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.menu_chat, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case R.id.action_chat_info:
+                showChatDetails(info);
+                return true;
+            case R.id.action_leave_chat:
+                confirmLeaveChat(info);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void confirmLeaveChat(final AdapterView.AdapterContextMenuInfo info) {
+        new AlertDialog.Builder(getActivity())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getString(R.string.action_leave_chat))
+                .setMessage(getString(R.string.confirmLeaveChat))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        leaveChat(info);
+                    }
+
+                })
+                .setNegativeButton(getString(R.string.no), null)
+                .show();
+    }
+
+    private void leaveChat(AdapterView.AdapterContextMenuInfo info) {
+        String userId = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
+        TextView chatIdView = (TextView)info.targetView.findViewById(R.id.chatId);
+        String chatIdStr = chatIdView.getText().toString();
+        int chatId = Integer.valueOf(chatIdStr);
+
+        DbApi.getInstance().leaveChat(this, chatId, userId, progressBar);
+    }
+
+    private void showChatDetails(AdapterView.AdapterContextMenuInfo info) {
+
+        TextView chatIdView = (TextView)info.targetView.findViewById(R.id.chatId);
+        TextView chatAdminIdView = (TextView)info.targetView.findViewById(R.id.chatAdminId);
+        TextView chatNameView = (TextView)info.targetView.findViewById(R.id.item_chatName);
+        String chatIdStr = chatIdView.getText().toString();
+        String chatAdminIdStr = chatAdminIdView.getText().toString();
+        String chatName = chatNameView.getText().toString();
+
+        int chatId = Integer.valueOf(chatIdStr);
+        int chatAdminId = Integer.valueOf(chatAdminIdStr);
+
+        String userIdStr = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
+        int userId = Integer.valueOf(userIdStr);
+
+
+        Intent mobIntent = new Intent(getActivity(), MobDetailActivity.class);
+
+        Boolean isEditable = (userId == chatAdminId);
+
+        mobIntent.putExtra("chatId", String.valueOf(chatId));
+        mobIntent.putExtra("chatName", chatName);
+        mobIntent.putExtra("socNetId", String.valueOf(socialNetworkApi.getSocialCodeId()));
+        mobIntent.putExtra("socUserId", String.valueOf(socialNetworkApi.getUserId()));
+        mobIntent.putExtra("joined", "yes");
+        mobIntent.putExtra("isEditable", isEditable.toString());
+
+        startActivity(mobIntent);
+    }
+
 
     private SwipeRefreshLayout.OnRefreshListener listRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
@@ -216,6 +305,11 @@ public class MyListFragment extends Fragment implements Nameable {
 
     public void destroyList() {
         chats = null;
+    }
+
+    @Override
+    public void exitChat() {
+        loadChatsFromServer();
     }
 
     private class ChatListArrayAdapter extends ArrayAdapter<Chat> {

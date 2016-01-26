@@ -31,14 +31,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
+import ru.fmparty.apiaccess.ResultCode;
 import ru.fmparty.entity.Message;
 import ru.fmparty.entity.User;
+import ru.fmparty.utils.ChatExitable;
 import ru.fmparty.utils.ChatRefreshThread;
 import ru.fmparty.utils.DatabaseHelper;
 import ru.fmparty.utils.GetUserCallback;
 import ru.fmparty.utils.InnerDB;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements ChatExitable{
     private static final String TAG = "FlashMob ChatActivity";
 
     private int chatId;
@@ -203,6 +205,11 @@ public class ChatActivity extends AppCompatActivity {
         DbApi.getInstance().getNewMessages(this, lastId, chatId, userId);
     }
 
+    @Override
+    public void exitChat() {
+        setResult(ResultCode.CHAT_LEFT.get());
+        finish();
+    }
 
     private class MyListArrayAdapter extends ArrayAdapter<Message> {
 
