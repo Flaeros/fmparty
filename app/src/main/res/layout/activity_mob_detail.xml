@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="true" android:focusableInTouchMode="true"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
@@ -7,7 +8,16 @@
         android:id="@+id/scrollView" >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/labelName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/titleStr"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                />
 
             <EditText
                 android:text="@string/titleStr"
@@ -15,12 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="45dp"
-                android:layout_marginStart="45dp"
-                android:layout_marginTop="27dp" />
+                android:layout_below="@+id/labelName"
+                android:layout_alignStart="@+id/labelName" />
 
             <ImageView
                 android:id="@+id/chatImage"
@@ -28,8 +34,9 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/default_chat"
-                android:maxWidth="70dp"
-                android:maxHeight="70dp"
+                android:maxWidth="150dp"
+                android:maxHeight="150dp"
+                android:layout_marginTop="20dp"
                 android:longClickable="false"
                 android:layout_below="@+id/title"
                 android:layout_alignLeft="@+id/title"
@@ -47,16 +54,36 @@
                 android:layout_marginTop="10dp"
                 />
 
+
+            <TextView
+                android:id="@+id/labelDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/descrStr"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_below="@+id/selectImageButton"
+                android:layout_marginTop="20dp"
+                />
+
             <EditText
                 android:id="@+id/descr"
                 android:text="@string/descrStr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_below="@+id/selectImageButton"
+                android:layout_below="@+id/labelDesc"
                 android:layout_alignLeft="@+id/title"
                 android:layout_alignStart="@+id/title" />
 
+
+            <TextView
+                android:id="@+id/labelCity"
+                android:text="@string/cityStr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_below="@+id/descr"
+                android:layout_marginTop="20dp" />
 
             <EditText
                 android:id="@+id/mobCity"
@@ -64,10 +91,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_marginTop="20dp"
-                android:layout_below="@+id/descr"
+                android:layout_below="@+id/labelCity"
                 android:layout_alignLeft="@+id/descr"
                 android:layout_alignStart="@+id/descr" />
+
+
+            <TextView
+                android:id="@+id/labelDate"
+                android:text="@string/dateStr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_below="@+id/mobCity"
+                android:layout_alignLeft="@+id/mobCity"
+                android:layout_alignStart="@+id/mobCity"
+                android:layout_marginTop="20dp" />
 
             <TextView
                 android:id="@+id/mobDate"
@@ -75,24 +113,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_marginTop="20dp"
-                android:layout_below="@+id/mobCity"
-                android:layout_alignLeft="@+id/mobCity"
-                android:layout_alignStart="@+id/mobCity" />
+                android:layout_below="@+id/labelDate"
+                android:layout_alignLeft="@+id/labelDate"
+                android:layout_alignStart="@+id/labelDate" />
 
             <DatePicker
                 android:id="@+id/mobDatePicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/mobCity"
-                android:layout_marginLeft="20dp"
+                android:layout_below="@+id/labelDate"
                 android:datePickerMode="spinner"
                 android:calendarViewShown="false"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="-25dp"
+                android:layout_marginTop="-25dp"
+                android:textAlignment="viewStart"
+                android:scaleX="0.8"
+                android:scaleY="0.8" />
 
             <Button
                 android:id="@+id/updateChatButton"
@@ -100,11 +138,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="3dp"
-                android:layout_marginLeft="40dp"
+                android:layout_alignLeft="@+id/labelDate"
+                android:layout_alignStart="@+id/labelDate"
                 android:layout_below="@+id/mobDatePicker"/>
-
-
-
 
             <Button
                 android:text="@string/joinFMBStr"
@@ -113,7 +149,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
-
 
             <ProgressBar
                 android:id="@+id/progressBar"

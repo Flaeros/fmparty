@@ -96,9 +96,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateProfile() {
         Log.d(TAG, "updateProfile");
-        progressBar.setVisibility(View.VISIBLE);
+
         String userName = profileName.getText().toString();
         String userDesc = profileDesc.getText().toString();
+
+        if(userName.isEmpty()) {
+            Toast.makeText(this, getString(R.string.enter_chat_name), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        progressBar.setVisibility(View.VISIBLE);
 
         if(filePath == null)
             DbApi.getInstance().updateUser(String.valueOf(userId), user.getImage(), userName, userDesc, progressBar, null);

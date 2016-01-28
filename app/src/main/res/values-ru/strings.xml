@@ -43,6 +43,8 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="profileDescHint">Введите описание</string>
+    <string name="enter_chat_name">Введите имя чата</string>
+    <string name="enter_user_name">Введите имя пользователя</string>
 
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>

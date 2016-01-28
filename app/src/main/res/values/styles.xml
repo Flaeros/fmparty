@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/indigo_blue</item>
         <item name="colorPrimaryDark">@color/indigo_blue_dark</item>
         <item name="android:buttonStyle">@style/MyButton</item>
+        <item name="colorControlNormal">@color/indigo_blue_light</item>
+        <item name="colorControlActivated">@color/indigo_blue</item>
+        <item name="colorControlHighlight">@color/indigo_blue_dark</item>
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">

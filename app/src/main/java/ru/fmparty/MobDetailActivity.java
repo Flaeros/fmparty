@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -185,6 +186,11 @@ public class MobDetailActivity extends AppCompatActivity {
         String chatDescr = this.descr.getText().toString();
         String chatDate = String.valueOf(this.mobDatePicker.getDayOfMonth()) +"."+ String.valueOf(this.mobDatePicker.getMonth()+1) +"."+ String.valueOf(this.mobDatePicker.getYear());
         String chatCity = this.mobCity.getText().toString();
+
+        if(chatName.isEmpty()) {
+            Toast.makeText(this, getString(R.string.enter_chat_name), Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         progressBar.setVisibility(View.VISIBLE);
         if(filePath != null)

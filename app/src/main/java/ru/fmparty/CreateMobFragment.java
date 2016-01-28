@@ -88,7 +88,7 @@ public class CreateMobFragment extends Fragment implements Nameable {
         String chatCity = this.chatCity.getText().toString();
         Log.d(TAG, chatName);
         if(chatName.isEmpty()) {
-            Toast.makeText(getActivity(), "Введите имя чата", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.enter_user_name), Toast.LENGTH_SHORT).show();
             return;
         }
 
