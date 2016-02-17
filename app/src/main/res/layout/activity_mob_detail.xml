@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:focusable="true" android:focusableInTouchMode="true"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <ScrollView
@@ -10,7 +11,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="10dp">
-
             <TextView
                 android:id="@+id/labelName"
                 android:layout_width="wrap_content"
@@ -140,15 +140,32 @@
                 android:padding="3dp"
                 android:layout_alignLeft="@+id/labelDate"
                 android:layout_alignStart="@+id/labelDate"
-                android:layout_below="@+id/mobDatePicker"/>
+                android:layout_below="@+id/mobDatePicker"
+                android:layout_marginBottom="70dp"/>
 
             <Button
                 android:text="@string/joinFMBStr"
                 android:id="@+id/joinMob"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/labelDate"
+                android:layout_alignStart="@+id/labelDate"
+                android:layout_below="@+id/mobDate"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"/>
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"/>
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id"
+                android:layout_alignLeft="@+id/labelDate"
+                android:layout_alignStart="@+id/labelDate"
+                android:layout_below="@+id/joinMob"
+                />
 
             <ProgressBar
                 android:id="@+id/progressBar"

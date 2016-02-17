@@ -25,4 +25,5 @@ dependencies {
     compile project(':vksdk_library')
     compile project(':facebook')
     compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
 }

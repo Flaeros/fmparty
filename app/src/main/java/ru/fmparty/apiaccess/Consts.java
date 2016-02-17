@@ -1,7 +1,7 @@
 package ru.fmparty.apiaccess;
 
 public enum Consts {
-    ApiPHP("http://dtigran.ru/fmapi/"),
+    ApiPHP("http://flaeros.ru/fmapi/"),
     SQLiteDB("fmparty.db"),
     DbVersion("20");
 

@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
@@ -61,6 +63,15 @@ public class ProfileActivity extends AppCompatActivity {
         boolean isEditable = Boolean.valueOf(getIntent().getExtras().getString("isEditable"));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        //AdRequest adRequest = new AdRequest.Builder().build();
+
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                .addTestDevice("AC98C820A50B4AD8A2106EDE96FB87D4")  // An example device ID
+                .build();
+        mAdView.loadAd(request);
 
         Log.d(TAG, "onCreate userId = " + userId);
         DbApi.getInstance().getUser(userId, new GetUserCallback() {
