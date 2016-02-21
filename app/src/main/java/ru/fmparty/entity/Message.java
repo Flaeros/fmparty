@@ -1,6 +1,6 @@
 package ru.fmparty.entity;
 
-public class Message {
+public class Message implements Comparable {
     private long id;
     private int chatId;
     private int userId;
@@ -52,5 +52,16 @@ public class Message {
         if (!text.equals(other.getText()))
             return false;
         return true;
+    }
+
+    @Override
+    public int compareTo(Object another) {
+        Message msg = (Message) another;
+        if(this.getId() == msg.getId())
+            return 0;
+        if(this.getId() > msg.getId())
+            return 1;
+        else
+            return -1;
     }
 }

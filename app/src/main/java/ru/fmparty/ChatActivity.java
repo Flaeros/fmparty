@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -160,13 +161,19 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
         if(messages == null) {
             messages = new ArrayList<>();
             messages.addAll(messageList);
+            Collections.sort(messages);
             saveMessages();
         }
         else{
+            Log.d(TAG, "messageList = " + messageList);
+
             messageList.removeAll(messages);
             messages.addAll(messageList);
+            Collections.sort(messages);
             saveMessages();
+            Log.d(TAG, "messages = " + messages);
             lastId = messages.get(messages.size() - 1).getId();
+            Log.d(TAG, "update lastId = " + lastId);
         }
         userId = user_id;
 
@@ -175,6 +182,9 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
 
     private void saveMessages() {
         for(Message msg : messages){
+            Log.d(TAG, "msg.getId() = " + msg.getId());
+            Log.d(TAG, "lastId = " + lastId);
+
             if(msg.getId() <= lastId)
                 continue;
 
@@ -227,6 +237,9 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
 
             TextView textMsgText = (TextView) itemView.findViewById(R.id.msgText);
             textMsgText.setText(message.getText());
+            Log.d(TAG, "[WTF] text = " + message.getText());
+            Log.d(TAG, "[WTF] name = " + message.getUserName());
+            Log.d(TAG, "[WTF] id = " + message.getId());
 
             TextView textMsgUser = (TextView) itemView.findViewById(R.id.msgUser);
 
@@ -245,6 +258,7 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
                 userPic.setVisibility(View.GONE);
             }
             else {
+                Log.d(TAG, "[WTF] condition");
                 createOrGetUserPic(userPic, message.getUserId());
                 textMsgUser.setText(message.getUserName() + ":");
                 textMsgText.setGravity(Gravity.CENTER_VERTICAL);
@@ -259,17 +273,33 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
     public void createOrGetUserPic(final ImageView userPic, int userId) {
         String image = InnerDB.getInstance().getUserImage(userId);
 
-        if(image != null)
-            Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + image ).asBitmap().into(userPic);
+        Log.d(TAG, "image = " + image);
+        if(image != null && !image.equals("NULL") && !image.equals("null")) {
+            Log.d(TAG, "image null ??");
+            try {
+                Glide.with(this).load(Consts.ApiPHP.get() + "uploads/" + image).asBitmap().into(userPic);
+            }
+            catch (Exception e){
+                Log.e(TAG, "Cannot set image");
+            }
+        }
         else{
+            Log.d(TAG, "else image null");
             DbApi.getInstance().getUser(userId, new GetUserCallback() {
                 @Override
                 public void setUser(User user) {
-                    if (user.getImage() != null && !user.getImage().isEmpty()) {
+                    Log.d(TAG, "find pic = " + user.getName());
+                    if (user.getImage() != null && !user.getImage().isEmpty() && !user.getImage().equals("NULL") && !user.getImage().equals("null")) {
                         Log.d(TAG, "pic set null");
+                        Log.d(TAG, "pic = " + user.getImage());
                         InnerDB.getInstance().setUserImage(user);
-                        if(ChatActivity.this.isRunning())
-                            Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).asBitmap().into(userPic);
+                        if (ChatActivity.this.isRunning()) {
+                            try {
+                                Glide.with(ChatActivity.this).load(Consts.ApiPHP.get() + "uploads/" + user.getImage()).asBitmap().into(userPic);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Cannot set image");
+                            }
+                        }
                     } else {
                         Log.d(TAG, "pic set default");
                         userPic.setImageResource(R.drawable.default_userpic);

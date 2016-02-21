@@ -49,6 +49,7 @@ public class MobDetailActivity extends AppCompatActivity {
     private Button updateChatButton;
     private Button selectImageButton;
     private DatePicker mobDatePicker;
+    Button joinMobButton;
 
     boolean isEditable;
 
@@ -70,7 +71,7 @@ public class MobDetailActivity extends AppCompatActivity {
 
         setTitle(chatName);
 
-        Button joinMobButton = (Button) findViewById(R.id.joinMob);
+        joinMobButton = (Button) findViewById(R.id.joinMob);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imageView = (ImageView) findViewById(R.id.chatImage);
@@ -168,6 +169,7 @@ public class MobDetailActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Log.d(TAG, "Click Create Mob");
+            joinMobButton.setEnabled(false);
             joinMob();
         }
     };

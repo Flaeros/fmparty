@@ -28,6 +28,7 @@ import java.util.List;
 
 import ru.fmparty.apiaccess.Consts;
 import ru.fmparty.apiaccess.DbApi;
+import ru.fmparty.apiaccess.SocialAccess;
 import ru.fmparty.apiaccess.SocialNetworkApi;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.utils.InnerDB;
@@ -128,7 +129,7 @@ public class FindMobFragment extends Fragment implements Nameable {
 
     private void findMobs(String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, boolean useDate) {
 
-        String userId = InnerDB.getInstance().getInnerUserId(socialNetworkApi.getUserId());
+        String userId = InnerDB.getInstance().getInnerUserId(SocialAccess.getInstance().getApi().getUserId());
         Log.d(TAG, "userId = " + userId);
         DbApi.getInstance().findMobs(this, mobNameStr, mobDescrStr, mobDateStr, mobCityStr, userId, useDate, progressBar);
     }
