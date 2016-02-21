@@ -5,7 +5,8 @@
     <string name="chat_title">Chat Title</string>
     <string name="mob_detail_title">Mob detail</string>
     <string name="profile_title">Profile</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="profile_banner_id">ca-app-pub-5890922104857953/3557254222</string>
+    <string name="chat_banner_id">ca-app-pub-5890922104857953/9348912625</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_open_profile">My Profile</string>

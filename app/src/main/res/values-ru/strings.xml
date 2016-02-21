@@ -5,6 +5,8 @@
     <string name="chat_title">Чат</string>
     <string name="mob_detail_title">Моб</string>
     <string name="profile_title">Профиль</string>
+    <string name="profile_banner_id">ca-app-pub-5890922104857953/3557254222</string>
+    <string name="chat_banner_id">ca-app-pub-5890922104857953/9348912625</string>
 
     <string name="action_settings">Настройки</string>
     <string name="action_open_profile">Мой профиль</string>

@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id"
+        ads:adUnitId="@string/profile_banner_id"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         />
