@@ -21,7 +21,7 @@
     <string name="language_title">Язык</string>
     <string name="language_summary">Выбрать язык интерфейса</string>
 
-    <string name="myListTitle">Мои встречи</string>
+    <string name="myListTitle">Встречи</string>
     <string name="createMobTitle">Создать</string>
     <string name="findMobTitle">Найти</string>
     <string name="send">Отпр.</string>
@@ -47,7 +47,7 @@
     <string name="profileDescHint">Введите описание</string>
     <string name="enter_chat_name">Введите имя чата</string>
     <string name="enter_user_name">Введите имя пользователя</string>
-
+    <string name="updateChat">Обновить чат</string>
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>
     <color name="indigo_blue_mediumlight">#9FA8DA</color>

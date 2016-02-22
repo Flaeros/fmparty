@@ -44,7 +44,7 @@
 
             <Button
                 android:id="@+id/selectImageButton"
-                android:text="@string/changeAvatar"
+                android:text="@string/selectChatImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/chatImage"
@@ -134,7 +134,7 @@
 
             <Button
                 android:id="@+id/updateChatButton"
-                android:text="@string/updateProfile"
+                android:text="@string/updateChat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="3dp"

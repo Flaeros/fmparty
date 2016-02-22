@@ -25,9 +25,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ru.fmparty.apiaccess.Consts;
@@ -55,9 +54,9 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
     private EditText msgField;
     private ListView msgList;
 
-    private MyListArrayAdapter msgsArrayAdapter;
+    private TreeMapAdapter msgsArrayAdapter;
 
-    private List<Message> messages;
+    private TreeMap<Long, Message> messages;
     private long userId;
     private long lastId;
 
@@ -127,7 +126,7 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
                         DatabaseHelper.MSG_TEXT_COLUMN
                 },
                 DatabaseHelper.MSG_CHAT_ID_COLUMN + " = " + chatId, null,null, null, null) ;
-        List<Message> msgs = new ArrayList<>();
+        TreeMap<Long, Message> msgs = new TreeMap<>();
 
         while(cursor.moveToNext()){
             int msgId  = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.MSG_ID_COLUMN));
@@ -138,11 +137,11 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
 
             Message msg = new Message(msgId, chatId, userId, userName, text);
             Log.d(TAG, "msg = " + msg);
-            msgs.add(msg);
+            msgs.put(msg.getId(), msg);
         }
         if(!msgs.isEmpty()) {
-            this.messages = new ArrayList<>(msgs);
-            lastId = messages.get(messages.size()-1).getId();
+            this.messages = new TreeMap<>(msgs);
+            lastId = messages.lastKey();
         }
 
         cursor.close();
@@ -157,23 +156,15 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
             userId = Long.valueOf(user_id);
     }
 
-    public void loadMessagesCallback(List<Message> messageList, long user_id){
+    public void loadMessagesCallback(TreeMap<Long, Message> messageList, long user_id){
         if(messages == null) {
-            messages = new ArrayList<>();
-            messages.addAll(messageList);
-            Collections.sort(messages);
+            messages = new TreeMap<>(messageList);
             saveMessages();
         }
         else{
-            Log.d(TAG, "messageList = " + messageList);
-
-            messageList.removeAll(messages);
-            messages.addAll(messageList);
-            Collections.sort(messages);
+            messages.putAll(messageList);
             saveMessages();
-            Log.d(TAG, "messages = " + messages);
-            lastId = messages.get(messages.size() - 1).getId();
-            Log.d(TAG, "update lastId = " + lastId);
+            lastId = messages.lastKey();
         }
         userId = user_id;
 
@@ -181,12 +172,11 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
     }
 
     private void saveMessages() {
-        for(Message msg : messages){
-            Log.d(TAG, "msg.getId() = " + msg.getId());
-            Log.d(TAG, "lastId = " + lastId);
-
-            if(msg.getId() <= lastId)
+        for(Map.Entry<Long, Message> entry : messages.entrySet()){
+            if(entry.getKey() <= lastId)
                 continue;
+
+            Message msg = entry.getValue();
 
             ContentValues newValues = new ContentValues();
 
@@ -197,17 +187,19 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
             newValues.put(DatabaseHelper.MSG_TEXT_COLUMN, msg.getText());
 
             long result = mSqLiteDatabase.insert(DatabaseHelper.MSGS_TABLE, null, newValues);
-            Log.d(TAG, "result = " + result);
+            Log.d(TAG, "insert result = " + result);
         }
     }
 
     public void showMessages(){
         if(msgsArrayAdapter == null) {
-            msgsArrayAdapter = new MyListArrayAdapter(messages);
+            msgsArrayAdapter = new TreeMapAdapter();
             msgList.setAdapter(msgsArrayAdapter);
         }
-        else
+        else {
+            msgsArrayAdapter.updateKeys();
             msgsArrayAdapter.notifyDataSetChanged();
+        }
     }
 
     public void updateMessages() {
@@ -221,10 +213,32 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
         finish();
     }
 
-    private class MyListArrayAdapter extends ArrayAdapter<Message> {
+    private class TreeMapAdapter extends ArrayAdapter<Message> {
 
-        public MyListArrayAdapter(List<Message> messages) {
-            super(ChatActivity.this, R.layout.msg_layout, messages);
+        private Long[] mapKeys;
+
+        public TreeMapAdapter() {
+            super(ChatActivity.this, R.layout.msg_layout);
+            mapKeys = messages.keySet().toArray(new Long[getCount()]);
+        }
+
+        public void updateKeys(){
+            mapKeys = messages.keySet().toArray(new Long[getCount()]);
+        }
+
+        @Override
+        public int getCount() {
+            return messages.size();
+        }
+
+        @Override
+        public Message getItem(int position) {
+            return messages.get(mapKeys[position]);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mapKeys[position];
         }
 
         @Override
@@ -233,7 +247,7 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
             if (itemView == null) {
                 itemView = ChatActivity.this.getLayoutInflater().inflate(R.layout.msg_layout, parent, false);
             }
-            final Message message = messages.get(position);
+            final Message message = messages.get(mapKeys[position]);
 
             TextView textMsgText = (TextView) itemView.findViewById(R.id.msgText);
             textMsgText.setText(message.getText());

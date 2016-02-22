@@ -1,8 +1,6 @@
 package ru.fmparty.apiaccess;
 
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -12,10 +10,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import ru.fmparty.ChatActivity;
 import ru.fmparty.FindMobFragment;
-import ru.fmparty.MainActivity;
 import ru.fmparty.MobDetailActivity;
 import ru.fmparty.MyListFragment;
 import ru.fmparty.entity.Chat;
@@ -152,7 +150,7 @@ public class DbApi {
             @Override
             protected void onSuccess(ResultObject resultObject) {
                 Log.d(TAG, "resultObject = " + resultObject);
-                List<Message> messages = new ArrayList<>();
+                TreeMap<Long, Message> messages = new TreeMap<>();
                 long user_id = 0;
                 try {
 
@@ -166,7 +164,7 @@ public class DbApi {
                                                  ,jObj.getInt("userId")
                                                  ,jObj.getString("userName")
                                                  ,jObj.getString("text"));
-                        messages.add(msg);
+                        messages.put(msg.getId(), msg);
                     }
                 }catch (JSONException e){
                     e.printStackTrace();
@@ -347,7 +345,7 @@ public class DbApi {
         new PostCallTask(new AsyncResponse(){
             public void onSuccess(ResultObject resultObject) {
                 Log.d(TAG, "resultObject = " + resultObject);
-                List<Message> messages = new ArrayList<>();
+                TreeMap<Long, Message> messages = new TreeMap<>();
                 try {
                     JSONArray jsonMsgs = resultObject.getJsonArray();
 
@@ -358,7 +356,7 @@ public class DbApi {
                                 ,jObj.getInt("userId")
                                 ,jObj.getString("userName")
                                 ,jObj.getString("text"));
-                        messages.add(msg);
+                        messages.put(msg.getId(), msg);
                     }
                 }catch (JSONException e){
                     e.printStackTrace();
