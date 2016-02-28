@@ -48,6 +48,12 @@
     <string name="enter_chat_name">Введите имя чата</string>
     <string name="enter_user_name">Введите имя пользователя</string>
     <string name="updateChat">Обновить чат</string>
+    <string name="err_empty_msg">Введите сообщение</string>
+    <string name="msg_mob_created">Встреча создана!</string>
+    <string name="msg_app_loading">Приложение загружается</string>
+    <string name="msg_profile_updated">Профиль обновлен!</string>
+    <string name="msg_joined_mob">Вы вошли в чат! Обновите список встреч</string>
+    <string name="msg_no_results">Ничего не найдено</string>
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>
     <color name="indigo_blue_mediumlight">#9FA8DA</color>

@@ -1,10 +1,8 @@
 package ru.fmparty;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -175,7 +173,7 @@ public class MyListFragment extends Fragment implements Nameable, ChatExitable {
             String userId = InnerDB.getInstance().getInnerUserId(SocialAccess.getInstance().getApi().getUserId());
             Log.d(TAG, "[onItemClick] userId = " + userId);
             if(userId == null)
-                Toast.makeText(getActivity().getApplicationContext(), "Please wait. Application is loading", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.msg_app_loading), Toast.LENGTH_SHORT).show();
             else {
                 TextView chatNameView = (TextView) view.findViewById(R.id.item_chatName);
                 TextView chatIdView = (TextView) view.findViewById(R.id.chatId);

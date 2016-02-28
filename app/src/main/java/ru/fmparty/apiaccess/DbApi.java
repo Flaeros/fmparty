@@ -16,6 +16,7 @@ import ru.fmparty.ChatActivity;
 import ru.fmparty.FindMobFragment;
 import ru.fmparty.MobDetailActivity;
 import ru.fmparty.MyListFragment;
+import ru.fmparty.R;
 import ru.fmparty.entity.Chat;
 import ru.fmparty.entity.Message;
 import ru.fmparty.entity.User;
@@ -258,6 +259,11 @@ public class DbApi {
                 Log.d(TAG, "chatList = " + chatList);
                 findMobFragment.showMobs(chatList);
             }
+
+            @Override
+            public void onError(){
+                Toast.makeText(findMobFragment.getActivity(), findMobFragment.getString(R.string.msg_no_results), Toast.LENGTH_SHORT).show();
+            }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }
 
@@ -271,7 +277,7 @@ public class DbApi {
 
         new PostCallTask(new AsyncResponse(){
             public void onSuccess(ResultObject resultObject) {
-                Toast.makeText(mobDetailActivity, "Successfully joined! Look at your mob's list!", Toast.LENGTH_LONG).show();
+                Toast.makeText(mobDetailActivity, mobDetailActivity.getString(R.string.msg_joined_mob), Toast.LENGTH_LONG).show();
             }
         }, progressBar).execute(argsList.toArray(new HttpObjectPair[argsList.size()]));
     }

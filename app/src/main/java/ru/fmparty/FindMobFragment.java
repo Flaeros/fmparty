@@ -128,6 +128,8 @@ public class FindMobFragment extends Fragment implements Nameable {
     }
 
     private void findMobs(String mobNameStr, String mobDescrStr, String mobDateStr, String mobCityStr, boolean useDate) {
+        if(mobListArrayAdapter != null)
+            mobListArrayAdapter.clear();
 
         String userId = InnerDB.getInstance().getInnerUserId(SocialAccess.getInstance().getApi().getUserId());
         Log.d(TAG, "userId = " + userId);
@@ -169,6 +171,10 @@ public class FindMobFragment extends Fragment implements Nameable {
         public MobListArrayAdapter(List<Chat> chatList) {
             super(getActivity(), R.layout.chat_list_item_layout, chatList);
             this.chats = new ArrayList<>(chatList);
+        }
+
+        public void setChats(List<Chat> chatList){
+            this.chats = chatList;
         }
 
         @Override

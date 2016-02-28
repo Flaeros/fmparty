@@ -47,6 +47,12 @@
     <string name="enter_chat_name">Enter Chat Name</string>
     <string name="enter_user_name">Enter User Name</string>
     <string name="updateChat">Update Chat</string>
+    <string name="err_empty_msg">Message is empty</string>
+    <string name="msg_mob_created">Встреча создана!</string>
+    <string name="msg_app_loading">Please wait. Application is loading</string>
+    <string name="msg_profile_updated">Profile has been updated!</string>
+    <string name="msg_joined_mob">Successfully joined! Refresh your mob\'s list!</string>
+    <string name="msg_no_results">No results</string>
 
     <color name="indigo_blue_ultralight">#C5CAE9</color>
     <color name="indigo_blue_mediumlight">#9FA8DA</color>

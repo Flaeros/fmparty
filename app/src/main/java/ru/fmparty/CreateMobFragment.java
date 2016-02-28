@@ -114,7 +114,7 @@ public class CreateMobFragment extends Fragment implements Nameable {
                 Log.d(TAG, "onSuccess chat id =" + id);
                 String name = jsonObject.getString("name");
                 Log.d(TAG, "onSuccess chat name =" + name);
-                Toast.makeText(getActivity(), "Чат " + name +" создан!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.msg_mob_created), Toast.LENGTH_SHORT).show();
 
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 Log.d(TAG, "[asyncResponse]filePath = " + filePath);

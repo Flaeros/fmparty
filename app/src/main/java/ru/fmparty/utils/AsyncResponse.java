@@ -24,7 +24,7 @@ public abstract class AsyncResponse {
 
     abstract protected void onSuccess(ResultObject resultObject);
 
-    void onError() {
+    public void onError() {
         //or for no result
     }
 

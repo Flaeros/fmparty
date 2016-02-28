@@ -119,7 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
                     new AsyncResponse(){
                         @Override
                         protected void onSuccess(ResultObject resultObject) {
-                            Toast.makeText(ProfileActivity.this, "Profile has been updated!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ProfileActivity.this, getString(R.string.msg_profile_updated), Toast.LENGTH_LONG).show();
                         }
                     }
             ).execute("updateUser", filePath, String.valueOf(userId), userName, userDesc);

@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -255,6 +256,7 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
             Log.d(TAG, "[WTF] name = " + message.getUserName());
             Log.d(TAG, "[WTF] id = " + message.getId());
 
+            LinearLayout msgLinear = (LinearLayout) itemView.findViewById(R.id.msgLinear);
             TextView textMsgUser = (TextView) itemView.findViewById(R.id.msgUser);
 
             ImageView userPic = (ImageView) itemView.findViewById(R.id.profileImage);
@@ -267,15 +269,18 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
             });
 
             if(message.getUserId() == userId) {
-                textMsgText.setGravity(Gravity.RIGHT|Gravity.CENTER_VERTICAL);
+                Log.d(TAG, "gravity me");
+                textMsgText.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                msgLinear.setGravity(Gravity.RIGHT);
                 textMsgUser.setText("");
                 userPic.setVisibility(View.GONE);
             }
             else {
-                Log.d(TAG, "[WTF] condition");
+                Log.d(TAG, "gravity other");
                 createOrGetUserPic(userPic, message.getUserId());
                 textMsgUser.setText(message.getUserName() + ":");
                 textMsgText.setGravity(Gravity.CENTER_VERTICAL);
+                msgLinear.setGravity(Gravity.LEFT);
                 userPic.setVisibility(View.VISIBLE);
             }
 
@@ -405,7 +410,7 @@ public class ChatActivity extends AppCompatActivity implements ChatExitable{
                 loadMessages();
             }
             else
-                Toast.makeText(ChatActivity.this, "Message is empty", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivity.this, getString(R.string.err_empty_msg), Toast.LENGTH_SHORT).show();
         }
     };
 
