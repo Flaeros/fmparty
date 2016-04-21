@@ -91,11 +91,14 @@ public class MainFragment extends Fragment implements SharedPreferences.OnShared
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            /* For the better times
             case R.id.action_settings:
+
                 Log.d(TAG, "fragmentList = " + fragmentList);
                 Log.d(TAG, "pager adapter = " + pager.getAdapter());
                 openSettings();
                 return true;
+            */
             case R.id.action_open_profile:
                 openProfile();
                 return true;
